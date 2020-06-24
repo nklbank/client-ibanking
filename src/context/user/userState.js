@@ -1,182 +1,215 @@
-
-import React, { useReducer } from 'react'
-import axios from 'axios';
-import UserContext from './userContext'
-import userReducer from './userReducer'
-import setAuthToken from '../../utils/setAuthToken'
+import React, { useReducer } from "react";
+import axios from "axios";
+import UserContext from "./userContext";
+import userReducer from "./userReducer";
+import setAuthToken from "../../utils/setAuthToken";
 import {
-    GET_ACCOUNT,
-    ACCOUNTOWNERS_ERROR,
-    GET_BENEFICIARIES,
-    BENEFICIARIES_ERROR,
-    ADD_BENEFICIARY,
-    BENEFICIARY_ERROR,
-    UPDATE_BENEFICIARIES,
-    UPDATE_BENEFICIARIES_ERROR,
-    CHANGE_PASSWORD,
-    CHANGE_PASSWORD_ERROR,
-    GET_BENEFICIARY,
-    USER_ERROR
-    // BENEFICIARY_ERROR,
+  GET_ACCOUNT,
+  ACCOUNTOWNERS_ERROR,
+  GET_BENEFICIARIES,
+  BENEFICIARIES_ERROR,
+  ADD_BENEFICIARY,
+  BENEFICIARY_ERROR,
+  UPDATE_BENEFICIARIES,
+  UPDATE_BENEFICIARIES_ERROR,
+  CHANGE_PASSWORD,
+  CHANGE_PASSWORD_ERROR,
+  GET_BENEFICIARY,
+  USER_ERROR,
+  GET_TRANSACTIONS,
+  // BENEFICIARY_ERROR,
+} from "../types";
 
-} from '../types'
+const UserState = (props) => {
+  const initialState = {
+    loading: null,
+    accountsOwner: [],
+    beneficiaries: [],
+    error: null,
+    success: null,
+    beneficiary: {},
+    addBeneficiaryRes: null,
+    getTransactions: null,
+    token: localStorage.getItem("token"),
+  };
 
-const UserState = props => {
-    const initialState = {
-        loading: null,
-        accountsOwner: [],
-        beneficiaries: [],
-        error: null,
-        success: null,
-        beneficiary: {},
-        addBeneficiaryRes: null,
-        token: localStorage.getItem('token')
+  const [state, dispatch] = useReducer(userReducer, initialState);
+
+  //get account user
+
+  const getAccounts = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+
+    try {
+      const res = await axios.get("/api/customer/accounts");
+      dispatch({
+        type: GET_ACCOUNT,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
     }
+  };
 
-    const [state, dispatch] = useReducer(userReducer, initialState)
+  //get list beneficiary
 
+  const getBeneficiries = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
-    //get account user
+    try {
+      const res = await axios.get("/api/customer/beneficiaries");
 
-    const getAccounts = async () => {
-        setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
-
-        try {
-            const res = await axios.get('/api/customer/accounts');
-            dispatch({
-                type: GET_ACCOUNT,
-                payload: res.data
-            });
-        } catch (err) {
-            dispatch({
-                type: USER_ERROR,
-                payload: err.response
-            });
-        }
-    };
-
-    //get list beneficiary
-
-    const getBeneficiries = async () => {
-
-        setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
-
-        try {
-            const res = await axios.get('/api/customer/beneficiaries');
-
-            dispatch({
-                type: GET_BENEFICIARIES,
-                payload: res.data
-            });
-        } catch (err) {
-            dispatch({
-                type: USER_ERROR,
-                payload: err.response
-            });
-        }
+      dispatch({
+        type: GET_BENEFICIARIES,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
     }
+  };
 
-    //add beneficiary
+  //add beneficiary
 
-    const addBeneficiary = async contact => {
-        setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+  const addBeneficiary = async (contact) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
-        try {
-            const res = await axios.post('/api/customer/add-beneficiary', contact);
+    try {
+      const res = await axios.post("/api/customer/add-beneficiary", contact);
 
-            dispatch({
-                type: ADD_BENEFICIARY,
-                payload: res.data
-            });
-        } catch (err) {
-            console.log(err.response);
-            dispatch({
-                type: USER_ERROR,
-                payload: err.response
-            });
-        }
-    };
-
-    //update list beneficiary
-
-    const updateListBeneficiaryInfo = async (listInfo) => {
-        setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
-
-        try {
-            const res = await axios.post('/api/customer/update-beneficiary/', listInfo);
-
-            dispatch({
-                type: UPDATE_BENEFICIARIES,
-                payload: res.data
-            });
-        } catch (err) {
-            dispatch({
-                type: USER_ERROR,
-                payload: err.response
-            });
-        }
+      dispatch({
+        type: ADD_BENEFICIARY,
+        payload: res.data,
+      });
+    } catch (err) {
+      console.log(err.response);
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
     }
+  };
 
-    //change password
+  //update list beneficiary
 
-    const changePassword = async (passwords) => {
-        setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+  const updateListBeneficiaryInfo = async (listInfo) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
-        try {
-            const res = await axios.put('/api/customer/passwords/ibanking', passwords);
+    try {
+      const res = await axios.post(
+        "/api/customer/update-beneficiary/",
+        listInfo
+      );
 
-            dispatch({
-                type: CHANGE_PASSWORD,
-                payload: res.data
-            });
-        } catch (err) {
-            dispatch({
-                type: USER_ERROR,
-                payload: err.response
-            });
-        }
+      dispatch({
+        type: UPDATE_BENEFICIARIES,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
     }
+  };
 
-    // get beneficiary account
+  //change password
 
-    const getBeneficiry = async (accnumber) => {
+  const changePassword = async (passwords) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
-        setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.put(
+        "/api/customer/passwords/ibanking",
+        passwords
+      );
 
-        try {
-            const res = await axios.post('/api/account/', accnumber);
-
-            dispatch({
-                type: GET_BENEFICIARY,
-                payload: res.data
-            });
-        } catch (err) {
-            dispatch({
-                type: BENEFICIARY_ERROR,
-                payload: err.response
-            });
-        }
+      dispatch({
+        type: CHANGE_PASSWORD,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
     }
+  };
 
-    return (
-        <UserContext.Provider
-            value={{
-                accountsOwner: state.accountsOwner,
-                beneficiaries: state.beneficiaries,
-                addBeneficiaryRes: state.addBeneficiaryRes,
-                beneficiary: state.beneficiary,
-                success: state.success,
-                error: state.error,
-                getAccounts,
-                getBeneficiries,
-                updateListBeneficiaryInfo,
-                addBeneficiary,
-                changePassword,
-                getBeneficiry
-            }}>
-            {props.children}
-        </UserContext.Provider>
-    )
-}
+  // get beneficiary account
 
-export default UserState
+  const getBeneficiry = async (accnumber) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+
+    try {
+      const res = await axios.post("/api/account/", accnumber);
+
+      dispatch({
+        type: GET_BENEFICIARY,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: BENEFICIARY_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+  //   function getTransactions(account_number) {
+  //     const requestOptions = {
+  //         method: 'GET',
+  //         headers: { ...authHeader(), 'Content-Type': 'application/json' },
+  //         // : JSON.stringify(account_number)
+  //         params: JSON.stringify(account_number),
+
+  //     };
+  //     return fetch(config.apiUrl + '/api/customer/transactions/normal?account_number=' +account_number, requestOptions).then(handleResponse, handleError);
+  // }
+
+  const getTransactions = async (accountNumber) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get(
+        "/api/customer/transactions/normal?account_number=" + accountNumber
+      );
+      dispatch({
+        type: GET_TRANSACTIONS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: GET_TRANSACTIONS,
+        payload: err.response,
+      });
+    }
+  };
+  return (
+    <UserContext.Provider
+      value={{
+        accountsOwner: state.accountsOwner,
+        beneficiaries: state.beneficiaries,
+        addBeneficiaryRes: state.addBeneficiaryRes,
+        beneficiary: state.beneficiary,
+        transactions: state.transactions,
+        success: state.success,
+        error: state.error,
+        getAccounts,
+        getBeneficiries,
+        updateListBeneficiaryInfo,
+        addBeneficiary,
+        changePassword,
+        getBeneficiry,
+        getTransactions,
+      }}
+    >
+      {props.children}
+    </UserContext.Provider>
+  );
+};
+
+export default UserState;
