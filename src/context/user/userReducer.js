@@ -11,6 +11,7 @@ import {
   CHANGE_PASSWORD_ERROR,
   GET_BENEFICIARY,
   GET_TRANSACTIONS,
+  POST_TRANSFERINTRABANK,
   USER_ERROR,
   // BENEFICIARY_ERROR
 } from "../types";
@@ -66,6 +67,7 @@ export default (state, action) => {
         loading: false,
       };
     case GET_BENEFICIARY:
+      console.log(action.payload)
       return {
         ...state,
         beneficiary: action.payload,
@@ -80,6 +82,14 @@ export default (state, action) => {
         error: null,
         loading: false,
       };
+
+    case POST_TRANSFERINTRABANK:
+      return {
+        ...state,
+        error: null,
+        success: action.payload,
+        loading: false
+      }
     case USER_ERROR:
       return {
         ...state,

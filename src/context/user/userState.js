@@ -17,6 +17,7 @@ import {
   GET_BENEFICIARY,
   USER_ERROR,
   GET_TRANSACTIONS,
+  POST_TRANSFERINTRABANK
   // BENEFICIARY_ERROR,
 } from "../types";
 
@@ -188,6 +189,25 @@ const UserState = (props) => {
       });
     }
   };
+
+  const transferIntraBank = async (transferInfor) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/customer/intrabank-transfer-money",
+        transferInfor
+      );
+      dispatch({
+        type: POST_TRANSFERINTRABANK,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
   return (
     <UserContext.Provider
       value={{
@@ -205,6 +225,7 @@ const UserState = (props) => {
         changePassword,
         getBeneficiry,
         getTransactions,
+        transferIntraBank
       }}
     >
       {props.children}

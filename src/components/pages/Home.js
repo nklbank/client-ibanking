@@ -21,7 +21,7 @@ const Home = () => {
     console.log(success)
     return (
         <div>
-            {error && message.error("Opps something wrong")}
+            {error && message.error("something wrong")}
             {success && message.success(success)}
 
             <NavBar />
