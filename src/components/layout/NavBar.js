@@ -36,7 +36,7 @@ const comp = [
     content: <TransactionsPage />,
   },
   {
-    title: "Chuyển hàng nội địa",
+    title: "Chuyển tiền",
     content: <TransferPage />,
   },
   {

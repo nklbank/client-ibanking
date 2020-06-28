@@ -18,11 +18,11 @@ const Home = () => {
 
     }, [])
 
-    console.log(success)
+    console.log(error)
     return (
         <div>
-            {error && message.error("something wrong")}
-            {success && message.success(success)}
+            {error && message.error(error.msg ? error.msg : error.data.msg)}
+            {success && message.success(success.msg)}
 
             <NavBar />
         </div>

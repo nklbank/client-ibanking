@@ -12,6 +12,9 @@ import {
   GET_BENEFICIARY,
   GET_TRANSACTIONS,
   POST_TRANSFERINTRABANK,
+  POST_TRANSFERINTERBANK,
+  VERIFY_OTP,
+  GET_OTP,
   USER_ERROR,
   // BENEFICIARY_ERROR
 } from "../types";
@@ -24,6 +27,7 @@ export default (state, action) => {
         accountsOwner: action.payload,
         error: null,
         // success: "success",
+        otpSuccess: "abc",
         loading: false,
       };
     // case ADD_BENEFICIARY:
@@ -90,6 +94,30 @@ export default (state, action) => {
         success: action.payload,
         loading: false
       }
+    case POST_TRANSFERINTERBANK:
+      return {
+        ...state,
+        error: null,
+        success: {msg: "Transfer successfully"},
+        loading: false
+      }
+
+    case VERIFY_OTP:
+      console.log(action.payload.msg)
+       return{
+         ...state,
+         error: null,
+         otpSuccess: action.payload.msg,
+         success: action.success
+     }
+      
+    case GET_OTP:
+       return{
+         ...state,
+         error: null,
+        success: action.payload
+    }
+
     case USER_ERROR:
       return {
         ...state,
