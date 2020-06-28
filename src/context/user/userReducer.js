@@ -12,8 +12,10 @@ import {
   GET_BENEFICIARY,
   GET_TRANSACTIONS,
   USER_ERROR,
+  GET_DEBTLIST
   // BENEFICIARY_ERROR
 } from "../types";
+import { act } from "react-dom/test-utils";
 
 export default (state, action) => {
   switch (action.type) {
@@ -80,6 +82,13 @@ export default (state, action) => {
         error: null,
         loading: false,
       };
+    case GET_DEBTLIST:
+      return {
+        ...state,
+        debts: action.payload,
+        error: null,
+        loading: false,
+      }
     case USER_ERROR:
       return {
         ...state,
