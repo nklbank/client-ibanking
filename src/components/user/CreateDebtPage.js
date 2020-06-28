@@ -50,42 +50,37 @@ const columns = [
     }
 ];
 
-// const adjustedDataSource = (debts) => {
-//     const { creditors, payers } = debts;
-//     console.log('debts', debts)
-//     const visible_debt = [...payers].filter(debt => debt.visibleToPayer === 1)
-//     const list = [...creditors, ...visible_debt]
-//     console.log(creditors);
-//     return list
-// }
+const adjustedDataSource = (debts) => {
+    const { creditors, payers } = debts;
+    console.log('debts', debts)
+    const visible_debt = [...payers].filter(debt => debt.visibleToPayer === 1)
+    const list = [...creditors, ...visible_debt]
+    console.log(creditors);
+    return list
+}
 
 
 const CreateDebtPage = () => {
-    const userContext = useContext(UserContext);
-    const { debts, getDebts } = userContext
+    const [dataSource, setdataSource] = useState({});
 
-    const [dataSource, setdataSource] = useState(debts)
+
+    const userContext = useContext(UserContext);
+    const { debts, getDebts } = userContext;
+    getDebts();
+    console.log('debts', debts)
 
     useEffect(() => {
-        async function onLoads() {
-            await getDebts().then((result) => {
-                console.log('debts', debts)
-                setdataSource(debts);
-            }).catch((err) => {
-                return err
-            });;
-
-        }
-        onLoads();
-    })
-
+        console.log('call useeffect')
+        setdataSource({ ...debts })
+    }, [debts]);
 
     console.log('dataSource', dataSource)
-    return dataSource ? (
-        <div>
-            <Table dataSource={dataSource} columns={columns} />
-        </div>
-    ) : (<div></div>)
+
+    if (Object.keys(dataSource).length !== 0) {
+        const data = adjustedDataSource(dataSource)
+        return (<div><Table dataSource={data} columns={columns} /></div>)
+    }
+    else return (<div></div>)
 }
 
 CreateDebtPage.propTypes = {
