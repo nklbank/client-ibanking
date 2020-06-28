@@ -70,7 +70,6 @@ const CreateDebtPage = () => {
     console.log('debts', debts)
 
     useEffect(() => {
-        console.log('call useeffect')
         setdataSource({ ...debts })
     }, [debts]);
 
