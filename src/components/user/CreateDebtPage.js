@@ -4,18 +4,28 @@ import PropTypes from 'prop-types'
 import { Table, Button, Tag } from "antd";
 import UserContext from '../../context/user/userContext';
 
-
+var listAccount;
 
 const columns = [
     {
         title: "Chủ nợ",
         dataIndex: "creditor",
         key: "creditor",
+        render: creditor => {
+            if (listAccount.indexOf(creditor) !== -1)
+                return (<b>{creditor}</b>)
+            else return (<>{creditor}</>)
+        }
     },
     {
         title: "Người mượn nợ",
         dataIndex: "payer",
         key: "payer",
+        render: payer => {
+            if (listAccount.indexOf(payer) !== -1)
+                return (<b>{payer}</b>)
+            else return (<>{payer}</>)
+        }
     },
     {
         title: "Số tiền",
@@ -23,17 +33,19 @@ const columns = [
         key: "amount",
     },
     {
-        title: "Thanh toán",
+        title: "Tình trạng",
         dataIndex: "paid",
         key: "paid",
-        render: paid => {
+        render: (paid, {visibleToPayer}) => {
+            console.log('visibleToPayer', visibleToPayer);
             let color = paid === 0 ? 'red' : 'green';
-            let text = (paid === 0 ? 'chưa thanh toán' : 'đã thanh toán');
-            return (
-                <Tag color={color} key={paid}>
-                    {text.toUpperCase()}
-                </Tag>
-            );
+            let text = (paid === 0 ? 'chưa thanh' : 'đã thanh');
+            if (visibleToPayer === 1)
+                return (<Tag color={color} key={paid}>{text.toUpperCase()}</Tag>)
+            else return (<>
+                <Tag color={color} key={paid}>{text.toUpperCase()}</Tag>
+                <Tag>Xóa</Tag>
+            </>)
         }
     },
     {
@@ -43,12 +55,13 @@ const columns = [
     },
     {
         title: "Thao tác",
+        dataIndex: "paid",
         key: "action",
-        render: paid => {
-
-            return (
-                <Button danger>XÓA</Button>
-            )
+        render: (paid, { payer }) => {
+            console.log('payer', payer)
+            if (paid === 0 && listAccount.indexOf(payer) !== -1)
+                return (<><Button type="primary" size="small">Thanh toán</Button><Button danger size="small">Xóa</Button></>)
+            else return (<Button danger size="small">Xóa</Button>)
         }
     }
 ];
@@ -62,11 +75,16 @@ const adjustedDataSource = (debts) => {
     return list
 }
 
+const listAccounts = (accountsOwner) =>
+    accountsOwner.map(account => account.account_number)
+
 
 const CreateDebtPage = () => {
     const [dataSource, setdataSource] = useState({});
     const userContext = useContext(UserContext);
-    const { debts, getDebts } = userContext;
+    const { debts, getDebts, accountsOwner } = userContext;
+    console.log('accountsOwner', accountsOwner)
+    listAccount = listAccounts(accountsOwner);
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
