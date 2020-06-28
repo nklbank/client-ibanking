@@ -44,9 +44,12 @@ const columns = [
     {
         title: "Thao tác",
         key: "action",
-        render: () => (
-            <Button danger>XÓA</Button>
-        )
+        render: paid => {
+
+            return (
+                <Button danger>XÓA</Button>
+            )
+        }
     }
 ];
 
@@ -62,17 +65,17 @@ const adjustedDataSource = (debts) => {
 
 const CreateDebtPage = () => {
     const [dataSource, setdataSource] = useState({});
-
-
     const userContext = useContext(UserContext);
     const { debts, getDebts } = userContext;
-    getDebts();
-    console.log('debts', debts)
+
+    if (Object.keys(dataSource).length === 0) {
+        getDebts();
+        console.log('debts', debts)
+    }
 
     useEffect(() => {
         setdataSource({ ...debts })
     }, [debts]);
-
     console.log('dataSource', dataSource)
 
     if (Object.keys(dataSource).length !== 0) {
