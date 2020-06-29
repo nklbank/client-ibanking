@@ -36,7 +36,7 @@ const columns = [
         title: "Tình trạng",
         dataIndex: "paid",
         key: "paid",
-        render: (paid, {visibleToPayer}) => {
+        render: (paid, { visibleToPayer }) => {
             console.log('visibleToPayer', visibleToPayer);
             let color = paid === 0 ? 'red' : 'green';
             let text = (paid === 0 ? 'chưa thanh' : 'đã thanh');
@@ -57,11 +57,19 @@ const columns = [
         title: "Thao tác",
         dataIndex: "paid",
         key: "action",
-        render: (paid, { payer }) => {
-            console.log('payer', payer)
-            if (paid === 0 && listAccount.indexOf(payer) !== -1)
-                return (<><Button type="primary" size="small">Thanh toán</Button><Button danger size="small">Xóa</Button></>)
-            else return (<Button danger size="small">Xóa</Button>)
+        // render: (paid, { payer }) => {
+        //     console.log('payer', payer)
+        //     if (paid === 0 && listAccount.indexOf(payer) !== -1)
+        //         return (<><Button type="primary" size="small">Thanh toán</Button><Button danger size="small">Xóa</Button></>)
+        //     else return (<Button danger size="small">Xóa</Button>)
+        // }
+        render: (paid, { payer, visibleToPayer }) => {
+            const del_btn = (<Button danger size="small">Xóa</Button>);
+            const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
+            const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
+            if (paid === 0 && visibleToPayer === 0) return (<>{del_btn}{remind_btn}</>)
+            if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<>{del_btn}{pay_btn}</>)
+            else return (<>{del_btn}</>)
         }
     }
 ];
