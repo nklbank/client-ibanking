@@ -36,7 +36,7 @@ const comp = [
     content: <TransactionsPage />,
   },
   {
-    title: "Chuyển hàng nội địa",
+    title: "Chuyển tiền",
     content: <TransferPage />,
   },
   {
@@ -63,7 +63,7 @@ const NavBar = () => {
   const { logout } = authContext;
 
   const [collapsed, setCollapsed] = useState(false);
-  const [key, setKey] = useState("0");
+  const [key, setKey] = useState("3");
 
   // const toggleCollapsed = () => {
   //     setCollapsed(!collapsed)

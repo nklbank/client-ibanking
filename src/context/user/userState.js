@@ -17,6 +17,11 @@ import {
   GET_BENEFICIARY,
   USER_ERROR,
   GET_TRANSACTIONS,
+  POST_TRANSFERINTRABANK,
+  POST_TRANSFERINTERBANK,
+  VERIFY_OTP,
+  GET_OTP
+
   // BENEFICIARY_ERROR,
 } from "../types";
 
@@ -188,6 +193,81 @@ const UserState = (props) => {
       });
     }
   };
+
+  const transferIntraBank = async (transferInfor) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/customer/intrabank-transfer-money",
+        transferInfor
+      );
+      dispatch({
+        type: POST_TRANSFERINTRABANK,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
+
+  const transferInterBank = async (transferInfor) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/customer/interbank-transfer-money",
+        transferInfor
+      );
+      dispatch({
+        type: POST_TRANSFERINTERBANK,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
+
+  const verifyOTP = async (otp) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/auth/otp",
+        otp
+      );
+      dispatch({
+        type: VERIFY_OTP,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
+
+  const getOTP = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get(
+        "/api/auth/otp"
+      );
+      dispatch({
+        type: GET_OTP,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
   return (
     <UserContext.Provider
       value={{
@@ -205,6 +285,10 @@ const UserState = (props) => {
         changePassword,
         getBeneficiry,
         getTransactions,
+        transferIntraBank,
+        transferInterBank,
+        getOTP,
+        verifyOTP
       }}
     >
       {props.children}
