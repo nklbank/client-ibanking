@@ -19,6 +19,7 @@ import BeneficiaryInforPage from "../user/BeneficiaryInforPage";
 import ChangePasswordPage from "../user/ChangePasswordPage";
 import TransferPage from "../user/TransferPage";
 import TransactionsPage from "../user/transactionsPage/TransactionsPage";
+import DebtPage from '../user/debtPage/DebtPage';
 
 const { SubMenu } = Menu;
 
@@ -45,10 +46,10 @@ const comp = [
   },
   {
     title: "Danh sách nợ",
-    content: "<CreateDebtPage />",
+    content: <DebtPage />,
   },
   {
-    content: "Danh sách người nhận",
+    title: "Danh sách người nhận",
     content: <Register />,
   },
   {
