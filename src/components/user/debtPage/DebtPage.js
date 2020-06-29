@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { Table, Button, Tag } from "antd";
-import UserContext from '../../context/user/userContext';
+import { Table, Button, Tag, Space } from "antd";
+import { PlusOutlined } from '@ant-design/icons'
+import UserContext from '../../../context/user/userContext';
+import CreateDebtModal from './create_debt_modal';
 
 var listAccount;
 
@@ -57,18 +59,12 @@ const columns = [
         title: "Thao tác",
         dataIndex: "paid",
         key: "action",
-        // render: (paid, { payer }) => {
-        //     console.log('payer', payer)
-        //     if (paid === 0 && listAccount.indexOf(payer) !== -1)
-        //         return (<><Button type="primary" size="small">Thanh toán</Button><Button danger size="small">Xóa</Button></>)
-        //     else return (<Button danger size="small">Xóa</Button>)
-        // }
         render: (paid, { payer, visibleToPayer }) => {
             const del_btn = (<Button danger size="small">Xóa</Button>);
             const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
             const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
-            if (paid === 0 && visibleToPayer === 0) return (<>{del_btn}{remind_btn}</>)
-            if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<>{del_btn}{pay_btn}</>)
+            if (paid === 0 && visibleToPayer === 0) return (<><Space>{del_btn}{remind_btn}</Space></>)
+            if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<><Space>{del_btn}{pay_btn}</Space></>)
             else return (<>{del_btn}</>)
         }
     }
@@ -87,11 +83,13 @@ const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
 
 
-const CreateDebtPage = () => {
+
+const DebtPage = () => {
     const [dataSource, setdataSource] = useState({});
+
     const userContext = useContext(UserContext);
     const { debts, getDebts, accountsOwner } = userContext;
-    console.log('accountsOwner', accountsOwner)
+
     listAccount = listAccounts(accountsOwner);
 
     if (Object.keys(dataSource).length === 0) {
@@ -102,18 +100,22 @@ const CreateDebtPage = () => {
     useEffect(() => {
         setdataSource({ ...debts })
     }, [debts]);
-    console.log('dataSource', dataSource)
 
+    console.log('dataSource', dataSource)
     if (Object.keys(dataSource).length !== 0) {
         const data = adjustedDataSource(dataSource)
-        return (<div><Table dataSource={data} columns={columns} /></div>)
+        return (<>
+            <CreateDebtModal></CreateDebtModal>
+            <div><Table dataSource={data} columns={columns} /></div>
+        </>
+        )
     }
     else return (<div></div>)
 }
 
-CreateDebtPage.propTypes = {
+DebtPage.propTypes = {
 
 }
 
-export default CreateDebtPage
+export default DebtPage
 
