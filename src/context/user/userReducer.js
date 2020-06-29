@@ -89,7 +89,6 @@ export default (state, action) => {
         error: null,
         loading: false,
       };
-<<<<<<< HEAD
     case GET_DEBTLIST:
       return {
         ...state,
@@ -97,7 +96,6 @@ export default (state, action) => {
         error: null,
         loading: false,
       }
-=======
 
     case POST_TRANSFERINTRABANK:
       return {
@@ -129,7 +127,6 @@ export default (state, action) => {
         success: action.payload
       }
 
->>>>>>> master
     case USER_ERROR:
       return {
         ...state,

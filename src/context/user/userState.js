@@ -17,16 +17,13 @@ import {
   GET_BENEFICIARY,
   USER_ERROR,
   GET_TRANSACTIONS,
-<<<<<<< HEAD
   GET_DEBTLIST,
-  ADD_DEBT
-=======
+  ADD_DEBT,
   POST_TRANSFERINTRABANK,
   POST_TRANSFERINTERBANK,
   VERIFY_OTP,
   GET_OTP
 
->>>>>>> master
   // BENEFICIARY_ERROR,
 } from "../types";
 
@@ -199,8 +196,6 @@ const UserState = (props) => {
       });
     }
   };
-
-<<<<<<< HEAD
   const getDebts = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -210,7 +205,15 @@ const UserState = (props) => {
       console.log('res.data', res.data)
       dispatch({
         type: GET_DEBTLIST,
-=======
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    };
+  };
   const transferIntraBank = async (transferInfor) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -228,8 +231,7 @@ const UserState = (props) => {
         payload: err.response,
       });
     }
-  }
-
+  };
   const transferInterBank = async (transferInfor) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -239,12 +241,10 @@ const UserState = (props) => {
       );
       dispatch({
         type: POST_TRANSFERINTERBANK,
->>>>>>> master
         payload: res.data,
       });
     } catch (err) {
       dispatch({
-<<<<<<< HEAD
         type: GET_DEBTLIST,
         payload: err.response,
       });
@@ -259,13 +259,15 @@ const UserState = (props) => {
       console.log('res.data', res.data)
       dispatch({
         type: ADD_DEBT,
-=======
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
         type: USER_ERROR,
         payload: err.response,
       });
     }
-  }
-
+  };
   const verifyOTP = async (otp) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -275,24 +277,17 @@ const UserState = (props) => {
       );
       dispatch({
         type: VERIFY_OTP,
->>>>>>> master
         payload: res.data,
       });
     } catch (err) {
       dispatch({
-<<<<<<< HEAD
         type: ADD_DEBT,
         payload: err.response,
       });
     }
   };
 
-=======
-        type: USER_ERROR,
-        payload: err.response,
-      });
-    }
-  }
+
 
   const getOTP = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
@@ -311,7 +306,6 @@ const UserState = (props) => {
       });
     }
   }
->>>>>>> master
   return (
     <UserContext.Provider
       value={{
@@ -330,15 +324,12 @@ const UserState = (props) => {
         changePassword,
         getBeneficiry,
         getTransactions,
-<<<<<<< HEAD
         getDebts,
-        addDebt
-=======
+        addDebt,
         transferIntraBank,
         transferInterBank,
         getOTP,
         verifyOTP
->>>>>>> master
       }}
     >
       {props.children}
