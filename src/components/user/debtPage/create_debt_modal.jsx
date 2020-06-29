@@ -1,16 +1,23 @@
 import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, Form, Modal } from 'antd'
+import { Button, Input, Form, Modal, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../../context/user/userContext';
 
+const { Option } = Select;
 
 const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     const [form] = Form.useForm();
+    const [payer, setpayer] = useState(null)
+    const [creditor, setcreditor] = useState(null)
+    const [amount, setamount] = useState(0)
+    const [description, setdescription] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { addDebt } = userContext
+    const { addDebt, accountsOwner } = userContext
+
+    const creditorAccounts = accountsOwner.map(account => account.account_number);
 
     return (
         <Modal
@@ -29,13 +36,9 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
-
-                addDebt({
-                    creditor: "69324",
-                    payer: "28349",
-                    amount: 10000,
-                    description: "trả tiền tao"
-                })
+                setcreditor("69324");
+                console.log({ creditor, payer, amount, description });
+                addDebt({ creditor, payer, amount, description })
             }}
         >
             <Form
@@ -47,6 +50,19 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                 }}
             >
                 <Form.Item
+                    name="creditor"
+                    label="Tài khoản chủ nợ"
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
+                    <Select onChange={(value) => { setcreditor(value) }}>
+                        {creditorAccounts.map(account => (<Option value={account}>{account}</Option>))}
+                    </Select>
+                </Form.Item>
+                <Form.Item
                     name="payer"
                     label="Tài khoản mượn nợ"
                     rules={[
@@ -56,7 +72,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input onChange={(e) => { setpayer(e.target.value) }} />
                 </Form.Item>
                 <Form.Item name="amount" label="Số tiền"
                     rules={[
@@ -65,10 +81,10 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                             message: 'Nhập số tiền nợ',
                         },
                     ]}>
-                    <Input type="textarea" />
+                    <Input type="textarea" onChange={(e) => { setamount(e.target.value) }} />
                 </Form.Item>
                 <Form.Item name="description" label="Nội dung">
-                    <Input type="textarea" />
+                    <Input type="textarea" onChange={(e) => { setdescription(e.target.value) }} />
                 </Form.Item>
             </Form>
         </Modal>
