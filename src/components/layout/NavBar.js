@@ -38,7 +38,7 @@ const comp = {
     content: <TransactionsPage />,
   },
   3: {
-    title: "Chuyển hàng nội địa",
+    title: "Chuyển tiền",
     content: <TransferPage />,
   },
   4: {
@@ -51,11 +51,15 @@ const comp = {
   },
   6: {
     content: "Danh sách người nhận",
-    content: <Register />,
+    content: "danh sách người nhận",
   },
   7: {
     title: "change password",
     content: <ChangePasswordPage />,
+  },
+  8: {
+    title: "change password",
+    content: "Lịch sử giao dịch",
   },
   admin0: {
     title: "Danh sách nhân viên",
@@ -90,6 +94,7 @@ const NavBar = () => {
   }, [userState]);
   const onLogout = () => {
     logout();
+    localStorage.removeItem("token");
   };
 
   const handleClick = (e) => {
@@ -176,19 +181,24 @@ const NavBar = () => {
         <Menu.Item key="0" icon={<PieChartOutlined />}>
           Danh sách tài khoản
         </Menu.Item>
+
         <Menu.Item key="1" icon={<DesktopOutlined />}>
-          Thông tin
+          Danh sách người nhận
         </Menu.Item>
+
         <Menu.Item key="2" icon={<ContainerOutlined />}>
           Lịch sử giao dịch
         </Menu.Item>
+
         <SubMenu key="sub1" icon={<MailOutlined />} title="Chuyển tiền">
           <Menu.Item key="3">Ngân hàng nội địa</Menu.Item>
-          <Menu.Item key="4">Ngân hàng khác</Menu.Item>
+          {/* <Menu.Item key="4">Ngân hàng khác</Menu.Item> */}
         </SubMenu>
+
         <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Danh sách">
           <Menu.Item key="5">Danh sách nợ</Menu.Item>
           <Menu.Item key="6">Danh sách người nhận</Menu.Item>
+
           <SubMenu key="sub3" title="Tài khoản">
             <Menu.Item key="7">Đổi mật khẩu</Menu.Item>
             <Menu.Item onClick={onLogout}>
@@ -196,6 +206,10 @@ const NavBar = () => {
               Logout
             </Menu.Item>
           </SubMenu>
+        </SubMenu>
+
+        <SubMenu key="sub4" icon={<MailOutlined />} title="Lịch sử giao dịch">
+          <Menu.Item key="8">Thông tin lịch sử giao dịch</Menu.Item>
         </SubMenu>
       </Menu>
     );
