@@ -15,10 +15,10 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     const [description, setdescription] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { addDebt, accountsOwner } = userContext
-
+    const { addDebt, accountsOwner, beneficiaries } = userContext
+    console.log('beneficiaries :>> ', beneficiaries);
     const creditorAccounts = accountsOwner.map(account => account.account_number);
-
+    const intraBeneficiaries = beneficiaries.filter(account => account.partner_bank === null)
     return (
         <Modal
             visible={visible}
@@ -72,7 +72,10 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                         },
                     ]}
                 >
-                    <Input onChange={(e) => { setpayer(e.target.value) }} />
+                    <Select mode="tags" onChange={(value) => { setpayer(value) }} tokenSeparators={[',']}>
+                        {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account} - {account.beneficiary_name}</Option>))}
+                    </Select>,
+
                 </Form.Item>
                 <Form.Item name="amount" label="Số tiền"
                     rules={[
