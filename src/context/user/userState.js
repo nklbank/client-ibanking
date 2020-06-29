@@ -17,6 +17,8 @@ import {
   GET_BENEFICIARY,
   USER_ERROR,
   GET_TRANSACTIONS,
+  GET_DEBTLIST,
+  ADD_DEBT,
   POST_TRANSFERINTRABANK,
   POST_TRANSFERINTERBANK,
   VERIFY_OTP,
@@ -36,6 +38,7 @@ const UserState = (props) => {
     addBeneficiaryRes: null,
     getTransactions: null,
     token: localStorage.getItem("token"),
+    debts: {}
   };
 
   const [state, dispatch] = useReducer(userReducer, initialState);
@@ -193,7 +196,24 @@ const UserState = (props) => {
       });
     }
   };
-
+  const getDebts = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get(
+        "/api/customer/debts"
+      );
+      console.log('res.data', res.data)
+      dispatch({
+        type: GET_DEBTLIST,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    };
+  };
   const transferIntraBank = async (transferInfor) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -211,8 +231,7 @@ const UserState = (props) => {
         payload: err.response,
       });
     }
-  }
-
+  };
   const transferInterBank = async (transferInfor) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -226,12 +245,29 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
+        type: GET_DEBTLIST,
+        payload: err.response,
+      });
+    }
+  };
+  const addDebt = async (debt) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/customer/debts", debt
+      );
+      console.log('res.data', res.data)
+      dispatch({
+        type: ADD_DEBT,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
         type: USER_ERROR,
         payload: err.response,
       });
     }
-  }
-
+  };
   const verifyOTP = async (otp) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -245,11 +281,13 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: USER_ERROR,
+        type: ADD_DEBT,
         payload: err.response,
       });
     }
-  }
+  };
+
+
 
   const getOTP = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
@@ -276,6 +314,7 @@ const UserState = (props) => {
         addBeneficiaryRes: state.addBeneficiaryRes,
         beneficiary: state.beneficiary,
         transactions: state.transactions,
+        debts: state.debts,
         success: state.success,
         error: state.error,
         getAccounts,
@@ -285,6 +324,8 @@ const UserState = (props) => {
         changePassword,
         getBeneficiry,
         getTransactions,
+        getDebts,
+        addDebt,
         transferIntraBank,
         transferInterBank,
         getOTP,

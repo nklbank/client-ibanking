@@ -20,6 +20,7 @@ import ChangePasswordPage from "../user/ChangePasswordPage";
 import TransferPage from "../user/TransferPage";
 import TransactionsPage from "../user/transactionsPage/TransactionsPage";
 import { useEffect } from "react";
+import DebtPage from "../user/debtPage/DebtPage";
 
 const { SubMenu } = Menu;
 
@@ -46,13 +47,13 @@ const comp = {
   },
   5: {
     title: "Danh sách nợ",
-    content: "<CreateDebtPage />",
+    content: <DebtPage />,
   },
   6: {
     content: "Danh sách người nhận",
     content: <Register />,
   },
-  6: {
+  7: {
     title: "change password",
     content: <ChangePasswordPage />,
   },

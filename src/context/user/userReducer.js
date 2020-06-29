@@ -16,8 +16,11 @@ import {
   VERIFY_OTP,
   GET_OTP,
   USER_ERROR,
+  GET_DEBTLIST,
+  ADD_DEBT
   // BENEFICIARY_ERROR
 } from "../types";
+import { act } from "react-dom/test-utils";
 
 export default (state, action) => {
   switch (action.type) {
@@ -86,6 +89,13 @@ export default (state, action) => {
         error: null,
         loading: false,
       };
+    case GET_DEBTLIST:
+      return {
+        ...state,
+        debts: action.payload,
+        error: null,
+        loading: false,
+      }
 
     case POST_TRANSFERINTRABANK:
       return {
@@ -122,6 +132,14 @@ export default (state, action) => {
         ...state,
         error: action.payload,
         success: null,
+        loading: false,
+      };
+    case ADD_DEBT:
+      return {
+        ...state,
+        res: action.payload,
+        error: null,
+        success: "add debt successfully",
         loading: false,
       };
     // case BENEFICIARIES_ERROR:
