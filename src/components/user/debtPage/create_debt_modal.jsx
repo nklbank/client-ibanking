@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Input, Form, Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
+import UserContext from '../../../context/user/userContext';
+
 
 const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     const [form] = Form.useForm();
+
+    const userContext = useContext(UserContext);
+    const { addDebt } = userContext
+
     return (
         <Modal
             visible={visible}
@@ -23,6 +29,13 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
+
+                addDebt({
+                    creditor: "69324",
+                    payer: "28349",
+                    amount: 10000,
+                    description: "trả tiền tao"
+                })
             }}
         >
             <Form
@@ -52,6 +65,9 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                             message: 'Nhập số tiền nợ',
                         },
                     ]}>
+                    <Input type="textarea" />
+                </Form.Item>
+                <Form.Item name="description" label="Nội dung">
                     <Input type="textarea" />
                 </Form.Item>
             </Form>

@@ -37,3 +37,6 @@ export const USER_ERROR = "USER_ERROR";
 export const GET_TRANSACTIONS = "GET_TRANSACTIONS";
 
 export const GET_DEBTLIST = "GET_DEBTLIST";
+
+export const ADD_DEBT = "ADD_DEBT";
+

@@ -17,7 +17,8 @@ import {
   GET_BENEFICIARY,
   USER_ERROR,
   GET_TRANSACTIONS,
-  GET_DEBTLIST
+  GET_DEBTLIST,
+  ADD_DEBT
   // BENEFICIARY_ERROR,
 } from "../types";
 
@@ -191,7 +192,7 @@ const UserState = (props) => {
     }
   };
 
-  const getDebts = async() => {
+  const getDebts = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(
@@ -209,6 +210,25 @@ const UserState = (props) => {
       });
     }
   };
+  const addDebt = async (debt) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/customer/debts", debt
+      );
+      console.log('res.data', res.data)
+      dispatch({
+        type: ADD_DEBT,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: ADD_DEBT,
+        payload: err.response,
+      });
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -227,7 +247,8 @@ const UserState = (props) => {
         changePassword,
         getBeneficiry,
         getTransactions,
-        getDebts
+        getDebts,
+        addDebt
       }}
     >
       {props.children}
