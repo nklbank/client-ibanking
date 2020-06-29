@@ -98,25 +98,24 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: {msg: "Transfer successfully"},
+        success: { msg: "Transfer successfully" },
         loading: false
       }
 
     case VERIFY_OTP:
       console.log(action.payload.msg)
-       return{
-         ...state,
-         error: null,
-         otpSuccess: action.payload.msg,
-         success: action.success
-     }
-      
-    case GET_OTP:
-       return{
-         ...state,
-         error: null,
+      return {
+        ...state,
+        error: null,
         success: action.payload
-    }
+      }
+
+    case GET_OTP:
+      return {
+        ...state,
+        error: null,
+        success: action.payload
+      }
 
     case USER_ERROR:
       return {

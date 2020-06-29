@@ -1,4 +1,4 @@
-import React, { useContext, useState , useEffect} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
 import UserContext from "../../../context/user/userContext";
 
@@ -21,7 +21,6 @@ const TransferInfor = (props) => {
         verifyOTP,
         success,
         error,
-        otpSuccess
     } = userContext;
 
     const [saveBeneficiary, setSaveBeneficiary] = useState(false)
@@ -185,13 +184,11 @@ const TransferInfor = (props) => {
 
 
 
-// const [successState,setSuccess] = useState({})
+    // const [successState,setSuccess] = useState({})
     useEffect(() => {
         // setSuccess(success);
-        console.log('successState:', success);
 
-        if(otpSuccess  === "OTP is valid"){
-            console.log('successState:', otpSuccess);
+        if (success && success.msg === "OTP is valid") {
 
             if (transferInfor.partner_bank === "NKL Bank" || transferInfor.partner_bank === undefined) {
                 transferIntraBank({
@@ -221,9 +218,8 @@ const TransferInfor = (props) => {
             }
             setCurrentStep(0)
         }
-    }, [otpSuccess, success])
+    }, [success])
 
-    console.log("otpSuccess", otpSuccess)
 
     const VerifyOTP = () => {
 
@@ -239,7 +235,6 @@ const TransferInfor = (props) => {
         const onFinishFailed = errorInfo => {
         };
 
-        console.log(success)
         return (
             <Form
                 name="basic"
