@@ -11,6 +11,10 @@ import {
   CHANGE_PASSWORD_ERROR,
   GET_BENEFICIARY,
   GET_TRANSACTIONS,
+  POST_TRANSFERINTRABANK,
+  POST_TRANSFERINTERBANK,
+  VERIFY_OTP,
+  GET_OTP,
   USER_ERROR,
   GET_DEBTLIST,
   ADD_DEBT
@@ -26,6 +30,7 @@ export default (state, action) => {
         accountsOwner: action.payload,
         error: null,
         // success: "success",
+        otpSuccess: "abc",
         loading: false,
       };
     // case ADD_BENEFICIARY:
@@ -69,6 +74,7 @@ export default (state, action) => {
         loading: false,
       };
     case GET_BENEFICIARY:
+      console.log(action.payload)
       return {
         ...state,
         beneficiary: action.payload,
@@ -83,6 +89,7 @@ export default (state, action) => {
         error: null,
         loading: false,
       };
+<<<<<<< HEAD
     case GET_DEBTLIST:
       return {
         ...state,
@@ -90,6 +97,39 @@ export default (state, action) => {
         error: null,
         loading: false,
       }
+=======
+
+    case POST_TRANSFERINTRABANK:
+      return {
+        ...state,
+        error: null,
+        success: action.payload,
+        loading: false
+      }
+    case POST_TRANSFERINTERBANK:
+      return {
+        ...state,
+        error: null,
+        success: { msg: "Transfer successfully" },
+        loading: false
+      }
+
+    case VERIFY_OTP:
+      console.log(action.payload.msg)
+      return {
+        ...state,
+        error: null,
+        success: action.payload
+      }
+
+    case GET_OTP:
+      return {
+        ...state,
+        error: null,
+        success: action.payload
+      }
+
+>>>>>>> master
     case USER_ERROR:
       return {
         ...state,
