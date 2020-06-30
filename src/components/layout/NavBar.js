@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Menu, Button } from "antd";
 import { Link } from "react-router-dom";
 import {
@@ -19,8 +19,8 @@ import BeneficiaryInforPage from "../user/BeneficiaryInforPage";
 import ChangePasswordPage from "../user/ChangePasswordPage";
 import TransferPage from "../user/TransferPage";
 import TransactionsPage from "../user/transactionsPage/TransactionsPage";
-import { useEffect } from "react";
 import DebtPage from "../user/debtPage/DebtPage";
+import ReceiveMoney from "../user/transferHistoryPage/ReceiveMoney"
 
 const { SubMenu } = Menu;
 
@@ -58,8 +58,8 @@ const comp = {
     content: <ChangePasswordPage />,
   },
   8: {
-    title: "change password",
-    content: "Lịch sử giao dịch",
+    title: "Lich su giao dich",
+    content: <ReceiveMoney />,
   },
   admin0: {
     title: "Danh sách nhân viên",
@@ -71,7 +71,7 @@ const comp = {
   },
   admin2: {
     title: "Lịch sử giao dịch",
-    content: "Lịch sử giao dịch",
+    content: "abc",
   },
   admin3: {
     title: "change password",
@@ -92,10 +92,10 @@ const NavBar = () => {
   useEffect(() => {
     loadPersonnel();
   }, [userState]);
-  const onLogout = () => {
-    logout();
-    localStorage.removeItem("token");
-  };
+  // const onLogout = () => {
+  //   logout();
+  //   localStorage.removeItem("token");
+  // };
 
   const handleClick = (e) => {
     setKey(e.key);
@@ -125,10 +125,10 @@ const NavBar = () => {
                 Lịch sử giao dịch
               </Menu.Item>
               <Menu.Item key="admin3">Đổi mật khẩu</Menu.Item>
-              <Menu.Item onClick={onLogout}>
+              {/* <Menu.Item onClick={onLogout}>
                 <LogoutOutlined />
                 Logout
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           );
         default:
@@ -159,10 +159,10 @@ const NavBar = () => {
                 <Menu.Item key="6">Danh sách người nhận</Menu.Item>
                 <SubMenu key="sub3" title="Tài khoản">
                   <Menu.Item key="7">Đổi mật khẩu</Menu.Item>
-                  <Menu.Item onClick={onLogout}>
+                  {/* <Menu.Item onClick={onLogout}>
                     <LogoutOutlined />
                     Logout
-                  </Menu.Item>
+                  </Menu.Item> */}
                 </SubMenu>
               </SubMenu>
             </Menu>
@@ -201,16 +201,16 @@ const NavBar = () => {
 
           <SubMenu key="sub3" title="Tài khoản">
             <Menu.Item key="7">Đổi mật khẩu</Menu.Item>
-            <Menu.Item onClick={onLogout}>
+            {/* <Menu.Item onClick={onLogout}>
               <LogoutOutlined />
               Logout
-            </Menu.Item>
+            </Menu.Item> */}
           </SubMenu>
         </SubMenu>
 
-        <SubMenu key="sub4" icon={<MailOutlined />} title="Lịch sử giao dịch">
+        {/* <SubMenu key="sub4" icon={<MailOutlined />} title="Lịch sử giao dịch">
           <Menu.Item key="8">Thông tin lịch sử giao dịch</Menu.Item>
-        </SubMenu>
+        </SubMenu> */}
       </Menu>
     );
   };
