@@ -26,6 +26,7 @@ import {
 
   // BENEFICIARY_ERROR,
 } from "../types";
+import { Col } from "antd";
 
 const UserState = (props) => {
   const initialState = {
@@ -257,9 +258,11 @@ const UserState = (props) => {
         "/api/customer/debts", debt
       );
       console.log('res.data', res.data)
+      const newDebt = { ...debt, id: res.data.insertId, paid: 0, visibleToPayer: 1 }
+      console.log('newDebt', newDebt)
       dispatch({
         type: ADD_DEBT,
-        payload: res.data,
+        payload: newDebt,
       });
     } catch (err) {
       dispatch({

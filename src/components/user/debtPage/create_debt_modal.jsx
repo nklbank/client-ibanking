@@ -15,7 +15,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     const [description, setdescription] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { addDebt, accountsOwner, beneficiaries } = userContext
+    const { addDebt, accountsOwner, beneficiaries, debts } = userContext
     console.log('beneficiaries :>> ', beneficiaries);
     const creditorAccounts = accountsOwner.map(account => account.account_number);
     const intraBeneficiaries = beneficiaries.filter(account => account.partner_bank === null)
@@ -36,9 +36,11 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
-                setcreditor("69324");
-                console.log({ creditor, payer, amount, description });
-                addDebt({ creditor, payer, amount, description })
+                const _payer = payer[0];
+                const newDebt = { creditor, payer:_payer, amount, description };
+                console.log('newDebt :>> ', newDebt);
+                addDebt(newDebt)
+                console.log('debts :>> ', debts);
             }}
         >
             <Form
