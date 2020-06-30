@@ -18,7 +18,7 @@ const types = [
 ];
 const layout = {
   labelCol: { span: 5 },
-  wrapperCol: { span: 16 },
+  wrappercol: { span: 16 },
 };
 class TransactionsTransferPage extends Component {
   constructor(props) {
@@ -76,7 +76,7 @@ class TransactionsTransferPage extends Component {
       console.log("dataSource", this.state.dataSource);
     };
 
-    const onAccountFinishFailed = () => {};
+    const onAccountFinishFailed = () => { };
 
     const renderListTransactions = (type) => {
       console.log("type", type);
@@ -98,7 +98,7 @@ class TransactionsTransferPage extends Component {
           break;
       }
     };
-    const onTypeSelect = (type) => {};
+    const onTypeSelect = (type) => { };
     console.log(this.props.listTransactions);
     console.log("TRANSSSSSS", this.props.users);
     return (

@@ -3,22 +3,21 @@ import { Form, Input, Button } from 'antd';
 import AuthContext from '../../context/auth/authContext';
 import AlertContext from '../../context/alert/alertContext';
 import Recaptcha from 'react-recaptcha'
-
+// import { layout, tailLayout } from '../layout/layoutConfig'
 const layout = {
-    labelCol: {
+    labelcol: {
         span: 8,
     },
-    wrapperCol: {
+    wrappercol: {
         span: 16,
     },
 };
 const tailLayout = {
-    wrapperCol: {
+    wrappercol: {
         offset: 8,
         span: 16,
     },
 };
-
 const Login = (props) => {
     const alertContext = useContext(AlertContext);
 

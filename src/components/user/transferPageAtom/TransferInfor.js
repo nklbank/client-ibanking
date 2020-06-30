@@ -1,14 +1,28 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
 import UserContext from "../../../context/user/userContext";
+// import { layout, tailLayout } from '../../layout/layoutConfig'
 
+const layout = {
+    labelCol: {
+        span: 8,
+    },
+    wrappercol: {
+        span: 16,
+    },
+};
+const tailLayout = {
+    wrappercol: {
+        offset: 8,
+        span: 16,
+    },
+};
 const { Step } = Steps;
 const { Option } = Select;
 let transferInfor = {}
 
 const TransferInfor = (props) => {
 
-    console.log(props)
     const userContext = useContext(UserContext);
     const {
         beneficiary,
@@ -43,7 +57,7 @@ const TransferInfor = (props) => {
         };
 
         return (
-            <Form form={form} name="control-hooks" onFinish={onFinish} initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }} >
+            <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish} initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }} >
                 <Form.Item
                     name="partner_bank"
                     label="Bank Name"
@@ -129,7 +143,7 @@ const TransferInfor = (props) => {
                 </Form.Item>
 
                 <Form.Item >
-                    <Button type="primary" htmlType="submit">
+                    <Button {...tailLayout} type="primary" htmlType="submit">
                         Submit
            </Button>
                 </Form.Item>
@@ -151,6 +165,7 @@ const TransferInfor = (props) => {
 
         return (
             <Form
+                {...layout}
                 // name="basic"
                 initialValues={{ charge_include: true }}
                 onFinish={onFinish}
@@ -174,7 +189,7 @@ const TransferInfor = (props) => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button {...tailLayout} type="primary" htmlType="submit">
                         Submit
           </Button>
                 </Form.Item>
@@ -237,6 +252,7 @@ const TransferInfor = (props) => {
 
         return (
             <Form
+                {...layout}
                 name="basic"
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -254,7 +270,7 @@ const TransferInfor = (props) => {
                 </Form.Item>
 
                 <Form.Item >
-                    <Button type="primary" htmlType="submit">
+                    <Button {...tailLayout} type="primary" htmlType="submit">
                         Submit
               </Button>
                 </Form.Item>

@@ -14,7 +14,7 @@ import AuthContext from '../../context/auth/authContext';
 const { Option } = Select;
 
 const formItemLayout = {
-    labelCol: {
+    labelcol: {
         xs: {
             span: 24,
         },
@@ -22,7 +22,7 @@ const formItemLayout = {
             span: 8,
         },
     },
-    wrapperCol: {
+    wrappercol: {
         xs: {
             span: 24,
         },
@@ -32,7 +32,7 @@ const formItemLayout = {
     },
 };
 const tailFormItemLayout = {
-    wrapperCol: {
+    wrappercol: {
         xs: {
             span: 24,
             offset: 0,

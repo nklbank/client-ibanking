@@ -2,28 +2,31 @@ import React, { useContext } from "react";
 import { Form, Input, Button } from "antd";
 import UserContext from "../../context/user/userContext";
 
+const layout = {
+  labelCol: {
+    span: 8,
+  },
+  wrappercol: {
+    span: 16,
+  },
+};
+const tailLayout = {
+  wrappercol: {
+    offset: 8,
+    span: 16,
+  },
+};
+
 const ChangePasswordPage = () => {
   const userContext = useContext(UserContext);
 
   const { changePassword } = userContext;
   const onFinish = (values) => {
-    console.log("Success:", values);
+    // console.log("Success:", values);
     changePassword({
       oldPassword: values.oldPassword,
       newPassword: values.newPassword,
     });
-    // this.setState({
-    //     ...values,
-    // });
-
-    // const { onChangePassword } = this.props;
-
-    // if (onChangePassword) {
-    //     onChangePassword({
-    //         oldpassword: this.state.password,
-    //         newpassword: this.state.newPassword,
-    //     });
-    // }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -33,7 +36,7 @@ const ChangePasswordPage = () => {
   return (
     <div className="m-5 p-5 border shadow p-3 mb-5 bg-white rounded">
       <Form
-        // {...layout}
+        {...layout}
         name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}
@@ -87,7 +90,7 @@ const ChangePasswordPage = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button {...tailLayout} type="primary" htmlType="submit">
             Submit
           </Button>
         </Form.Item>
