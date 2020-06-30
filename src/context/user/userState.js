@@ -26,6 +26,7 @@ import {
 
   // BENEFICIARY_ERROR,
 } from "../types";
+import { Col } from "antd";
 
 const UserState = (props) => {
   const initialState = {
@@ -257,9 +258,11 @@ const UserState = (props) => {
         "/api/customer/debts", debt
       );
       console.log('res.data', res.data)
+      const newDebt = { ...debt, id: res.data.insertId, paid: 0, visibleToPayer: 1 }
+      console.log('newDebt', newDebt)
       dispatch({
         type: ADD_DEBT,
-        payload: res.data,
+        payload: newDebt,
       });
     } catch (err) {
       dispatch({
@@ -288,7 +291,25 @@ const UserState = (props) => {
   };
 
 
-
+  const getAccountInfo = async (account) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/account", account
+      );
+      console.log('res.data', res.data)
+      return res.data
+      // dispatch({
+      //   type: GET_ACCOUNT_INFO,
+      //   payload: res.data,
+      // });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    };
+  };
   const getOTP = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -306,6 +327,8 @@ const UserState = (props) => {
       });
     }
   }
+
+  
   return (
     <UserContext.Provider
       value={{
@@ -329,7 +352,8 @@ const UserState = (props) => {
         transferIntraBank,
         transferInterBank,
         getOTP,
-        verifyOTP
+        verifyOTP,
+        getAccountInfo
       }}
     >
       {props.children}

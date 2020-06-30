@@ -17,7 +17,7 @@ import {
   GET_OTP,
   USER_ERROR,
   GET_DEBTLIST,
-  ADD_DEBT
+  ADD_DEBT,
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -132,9 +132,13 @@ export default (state, action) => {
         loading: false,
       };
     case ADD_DEBT:
+      const { debts } = state;
+      const { creditors } = debts;
+      console.log('debts', debts);
+      console.log('creditors', creditors);
       return {
         ...state,
-        res: action.payload,
+        debts: { ...debts, creditors: [...creditors, action.payload] },
         error: null,
         success: "add debt successfully",
         loading: false,

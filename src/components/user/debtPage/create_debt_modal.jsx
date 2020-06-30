@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, Form, Modal, Select } from 'antd'
+import { Button, Input, Form, Modal, Select, Descriptions } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../../context/user/userContext';
@@ -13,12 +13,13 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     const [creditor, setcreditor] = useState(null)
     const [amount, setamount] = useState(0)
     const [description, setdescription] = useState(null)
+    const [payerName, setpayerName] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { addDebt, accountsOwner } = userContext
-
+    const { addDebt, accountsOwner, beneficiaries, debts, getAccountInfo } = userContext
+    console.log('beneficiaries :>> ', beneficiaries);
     const creditorAccounts = accountsOwner.map(account => account.account_number);
-
+    const intraBeneficiaries = beneficiaries.filter(account => account.partner_bank === null)
     return (
         <Modal
             visible={visible}
@@ -36,9 +37,11 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
-                setcreditor("69324");
-                console.log({ creditor, payer, amount, description });
-                addDebt({ creditor, payer, amount, description })
+                const _payer = payer[0];
+                const newDebt = { creditor, payer: _payer, amount, description };
+                console.log('newDebt :>> ', newDebt);
+                addDebt(newDebt)
+                console.log('debts :>> ', debts);
             }}
         >
             <Form
@@ -68,11 +71,25 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     rules={[
                         {
                             required: true,
-                            message: 'Nhập tài khoản mượn nợ',
                         },
                     ]}
                 >
-                    <Input onChange={(e) => { setpayer(e.target.value) }} />
+                    {/* <Select mode="tags" onChange={(value) => { setpayer(value) }} tokenSeparators={[',']}>
+                        {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account} - {account.beneficiary_name}</Option>))}
+                    </Select>, */}
+
+                    <Select mode="tags" onChange={async (value) => {
+                        const account = value;
+                        console.log('account', account)
+                        const payerInfo = (account.length!==0) ? await getAccountInfo({ account_number: account }) : null; 
+                        if (payerInfo) {
+                            setpayer(account);
+                            setpayerName(payerInfo.beneficiary_name)
+                        }
+                    }} tokenSeparators={[',']}>
+                        {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account}</Option>))}
+                    </Select>
+                <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions>
                 </Form.Item>
                 <Form.Item name="amount" label="Số tiền"
                     rules={[
