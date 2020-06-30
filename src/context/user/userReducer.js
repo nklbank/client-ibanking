@@ -20,7 +20,6 @@ import {
   ADD_DEBT
   // BENEFICIARY_ERROR
 } from "../types";
-import { act } from "react-dom/test-utils";
 
 export default (state, action) => {
   switch (action.type) {
@@ -74,7 +73,6 @@ export default (state, action) => {
         loading: false,
       };
     case GET_BENEFICIARY:
-      console.log(action.payload)
       return {
         ...state,
         beneficiary: action.payload,
@@ -113,7 +111,6 @@ export default (state, action) => {
       }
 
     case VERIFY_OTP:
-      console.log(action.payload.msg)
       return {
         ...state,
         error: null,

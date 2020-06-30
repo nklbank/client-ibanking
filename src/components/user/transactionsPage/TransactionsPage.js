@@ -5,7 +5,7 @@ const { Option } = Select;
 
 const layout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  wrappercol: { span: 16 },
 };
 
 const dataSourceDefault = [];
@@ -59,7 +59,7 @@ const TransactionsPage = (props) => {
     getTransactions(selectedAccount);
   };
 
-  const onAccountFinishFailed = () => {};
+  const onAccountFinishFailed = () => { };
 
   const Types = (types) => {
     console.log(types);

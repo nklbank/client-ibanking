@@ -1,8 +1,8 @@
-import React, { useReducer } from 'react';
-import axios from 'axios';
-import AuthContext from './authContext';
-import authReducer from './authReducer';
-import setAuthToken from '../../utils/setAuthToken';
+import React, { useReducer } from "react";
+import axios from "axios";
+import AuthContext from "./authContext";
+import authReducer from "./authReducer";
+import setAuthToken from "../../utils/setAuthToken";
 import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -11,93 +11,127 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  CLEAR_ERRORS
-} from '../types';
+  CLEAR_ERRORS,
+} from "../types";
 
-const AuthState = props => {
+const AuthState = (props) => {
   const initialState = {
-    token: localStorage.getItem('token'),
+    token: localStorage.getItem("token"),
     isAuthenticated: null,
     loading: null,
     user: null,
-    error: null
+    error: null,
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // Login User
-  const login = async formData => {
+  const login = async (formData) => {
     const config = {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     };
 
     try {
-      const res = await axios.post('/api/auth', formData, config);
+      const res = await axios.post("/api/auth", formData, config);
 
-      console.log(res.data)
+      console.log(res.data);
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: res.data
-      })
+        payload: res.data,
+      });
     } catch (err) {
       dispatch({
         type: LOGIN_FAIL,
-        payload: err.response.data.msg
+        payload: err.response.data.msg,
       });
     }
     // loadUser();
   };
 
   // Register User
-  const register = async formData => {
+  const register = async (formData) => {
     const config = {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     };
 
     try {
-      const res = await axios.post('/api/users', formData, config);
+      const res = await axios.post("/api/users", formData, config);
 
       dispatch({
         type: REGISTER_SUCCESS,
-        payload: res.data
+        payload: res.data,
       });
 
       loadUser();
     } catch (err) {
       dispatch({
         type: REGISTER_FAIL,
-        payload: err.response.data.msg
+        payload: err.response.data.msg,
       });
     }
   };
 
-
   // Load User
   const loadUser = async () => {
-    setAuthToken(localStorage.token);
+    setAuthToken(localStorage.token.accessToken);
 
     try {
-      const res = await axios.get('/api/customer/');
+      const res = await axios.get("/api/customer/");
 
       dispatch({
         type: USER_LOADED,
-        payload: res.data
+        payload: res.data,
       });
     } catch (err) {
       dispatch({ type: AUTH_ERROR });
     }
   };
 
+  const loadPersonnel = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get("/api/admin");
+
+      dispatch({
+        type: USER_LOADED,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({ type: AUTH_ERROR });
+    }
+  };
   // Logout
   const logout = () => dispatch({ type: LOGOUT });
 
   // Clear Errors
   const clearErrors = () => dispatch({ type: CLEAR_ERRORS });
 
+  const personnelLogin = async (formData) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.post("/api/auth/personnel", formData, config);
+
+      console.log(res.data);
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: err.response.data.msg,
+      });
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -110,6 +144,8 @@ const AuthState = props => {
         // loadUser,
         login,
         logout,
+        personnelLogin,
+        loadPersonnel,
         // clearErrors
       }}
     >
