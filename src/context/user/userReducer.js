@@ -17,7 +17,7 @@ import {
   GET_OTP,
   USER_ERROR,
   GET_DEBTLIST,
-  ADD_DEBT
+  ADD_DEBT,
   // BENEFICIARY_ERROR
 } from "../types";
 

@@ -291,7 +291,25 @@ const UserState = (props) => {
   };
 
 
-
+  const getAccountInfo = async (account) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/account", account
+      );
+      console.log('res.data', res.data)
+      return res.data
+      // dispatch({
+      //   type: GET_ACCOUNT_INFO,
+      //   payload: res.data,
+      // });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    };
+  };
   const getOTP = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
@@ -309,6 +327,8 @@ const UserState = (props) => {
       });
     }
   }
+
+  
   return (
     <UserContext.Provider
       value={{
@@ -332,7 +352,8 @@ const UserState = (props) => {
         transferIntraBank,
         transferInterBank,
         getOTP,
-        verifyOTP
+        verifyOTP,
+        getAccountInfo
       }}
     >
       {props.children}
