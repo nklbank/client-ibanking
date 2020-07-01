@@ -5,10 +5,10 @@ import AlertContext from "../../context/alert/alertContext";
 
 const layout = {
   labelCol: { span: 9 },
-  wrappercol: { span: 5 },
+  wrapperCol: { span: 5 },
 };
 const tailLayout = {
-  wrappercol: { offset: 9, span: 5 },
+  wrapperCol: { offset: 9, span: 5 },
 };
 const PersonnelLogin = (props) => {
   const alertContext = useContext(AlertContext);

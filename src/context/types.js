@@ -48,3 +48,7 @@ export const POST_TRANSFERINTERBANK = "POST_TRANSFERINTERBANK";
 export const GET_OTP = "GET_OTP";
 
 export const VERIFY_OTP = "VERIFY_OTP";
+
+export const GET_LIST_EMPLOYEES = "GET_LIST_EMPLOYEES";
+
+export const ERROR = "ERROR";
