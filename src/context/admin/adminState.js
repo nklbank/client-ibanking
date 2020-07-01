@@ -3,7 +3,12 @@ import axios from "axios";
 import AdminContext from "./adminContext";
 import adminReducer from "./adminReducer";
 import setAuthToken from "../../utils/setAuthToken";
-import { ERROR, GET_LIST_EMPLOYEES } from "../types";
+import {
+  UPDATE_PERSONNEL,
+  DELETE_PERSONNEL,
+  ERROR,
+  GET_LIST_EMPLOYEES,
+} from "../types";
 
 const AdminState = (props) => {
   const initialState = {
@@ -34,11 +39,38 @@ const AdminState = (props) => {
     }
   };
 
+  const deleteEmployee = async (id) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.delete(`api/admin/personnel/${id}`);
+      dispatch({ type: DELETE_PERSONNEL, payload: res });
+    } catch (err) {
+      dispatch({
+        type: ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
+  const updateEmployee = async (person) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.put(`api/admin/${person.id}`, person);
+      dispatch({ type: UPDATE_PERSONNEL, payload: res });
+    } catch (err) {
+      dispatch({
+        type: ERROR,
+        payload: err.response,
+      });
+    }
+  };
   return (
     <AdminContext.Provider
       value={{
         listEmployees: state.listEmployees,
         getListEmployees,
+        deleteEmployee,
+        updateEmployee,
       }}
     >
       {props.children}

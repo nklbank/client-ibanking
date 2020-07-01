@@ -10,19 +10,16 @@ const Home = () => {
   const userContext = useContext(UserContext);
   const alertContext = useContext(AlertContext);
 
-  const authContext = useContext(AuthContext);
+  const { logout, user, loadPersonnel } = useContext(AuthContext);
 
-  const { logout, user, loadPersonnel } = authContext;
   const [userState, setUser] = useState(user);
   const { setAlert, alerts } = alertContext;
   const { getBeneficiries, getAccounts, error, success } = userContext;
   useEffect(() => {
-    (async () => {
-      await loadPersonnel();
-      await getAccounts();
-      await getBeneficiries();
-    })();
-  }, [userState]);
+    loadPersonnel();
+    getAccounts();
+    getBeneficiries();
+  }, []);
 
   const switchNavBar = () => {
     console.log("user", user);

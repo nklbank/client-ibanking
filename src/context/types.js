@@ -52,3 +52,5 @@ export const VERIFY_OTP = "VERIFY_OTP";
 export const GET_LIST_EMPLOYEES = "GET_LIST_EMPLOYEES";
 
 export const ERROR = "ERROR";
+export const DELETE_PERSONNEL = "DELETE_PERSONNEL";
+export const UPDATE_PERSONNEL = "UPDATE_PERSONNEL";
