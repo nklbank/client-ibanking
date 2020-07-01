@@ -32,16 +32,26 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     .validateFields()
                     .then(values => {
                         form.resetFields();
+
+
                         onCreate(values);
+                        const _payer = payer[0];
+                        const newDebt = { creditor, payer: _payer, amount, description };
+                        console.log('newDebt :>> ', newDebt);
+                        addDebt(newDebt)
+                        console.log('debts :>> ', debts);
+
+                        // reset all state
+                        setamount(null);
+                        setcreditor(null);
+                        setpayer(null);
+                        setdescription(null);
+                        setpayerName("")
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
-                const _payer = payer[0];
-                const newDebt = { creditor, payer: _payer, amount, description };
-                console.log('newDebt :>> ', newDebt);
-                addDebt(newDebt)
-                console.log('debts :>> ', debts);
+
             }}
         >
             <Form
@@ -69,27 +79,50 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     name="payer"
                     label="Tài khoản mượn nợ"
                     rules={[
-                        {
-                            required: true,
-                        },
+                        // {
+                        //     required: true,
+                        //     message: "Nhập tài khoản mượn nợ"
+                        // },
+                        ({ getFieldValue }) => ({
+                            validator: async (_, value) => {
+                                console.log('...value', value)
+                                await (getFieldValue('payer') ? Promise.resolve() : Promise.reject("Nhập tài khoản mượn nợ"))
+                            }
+                        }),
+
+                        // {
+                        //     validator: async (_, value) => {
+                        //         console.log('...value', value)
+                        //         await (value ? Promise.resolve() : Promise.reject("Nhập tài khoản mượn nợ"))
+                        //     }
+                        // }
                     ]}
                 >
                     {/* <Select mode="tags" onChange={(value) => { setpayer(value) }} tokenSeparators={[',']}>
                         {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account} - {account.beneficiary_name}</Option>))}
-                    </Select>, */}
+                    </Select> */}
 
-                    <Select mode="tags" onChange={async (value) => {
-                        const account = value;
-                        console.log('account', account)
-                        const payerInfo = (account.length!==0) ? await getAccountInfo({ account_number: account }) : null; 
-                        if (payerInfo) {
-                            setpayer(account);
-                            setpayerName(payerInfo.beneficiary_name)
-                        }
+                    <Select mode="tags" onChange={(value) => {
+                        console.log('value', value);
+                        (async () => {
+                            const payerInfo = value.length !== 0 ? await getAccountInfo({ account_number: value }) : null;
+                            console.log('payerInfo', payerInfo);
+                            if (payerInfo) {
+                                setpayer(value)
+                                setpayerName(payerInfo.beneficiary_name)
+                            }
+                        })();
+                        // const payerInfo = async() => (value.length !== 0) ? await getAccountInfo({account_number: value }) : null;
+                        // const ret = payerInfo();
+                        // console.log('ret', ret)
+                        // if (ret) {
+                        //     setpayer(value);
+                        //     setpayerName(ret.beneficiary_name)
+                        // }
                     }} tokenSeparators={[',']}>
                         {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account}</Option>))}
                     </Select>
-                <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions>
+                    <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions>
                 </Form.Item>
                 <Form.Item name="amount" label="Số tiền"
                     rules={[
@@ -104,7 +137,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     <Input type="textarea" onChange={(e) => { setdescription(e.target.value) }} />
                 </Form.Item>
             </Form>
-        </Modal>
+        </Modal >
     );
 };
 
