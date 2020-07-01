@@ -17,10 +17,12 @@ const Home = () => {
   const { setAlert, alerts } = alertContext;
   const { getBeneficiries, getAccounts, error, success } = userContext;
   useEffect(() => {
-    loadPersonnel();
-    getAccounts();
-    getBeneficiries();
-  }, []);
+    (async () => {
+      await loadPersonnel();
+      await getAccounts();
+      await getBeneficiries();
+    })();
+  }, [userState]);
 
   const switchNavBar = () => {
     console.log("user", user);

@@ -91,11 +91,11 @@ const ListEmployees = (props) => {
   const { getListEmployees, listEmployees } = useContext(adminContext);
   const [dataSource, setDataSource] = useState(listEmployees);
   useEffect(() => {
-    (async () => {
-      await getListEmployees();
-      setDataSource(validateListEmployees(listEmployees));
-    })();
+    getListEmployees();
   }, [dataSource]);
+  useEffect(() => {
+    setDataSource(validateListEmployees(listEmployees));
+  }, [listEmployees]);
   return (
     <div>
       <Table dataSource={dataSource} columns={columnsDefault}></Table>
