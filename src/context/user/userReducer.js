@@ -18,7 +18,8 @@ import {
   USER_ERROR,
   GET_DEBTLIST,
   ADD_DEBT,
-  DEL_DEBT
+  DEL_DEBT,
+  UPDATE_DEBT
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -163,7 +164,22 @@ export default (state, action) => {
           loading: false,
         }
       }
-
+    case UPDATE_DEBT:
+      {
+        const { debts } = state;
+        const { payers } = debts;
+        const { id } = action.payload;
+        const index = payers.findIndex(obj => obj.id = id);
+        const updatedDebt = Object.assign({...payers[index]}, {...action.payload});       
+        payers[index] = updatedDebt;
+        console.log('debts', debts)
+         return {
+          ...state,
+          error: null,
+          success: "update debt successfully",
+          loading: false,
+        };
+      }
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

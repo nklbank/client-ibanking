@@ -11,7 +11,7 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel }) => {
 
 
     const userContext = useContext(UserContext);
-    const { delDebt } = userContext
+    const { delDebt, updateDebt } = userContext
 
     return (
         <Modal
@@ -28,7 +28,10 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel }) => {
                         onCreate(values);
 
                         console.log('id', id);
-                        delDebt(id);
+                        if (permanentDel)
+                            delDebt(id);
+                        else updateDebt({ id, visibleToPayer: 0 })
+
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);

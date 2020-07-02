@@ -54,3 +54,7 @@ export const DEL_DEBT = "DEL_DEBT";
 export const GET_LIST_EMPLOYEES = "GET_LIST_EMPLOYEES";
 
 export const ERROR = "ERROR";
+
+export const UPDATE_DEBT = "UPDATE_DEBT";
+
+
