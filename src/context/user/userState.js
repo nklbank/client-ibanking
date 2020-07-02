@@ -22,7 +22,8 @@ import {
   POST_TRANSFERINTRABANK,
   POST_TRANSFERINTERBANK,
   VERIFY_OTP,
-  GET_OTP
+  GET_OTP,
+  DEL_DEBT
 
   // BENEFICIARY_ERROR,
 } from "../types";
@@ -328,7 +329,23 @@ const UserState = (props) => {
     }
   }
 
-  
+  const delDebt = async (id) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.delete(
+        "/api/customer/debts", { data: { id } }
+      );
+      dispatch({
+        type: DEL_DEBT,
+        payload: id,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  };
   return (
     <UserContext.Provider
       value={{
@@ -349,6 +366,7 @@ const UserState = (props) => {
         getTransactions,
         getDebts,
         addDebt,
+        delDebt,
         transferIntraBank,
         transferInterBank,
         getOTP,

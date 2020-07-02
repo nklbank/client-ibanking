@@ -18,6 +18,7 @@ import {
   USER_ERROR,
   GET_DEBTLIST,
   ADD_DEBT,
+  DEL_DEBT
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -132,17 +133,37 @@ export default (state, action) => {
         loading: false,
       };
     case ADD_DEBT:
-      const { debts } = state;
-      const { creditors } = debts;
-      console.log('debts', debts);
-      console.log('creditors', creditors);
-      return {
-        ...state,
-        debts: { ...debts, creditors: [...creditors, action.payload] },
-        error: null,
-        success: "add debt successfully",
-        loading: false,
-      };
+      {
+        const { debts } = state;
+        const { creditors } = debts;
+        console.log('debts', debts);
+        console.log('creditors', creditors);
+        return {
+          ...state,
+          debts: { ...debts, creditors: [...creditors, action.payload] },
+          error: null,
+          success: "add debt successfully",
+          loading: false,
+        };
+      }
+    case DEL_DEBT:
+      {
+        const { debts } = state;
+        const { creditors } = debts;
+        console.log('debts', debts);
+        const removedIndex = creditors.findIndex(obj => obj.id === action.payload)
+        return {
+          ...state,
+          debts: {
+            ...debts, creditors: [...creditors.slice(0, removedIndex),
+            ...creditors.slice(removedIndex + 1)]
+          },
+          error: null,
+          success: "delete debt successfully",
+          loading: false,
+        }
+      }
+
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:
