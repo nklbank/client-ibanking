@@ -22,7 +22,8 @@ import {
   POST_TRANSFERINTRABANK,
   POST_TRANSFERINTERBANK,
   VERIFY_OTP,
-  GET_OTP
+  GET_OTP,
+  LOADING,
 
   // BENEFICIARY_ERROR,
 } from "../types";
@@ -39,7 +40,7 @@ const UserState = (props) => {
     addBeneficiaryRes: null,
     getTransactions: null,
     token: localStorage.getItem("token"),
-    debts: {}
+    debts: {},
   };
 
   const [state, dispatch] = useReducer(userReducer, initialState);
@@ -200,10 +201,8 @@ const UserState = (props) => {
   const getDebts = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.get(
-        "/api/customer/debts"
-      );
-      console.log('res.data', res.data)
+      const res = await axios.get("/api/customer/debts");
+      console.log("res.data", res.data);
       dispatch({
         type: GET_DEBTLIST,
         payload: res.data,
@@ -213,7 +212,7 @@ const UserState = (props) => {
         type: USER_ERROR,
         payload: err.response,
       });
-    };
+    }
   };
   const transferIntraBank = async (transferInfor) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
@@ -254,12 +253,15 @@ const UserState = (props) => {
   const addDebt = async (debt) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post(
-        "/api/customer/debts", debt
-      );
-      console.log('res.data', res.data)
-      const newDebt = { ...debt, id: res.data.insertId, paid: 0, visibleToPayer: 1 }
-      console.log('newDebt', newDebt)
+      const res = await axios.post("/api/customer/debts", debt);
+      console.log("res.data", res.data);
+      const newDebt = {
+        ...debt,
+        id: res.data.insertId,
+        paid: 0,
+        visibleToPayer: 1,
+      };
+      console.log("newDebt", newDebt);
       dispatch({
         type: ADD_DEBT,
         payload: newDebt,
@@ -274,10 +276,7 @@ const UserState = (props) => {
   const verifyOTP = async (otp) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post(
-        "/api/auth/otp",
-        otp
-      );
+      const res = await axios.post("/api/auth/otp", otp);
       dispatch({
         type: VERIFY_OTP,
         payload: res.data,
@@ -290,15 +289,12 @@ const UserState = (props) => {
     }
   };
 
-
   const getAccountInfo = async (account) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post(
-        "/api/account", account
-      );
-      console.log('res.data', res.data)
-      return res.data
+      const res = await axios.post("/api/account", account);
+      console.log("res.data", res.data);
+      return res.data;
       // dispatch({
       //   type: GET_ACCOUNT_INFO,
       //   payload: res.data,
@@ -308,14 +304,12 @@ const UserState = (props) => {
         type: USER_ERROR,
         payload: err.response,
       });
-    };
+    }
   };
   const getOTP = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.get(
-        "/api/auth/otp"
-      );
+      const res = await axios.get("/api/auth/otp");
       dispatch({
         type: GET_OTP,
         payload: res.data,
@@ -326,9 +320,8 @@ const UserState = (props) => {
         payload: err.response,
       });
     }
-  }
+  };
 
-  
   return (
     <UserContext.Provider
       value={{
@@ -353,7 +346,7 @@ const UserState = (props) => {
         transferInterBank,
         getOTP,
         verifyOTP,
-        getAccountInfo
+        getAccountInfo,
       }}
     >
       {props.children}

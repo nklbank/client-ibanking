@@ -3,6 +3,7 @@ import {
   UPDATE_PERSONNEL,
   GET_LIST_EMPLOYEES,
   ERROR,
+  LOADING,
 } from "../types";
 
 export default (state, action) => {
@@ -33,6 +34,11 @@ export default (state, action) => {
         ...state,
         error: action.payload,
         loading: false,
+      };
+    case LOADING:
+      return {
+        ...state,
+        loading: true,
       };
     default:
       return state;

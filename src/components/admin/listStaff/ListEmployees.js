@@ -3,6 +3,7 @@ import { Form, Select, Table, Space, Button, Popconfirm, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import adminContext from "../../../context/admin/adminContext";
+import PersonInfo from "../personInfo/personInfo";
 const { Option } = Select;
 
 const ListEmployees = (props) => {
@@ -25,21 +26,13 @@ const ListEmployees = (props) => {
       title: "Tên",
       dataIndex: "fullname",
       key: "fullname",
+      width: 1500,
     },
-    {
-      title: "Tên đăng nhập",
-      dataIndex: "username",
-      key: "username",
-    },
+
     {
       title: "Chức vụ",
       dataIndex: "position",
       key: "position",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
     },
     {
       title: "Điện thoại",
@@ -94,17 +87,24 @@ const ListEmployees = (props) => {
     return newDataSource;
   };
 
-  const { getListEmployees, listEmployees, deleteEmployee } = useContext(
-    adminContext
-  );
+  const {
+    getListEmployees,
+    listEmployees,
+    deleteEmployee,
+    updateEmployee,
+    loading,
+  } = useContext(adminContext);
 
   const [dataSource, setDataSource] = useState(listEmployees);
   const [selectedPerson, setSelectedPerson] = useState();
-  const [isModalVisible, setModalVisible] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     getListEmployees();
   }, []);
 
+  useEffect(() => {
+    setModalVisible(loading);
+  }, [loading]);
   useEffect(() => {
     setDataSource(validateListEmployees(listEmployees));
   }, [listEmployees]);
@@ -121,12 +121,39 @@ const ListEmployees = (props) => {
 
   const handlerEdit = (person) => {
     setSelectedPerson(person);
+    setModalVisible(true);
+    console.log("modal vis  ", isModalVisible);
+    console.log("select person", person);
+  };
+
+  const OnSubmitEdit = (person) => {
+    updateEmployee(person);
+
     console.log("edit person ", person);
   };
 
   const renderEditWindow = () => {
-    return <Modal title="Chỉnh sửa thông tin" visible={isModalVisible}></Modal>;
+    console.log("select person", selectedPerson);
+    if (selectedPerson) {
+      return (
+        <Modal
+          title="Chỉnh sửa thông tin"
+          visible={isModalVisible}
+          footer={null}
+          onCancel={() => setModalVisible(false)}
+        >
+          <PersonInfo
+            loading={loading}
+            person={selectedPerson}
+            onConfirm={OnSubmitEdit}
+          />{" "}
+        </Modal>
+      );
+    } else {
+      return <div></div>;
+    }
   };
+
   return (
     <div>
       {renderEditWindow()}

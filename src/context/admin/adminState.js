@@ -8,6 +8,7 @@ import {
   DELETE_PERSONNEL,
   ERROR,
   GET_LIST_EMPLOYEES,
+  LOADING,
 } from "../types";
 
 const AdminState = (props) => {
@@ -55,6 +56,9 @@ const AdminState = (props) => {
   const updateEmployee = async (person) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
+      dispatch({
+        type: LOADING,
+      });
       const res = await axios.put(`api/admin/${person.id}`, person);
       dispatch({ type: UPDATE_PERSONNEL, payload: res });
     } catch (err) {
@@ -64,10 +68,12 @@ const AdminState = (props) => {
       });
     }
   };
+
   return (
     <AdminContext.Provider
       value={{
         listEmployees: state.listEmployees,
+        loading: state.loading,
         getListEmployees,
         deleteEmployee,
         updateEmployee,
