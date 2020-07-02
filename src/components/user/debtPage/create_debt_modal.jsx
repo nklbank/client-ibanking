@@ -20,6 +20,16 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     console.log('beneficiaries :>> ', beneficiaries);
     const creditorAccounts = accountsOwner.map(account => account.account_number);
     const intraBeneficiaries = beneficiaries.filter(account => account.partner_bank === null)
+
+    const enterPayer = async (value) => {
+        console.log('...value', value)
+        const payerInfo = value.length !== 0 ? await getAccountInfo({ account_number: value }) : null;
+        console.log('payerInfo', payerInfo);
+        if (payerInfo) {
+            setpayer(value)
+            setpayerName(payerInfo.beneficiary_name)
+        }
+    }
     return (
         <Modal
             visible={visible}
@@ -78,48 +88,8 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                 <Form.Item
                     name="payer"
                     label="Tài khoản mượn nợ"
-                    rules={[
-                        // {
-                        //     required: true,
-                        //     message: "Nhập tài khoản mượn nợ"
-                        // },
-                        ({ getFieldValue }) => ({
-                            validator: async (_, value) => {
-                                console.log('...value', value)
-                                await (getFieldValue('payer') ? Promise.resolve() : Promise.reject("Nhập tài khoản mượn nợ"))
-                            }
-                        }),
-
-                        // {
-                        //     validator: async (_, value) => {
-                        //         console.log('...value', value)
-                        //         await (value ? Promise.resolve() : Promise.reject("Nhập tài khoản mượn nợ"))
-                        //     }
-                        // }
-                    ]}
                 >
-                    {/* <Select mode="tags" onChange={(value) => { setpayer(value) }} tokenSeparators={[',']}>
-                        {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account} - {account.beneficiary_name}</Option>))}
-                    </Select> */}
-
-                    <Select mode="tags" onChange={(value) => {
-                        console.log('value', value);
-                        (async () => {
-                            const payerInfo = value.length !== 0 ? await getAccountInfo({ account_number: value }) : null;
-                            console.log('payerInfo', payerInfo);
-                            if (payerInfo) {
-                                setpayer(value)
-                                setpayerName(payerInfo.beneficiary_name)
-                            }
-                        })();
-                        // const payerInfo = async() => (value.length !== 0) ? await getAccountInfo({account_number: value }) : null;
-                        // const ret = payerInfo();
-                        // console.log('ret', ret)
-                        // if (ret) {
-                        //     setpayer(value);
-                        //     setpayerName(ret.beneficiary_name)
-                        // }
-                    }} tokenSeparators={[',']}>
+                    <Select mode="tags" onChange={(value) => { enterPayer(value) }} tokenSeparators={[',']}>
                         {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account}</Option>))}
                     </Select>
                     <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions>
