@@ -24,8 +24,8 @@ import {
   VERIFY_OTP,
   GET_OTP,
   DEL_DEBT,
-  UPDATE_DEBT
-
+  UPDATE_DEBT,
+  SET_LOADING,
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -49,6 +49,7 @@ const UserState = (props) => {
   //get account user
 
   const getAccounts = async () => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -68,6 +69,7 @@ const UserState = (props) => {
   //get list beneficiary
 
   const getBeneficiries = async () => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -88,6 +90,7 @@ const UserState = (props) => {
   //add beneficiary
 
   const addBeneficiary = async (contact) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -109,6 +112,7 @@ const UserState = (props) => {
   //update list beneficiary
 
   const updateListBeneficiaryInfo = async (listInfo) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -132,6 +136,7 @@ const UserState = (props) => {
   //change password
 
   const changePassword = async (passwords) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -155,6 +160,7 @@ const UserState = (props) => {
   // get beneficiary account
 
   const getBeneficiry = async (accnumber) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -183,6 +189,7 @@ const UserState = (props) => {
   // }
 
   const getTransactions = async (accountNumber) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(
@@ -200,6 +207,7 @@ const UserState = (props) => {
     }
   };
   const getDebts = async () => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(
@@ -218,6 +226,7 @@ const UserState = (props) => {
     };
   };
   const transferIntraBank = async (transferInfor) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -236,6 +245,7 @@ const UserState = (props) => {
     }
   };
   const transferInterBank = async (transferInfor) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -248,12 +258,13 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: GET_DEBTLIST,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
   };
   const addDebt = async (debt) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -274,6 +285,7 @@ const UserState = (props) => {
     }
   };
   const verifyOTP = async (otp) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -286,7 +298,7 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: ADD_DEBT,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
@@ -294,6 +306,7 @@ const UserState = (props) => {
 
 
   const getAccountInfo = async (account) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -313,6 +326,7 @@ const UserState = (props) => {
     };
   };
   const getOTP = async () => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(
@@ -331,6 +345,7 @@ const UserState = (props) => {
   }
 
   const delDebt = async (id) => {
+    setLoading()
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.delete(
@@ -349,6 +364,7 @@ const UserState = (props) => {
   };
 
   const updateDebt = async (debt) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -366,6 +382,10 @@ const UserState = (props) => {
       });
     }
   };
+
+
+  const setLoading = () => dispatch({ type: SET_LOADING })
+
   return (
     <UserContext.Provider
       value={{
@@ -377,6 +397,7 @@ const UserState = (props) => {
         debts: state.debts,
         success: state.success,
         error: state.error,
+        loading: state.loading,
         getAccounts,
         getBeneficiries,
         updateListBeneficiaryInfo,

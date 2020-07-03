@@ -19,7 +19,8 @@ import {
   GET_DEBTLIST,
   ADD_DEBT,
   DEL_DEBT,
-  UPDATE_DEBT
+  UPDATE_DEBT,
+  SET_LOADING
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -116,17 +117,20 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: action.payload
+        success: action.payload,
+        loading: false,
       }
 
     case GET_OTP:
       return {
         ...state,
         error: null,
-        success: action.payload
+        success: action.payload,
+        loading: false,
       }
 
     case USER_ERROR:
+      console.log(action.payload);
       return {
         ...state,
         error: action.payload,
@@ -170,20 +174,21 @@ export default (state, action) => {
         const { payers } = debts;
         const { id } = action.payload;
         const index = payers.findIndex(obj => obj.id = id);
-        const updatedDebt = Object.assign({...payers[index]}, {...action.payload});       
+        const updatedDebt = Object.assign({ ...payers[index] }, { ...action.payload });
         payers[index] = updatedDebt;
         console.log('debts', debts)
-         return {
+        return {
           ...state,
           error: null,
           success: "update debt successfully",
           loading: false,
         };
       }
-    // case BENEFICIARIES_ERROR:
-    // case BENEFICIARY_ERROR:
-    // case UPDATE_BENEFICIARIES_ERROR:
-    // case CHANGE_PASSWORD_ERROR:
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: true
+      };
     default:
       return state;
   }

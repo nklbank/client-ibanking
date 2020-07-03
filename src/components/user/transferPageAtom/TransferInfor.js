@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
+import { message, Form, Input, Select, Steps, Button, Checkbox } from 'antd';
 import UserContext from "../../../context/user/userContext";
 // import { layout, tailLayout } from '../../layout/layoutConfig'
-
+import VerifyOTP from './VerifyOTP'
 const layout = {
     labelCol: {
         span: 8,
@@ -31,10 +31,8 @@ const TransferInfor = (props) => {
         transferIntraBank,
         addBeneficiary,
         transferInterBank,
-        getOTP,
-        verifyOTP,
         success,
-        error,
+        error
     } = userContext;
 
     const [saveBeneficiary, setSaveBeneficiary] = useState(false)
@@ -56,6 +54,7 @@ const TransferInfor = (props) => {
             setCurrentStep(1)
         };
 
+        console.log("abc", beneficiary);
         return (
             <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish} initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }} >
                 <Form.Item
@@ -171,6 +170,8 @@ const TransferInfor = (props) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
+                {error ? message.error(error.msg ? error.msg : error.data.msg) :
+                    success && message.success(success.msg)}
 
                 <Form.Item>
                     <Checkbox onChange={() => setSaveBeneficiary(!saveBeneficiary)}>Save to your list</Checkbox>
@@ -235,48 +236,6 @@ const TransferInfor = (props) => {
         }
     }, [success])
 
-
-    const VerifyOTP = () => {
-
-        const onFinish = values => {
-            // console.log('successState:', successState);
-
-            verifyOTP(values)
-
-
-            // setCurrentStep(0)
-        };
-
-        const onFinishFailed = errorInfo => {
-        };
-
-        return (
-            <Form
-                {...layout}
-                name="basic"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-            >
-                <Form.Item
-                    label="Verify OTP"
-                    name="otp"
-                    rules={[{ required: true, message: 'Please input OTP!' }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item>
-                    <Button onClick={() => getOTP()}>load OTP</Button>
-                </Form.Item>
-
-                <Form.Item >
-                    <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
-              </Button>
-                </Form.Item>
-            </Form>
-        )
-    }
 
     const steps = [
         {
