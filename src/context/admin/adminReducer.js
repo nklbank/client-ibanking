@@ -1,13 +1,21 @@
-
-import { USER_ERROR } from '../types'
+import { GET_LIST_EMPLOYEES, ERROR } from "../types";
 
 export default (state, action) => {
-    switch (action.type) {
-        case USER_ERROR:
-            return {
-                state
-            }
-        default:
-            return state
-    }
-}
+  switch (action.type) {
+    case GET_LIST_EMPLOYEES:
+      return {
+        ...state,
+        listEmployees: action.payload,
+        error: null,
+        loading: false,
+      };
+    case ERROR:
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};

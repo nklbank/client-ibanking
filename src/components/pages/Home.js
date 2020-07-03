@@ -1,35 +1,50 @@
-
-import React, { useEffect, useContext } from 'react'
-import NavBar from '../layout/NavBar';
-import UserContext from '../../context/user/userContext'
-import AlertContext from '../../context/alert/alertContext';
+import React, { useEffect, useContext, useState } from "react";
+import NavBar from "../layout/NavBar";
+import UserContext from "../../context/user/userContext";
+import AlertContext from "../../context/alert/alertContext";
+import { message } from "antd";
+import AuthContext from "../../context/auth/authContext";
+import NavBarAdmin from "../layout/NavBarAdmin";
 import Header from '../layout/Header'
-import { message } from 'antd';
 
 const Home = () => {
-    const userContext = useContext(UserContext)
-    const alertContext = useContext(AlertContext);
+  const userContext = useContext(UserContext);
+  const alertContext = useContext(AlertContext);
 
-    const { setAlert, alerts } = alertContext;
-    const { getBeneficiries, getAccounts, error, success } = userContext
+  const authContext = useContext(AuthContext);
 
-    useEffect(() => {
-        getAccounts();
-        getBeneficiries();
+  const { logout, user, loadPersonnel } = authContext;
+  const [userState, setUser] = useState(user);
+  const { setAlert, alerts } = alertContext;
+  const { getBeneficiries, getAccounts, error, success } = userContext;
+  useEffect(() => {
+    loadPersonnel();
+    getAccounts();
+    getBeneficiries();
+  }, []);
 
-    }, [])
+  const switchNavBar = () => {
+    console.log("user", user);
+    if (user) {
+      switch (user.admin) {
+        case 1:
+          return <NavBarAdmin />;
+        case 0:
+          return "NAV BAR EMPLOYEE";
+      }
+    }
+    return <NavBar />;
+  };
 
-    console.log(error)
-    return (
-        <div>
-            {error && message.error(error.msg ? error.msg : error.data.msg)}
-            {success && message.success(success.msg)}
-            <Header />
-            <NavBar />
-        </div>
+  console.log(error);
+  return (
+    <div>
+      {error && message.error(error.msg ? error.msg : error.data.msg)}
+      {success && message.success(success.msg)}
+      <Header />
+      {switchNavBar()}
+    </div>
+  );
+};
 
-
-    )
-}
-
-export default Home
+export default Home;

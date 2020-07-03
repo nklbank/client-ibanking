@@ -65,13 +65,13 @@ const Header = () => {
     // breadcrumb={{ routes }}
     >
         <Content
-            extraContent={
-                <img
-                    src="https://blogs.sap.com/wp-content/uploads/2016/01/login_background_862563.jpg"
-                    alt="content"
-                    width="100px"
-                />
-            }
+        // extraContent={
+        //     <img
+        //         src="https://blogs.sap.com/wp-content/uploads/2016/01/login_background_862563.jpg"
+        //         alt="content"
+        //         width="100px"
+        //     />
+        // }
         >
             {content}
         </Content>
