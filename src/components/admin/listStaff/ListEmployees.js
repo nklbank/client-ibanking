@@ -1,10 +1,33 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Form, Select, Table, Space, Button, Popconfirm, Modal } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  Form,
+  Select,
+  Table,
+  Space,
+  Button,
+  Popconfirm,
+  Modal,
+  Row,
+  Col,
+} from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import adminContext from "../../../context/admin/adminContext";
 import PersonInfo from "../personInfo/personInfo";
 const { Option } = Select;
+
+const defaultPersonInfo = {
+  name: "",
+  username: "",
+  password: "",
+  admin: "",
+  email: "",
+  phone: "",
+};
 
 const ListEmployees = (props) => {
   const dataSourceDefault = {
@@ -51,8 +74,8 @@ const ListEmployees = (props) => {
             cancelText="Bỏ qua"
           >
             <Button type="text" className="text-danger">
-              Xóa
               <DeleteOutlined />
+              Xóa
             </Button>
           </Popconfirm>
           <Button
@@ -60,8 +83,8 @@ const ListEmployees = (props) => {
             className="text-info"
             onClick={() => handlerEdit(record)}
           >
-            Sửa
             <EditOutlined />
+            Sửa
           </Button>
         </Space>
       ),
@@ -80,6 +103,7 @@ const ListEmployees = (props) => {
       const position = element.admin > 0 ? "Admin" : "Employee";
 
       newList[index] = { ...element, key: element.id, position: position };
+      delete newList[index].password;
     }
     const count = employees.length;
     var newDataSource = { data: newList, count: count };
@@ -93,17 +117,23 @@ const ListEmployees = (props) => {
     deleteEmployee,
     updateEmployee,
     loading,
+    addEmployee,
   } = useContext(adminContext);
 
   const [dataSource, setDataSource] = useState(listEmployees);
   const [selectedPerson, setSelectedPerson] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+
   useEffect(() => {
     getListEmployees();
   }, []);
 
   useEffect(() => {
-    setModalVisible(loading);
+    if (!loading) {
+      setModalVisible(false);
+      setAddModalVisible(false);
+    }
   }, [loading]);
   useEffect(() => {
     setDataSource(validateListEmployees(listEmployees));
@@ -127,9 +157,39 @@ const ListEmployees = (props) => {
   };
 
   const OnSubmitEdit = (person) => {
-    updateEmployee(person);
-
+    var personSubmit = { ...person };
+    delete personSubmit.position;
+    delete personSubmit.key;
+    updateEmployee(personSubmit);
+    var newData = dataSource.data.map((data) => {
+      if (data.id === person.id) return person;
+      return data;
+    });
+    console.log("onSubmitEdit", { ...dataSource, data: newData });
+    setDataSource({ ...dataSource, data: newData });
     console.log("edit person ", person);
+  };
+
+  const OnSubmitAdd = (person) => {
+    console.log("ADD person ", person);
+  };
+
+  const renderAddWindow = () => {
+    return (
+      <Modal
+        title="Thêm nhân viên"
+        visible={isAddModalVisible}
+        footer={null}
+        onCancel={() => setAddModalVisible(false)}
+      >
+        <PersonInfo
+          loading={loading}
+          person={defaultPersonInfo}
+          onConfirm={OnSubmitAdd}
+          newPerson={true}
+        />{" "}
+      </Modal>
+    );
   };
 
   const renderEditWindow = () => {
@@ -157,6 +217,15 @@ const ListEmployees = (props) => {
   return (
     <div>
       {renderEditWindow()}
+      {renderAddWindow()}
+      <Row justify="end" gutter={[16, 24]}>
+        <Col offset={12}>
+          <Button type="primary" onClick={() => setAddModalVisible(true)}>
+            <UserAddOutlined /> Thêm nhân viên
+          </Button>
+        </Col>
+      </Row>
+
       <Table dataSource={dataSource.data} columns={columnsDefault}></Table>
     </div>
   );

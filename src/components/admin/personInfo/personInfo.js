@@ -45,6 +45,24 @@ const PersonInfo = (props) => {
     setPerson({ ...person, phone: cleaned });
     return cleaned;
   };
+  const isPassword = () => {
+    if (props.newPerson) {
+      return (
+        <Form.Item label="Password">
+          <Input.Password
+            onChange={(e) => {
+              return setPerson({ ...person, password: e.target.value });
+            }}
+          />
+        </Form.Item>
+      );
+    }
+    return (
+      <Form.Item label="Password">
+        <Input.Password disabled />
+      </Form.Item>
+    );
+  };
   return (
     <div>
       <Form {...layout}>
@@ -80,6 +98,7 @@ const PersonInfo = (props) => {
         {/* <Form.Item label="Ngày sinh">
           <DatePicker format={dateFormat} />
         </Form.Item> */}
+        {isPassword()}
         <Form.Item label="Email">
           <Input defaultValue={person.email} />
         </Form.Item>

@@ -9,6 +9,7 @@ import {
   ERROR,
   GET_LIST_EMPLOYEES,
   LOADING,
+  ADD_PERSONNEL,
 } from "../types";
 
 const AdminState = (props) => {
@@ -40,9 +41,28 @@ const AdminState = (props) => {
     }
   };
 
+  const addEmployee = async (person) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      dispatch({
+        type: LOADING,
+      });
+      const res = await axios.post(`api/admin/personnel`, person);
+      dispatch({ type: ADD_PERSONNEL, payload: res });
+    } catch (err) {
+      dispatch({
+        type: ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
   const deleteEmployee = async (id) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
+      dispatch({
+        type: LOADING,
+      });
       const res = await axios.delete(`api/admin/personnel/${id}`);
       dispatch({ type: DELETE_PERSONNEL, payload: res });
     } catch (err) {
@@ -59,7 +79,7 @@ const AdminState = (props) => {
       dispatch({
         type: LOADING,
       });
-      const res = await axios.put(`api/admin/${person.id}`, person);
+      const res = await axios.put(`api/admin/personnel/${person.id}`, person);
       dispatch({ type: UPDATE_PERSONNEL, payload: res });
     } catch (err) {
       dispatch({
@@ -77,6 +97,7 @@ const AdminState = (props) => {
         getListEmployees,
         deleteEmployee,
         updateEmployee,
+        addEmployee,
       }}
     >
       {props.children}
