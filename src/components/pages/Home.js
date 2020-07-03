@@ -5,7 +5,6 @@ import AlertContext from "../../context/alert/alertContext";
 import { message } from "antd";
 import AuthContext from "../../context/auth/authContext";
 import NavBarAdmin from "../layout/NavBarAdmin";
-import Header from "../layout/Header"
 
 const Home = () => {
   const userContext = useContext(UserContext);
@@ -39,9 +38,9 @@ const Home = () => {
   console.log(error);
   return (
     <div>
-      {/* {error ? message.error(error.msg ? error.msg : error.data.msg) :
-        success && message.success(success.msg)} */}
-      <Header />
+      {error && message.error(error.msg ? error.msg : error.data.msg)}
+      {success && message.success(success.msg)}
+
       {switchNavBar()}
     </div>
   );
