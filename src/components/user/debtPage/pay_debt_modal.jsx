@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Button, Modal, Form, Input } from 'antd';
 import UserContext from '../../../context/user/userContext';
 
@@ -6,9 +6,21 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount 
   const [form] = Form.useForm();
 
   const userContext = useContext(UserContext);
-  const { verifyOTP, transferIntraBank, updateDebt } = userContext
+  const { verifyOTP, transferIntraBank, updateDebt, error } = userContext
 
   const [otp, setotp] = useState(null)
+  const [messageOTP, setmessageOTP] = useState("OTP không hợp lệ")
+  const [statusOTP, setstatusOTP] = useState(null)
+
+  useEffect(() => {
+    if (error) {
+      setmessageOTP("OTP không hợp lệ")
+      setstatusOTP("error")
+    } else {
+      setmessageOTP("OTP hợp lệ")
+      setstatusOTP("success")
+    }
+  }, [error])
 
   return (
     <Modal
@@ -26,17 +38,9 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount 
 
             console.log(id, creditor, payer, amount, otp);
 
-            try {
-              verifyOTP({otp});
-            } catch (error) {
-              throw error
-            }
-            try {
-              transferIntraBank({ depositor: payer, receiver: creditor, amount, pay_debt: id })
-              updateDebt({ id, paid: 1 })
-            } catch (error) {
-              throw error
-            }
+            verifyOTP({ otp });
+            transferIntraBank({ depositor: payer, receiver: creditor, amount, pay_debt: id })
+            updateDebt({ id, paid: 1 })
 
             setotp(null)
           })
@@ -53,9 +57,13 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount 
           modifier: 'public',
         }}
       >
-        <Form.Item name="otp" label="Xác nhận OTP">
+        <Form.Item name="otp" label="Xác nhận OTP"
+          validateStatus={statusOTP}
+          help={messageOTP}
+        >
           <Input type="textarea" onChange={(e) => {
             setotp(e.target.value);
+            verifyOTP({ otp: e.target.value });
           }} />
         </Form.Item>
       </Form>

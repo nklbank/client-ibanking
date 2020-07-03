@@ -286,7 +286,7 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: ADD_DEBT,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
@@ -301,10 +301,6 @@ const UserState = (props) => {
       );
       console.log('res.data', res.data)
       return res.data
-      // dispatch({
-      //   type: GET_ACCOUNT_INFO,
-      //   payload: res.data,
-      // });
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -354,7 +350,7 @@ const UserState = (props) => {
       const res = await axios.post(
         "/api/customer/update-debts", debt
       );
-
+      console.log('updatedDebt', debt)
       dispatch({
         type: UPDATE_DEBT,
         payload: debt,
