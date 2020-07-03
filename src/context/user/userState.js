@@ -51,7 +51,6 @@ const UserState = (props) => {
 
   const getAccounts = async () => {
     setLoading();
-
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -71,7 +70,6 @@ const UserState = (props) => {
   //get list beneficiary
 
   const getBeneficiries = async () => {
-
     setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
@@ -93,7 +91,6 @@ const UserState = (props) => {
   //add beneficiary
 
   const addBeneficiary = async (contact) => {
-
     setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
@@ -102,8 +99,7 @@ const UserState = (props) => {
 
       dispatch({
         type: ADD_BENEFICIARY,
-        payload: contact,
-        // newContact: contact
+        payload: res.data,
       });
     } catch (err) {
       console.log(err.response);
@@ -206,13 +202,13 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: GET_TRANSACTIONS,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
   };
   const getDebts = async () => {
-    setLoading();
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(
@@ -263,13 +259,13 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: GET_DEBTLIST,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
   };
   const addDebt = async (debt) => {
-    setLoading();
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -303,7 +299,7 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: ADD_DEBT,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
@@ -311,7 +307,7 @@ const UserState = (props) => {
 
 
   const getAccountInfo = async (account) => {
-    setLoading();
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -350,7 +346,7 @@ const UserState = (props) => {
   }
 
   const delDebt = async (id) => {
-    setLoading();
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.delete(
@@ -369,7 +365,7 @@ const UserState = (props) => {
   };
 
   const updateDebt = async (debt) => {
-    setLoading();
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(

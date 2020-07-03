@@ -37,10 +37,10 @@ const Home = () => {
   return (
     <div>
       {/* {error && message.error(error.msg ? error.msg : error.data.msg)}*/}
-      {success && message.success(success)} 
+      {/* {success && message.success(success)}  */}
 
-      {/* <Header /> */}
-     { loading && <Spinner />}
+      <Header />
+      {/* { loading && <Spinner />} */}
       {switchNavBar()}
     </div>
   );
