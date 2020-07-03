@@ -6,70 +6,47 @@ import {
     Select,
     Button
 } from 'antd';
+import EmployeeContext from '../../context/employee/employeeContext'
 
-const formItemLayout = {
-    labelcol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 8,
-        },
+
+const { Option } = Select;
+const layout = {
+    labelCol: {
+        span: 8,
     },
     wrappercol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 16,
-        },
+        span: 16,
     },
 };
-const tailFormItemLayout = {
+const tailLayout = {
     wrappercol: {
-        xs: {
-            span: 24,
-            offset: 0,
-        },
-        sm: {
-            span: 16,
-            offset: 8,
-        },
+        offset: 8,
+        span: 16,
     },
 };
 const CreateAccount = () => {
+
+    const employeeContext = useContext(EmployeeContext);
+
+    const { success, error, createCustomerAccount, loading } = employeeContext;
     const [form] = Form.useForm();
 
     const onFinish = values => {
         console.log('Received values of form: ', values);
-
-
+        createCustomerAccount(values)
     };
-
-    const prefixSelector = (
-        <Form.Item name="prefix" noStyle>
-            <Select
-                style={{
-                    width: 70,
-                }}
-            >
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-            </Select>
-        </Form.Item>
-    );
 
 
     return (
         <div >
             <Form
-                {...formItemLayout}
+                {...layout}
                 form={form}
                 name="register"
                 onFinish={onFinish}
                 initialValues={{
-                    residence: ['zhejiang', 'hangzhou', 'xihu'],
-                    prefix: '86',
+                    // residence: ['zhejiang', 'hangzhou', 'xihu'],
+                    // prefix: '86',
                 }}
                 scrollToFirstError
             >
@@ -106,18 +83,13 @@ const CreateAccount = () => {
                         },
                     ]}
                 >
-                    <Input
-                        addonBefore={prefixSelector}
-                        style={{
-                            width: '100%',
-                        }}
-                    />
+                    <Input />
                 </Form.Item>
 
-                <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">
+                <Form.Item {...tailLayout}>
+                    <Button type="primary" htmlType="submit" loading={loading}>
                         Create Account
-        </Button>
+                     </Button>
                 </Form.Item>
             </Form>
         </div>

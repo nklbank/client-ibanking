@@ -6,18 +6,22 @@ import {
     ContainerOutlined,
 } from '@ant-design/icons';
 
+import CreateAccount from '../employee/CreateAccount'
+import AddMoney from '../employee/AddMoney'
+import CustomerHistory from '../employee/CustomerHistory'
+
 const comp = {
     0: {
         title: "Tạo tài khoản khách hàng",
-        content: "<UserAccount />",
+        content: <CreateAccount />,
     },
     1: {
         title: "Nạp tiền vào tài khoản",
-        content: "<BeneficiaryInforPage />",
+        content: <AddMoney />,
     },
     2: {
         title: "Lịch sử giao dịch",
-        content: "<TransactionsPage />",
+        content: <CustomerHistory />,
     }
 };
 
@@ -33,19 +37,19 @@ const NavBarEmploy = props => {
         <div className="row">
             <div className="col-3">
                 <Menu
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
+                    defaultSelectedKeys={['0']}
+                    // defaultOpenKeys={['sub0']}
                     mode="inline"
                     theme="dark"
                     onClick={handleClick}
                 >
-                    <Menu.Item key="1" icon={<PieChartOutlined />}>
+                    <Menu.Item key="0" icon={<PieChartOutlined />}>
                         Tạo tài khoản khách hàng
           </Menu.Item>
-                    <Menu.Item key="2" icon={<DesktopOutlined />}>
+                    <Menu.Item key="1" icon={<DesktopOutlined />}>
                         Nạp tiền vào tài khoản
           </Menu.Item>
-                    <Menu.Item key="3" icon={<ContainerOutlined />}>
+                    <Menu.Item key="2" icon={<ContainerOutlined />}>
                         Lịch sử giao dịch
           </Menu.Item>
                 </Menu>

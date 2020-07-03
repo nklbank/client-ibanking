@@ -6,6 +6,8 @@ import { Button, Modal } from 'antd';
 import { UserOutlined, PlusOutlined } from "@ant-design/icons"
 import UserContext from "../../context/user/userContext";
 import TransferInfor from './transferPageAtom/TransferInfor'
+import Spinner from '../layout/Spinner'
+
 const TransferPage = props => {
 
 
@@ -16,6 +18,7 @@ const TransferPage = props => {
     beneficiary,
     accountsOwner,
     getBeneficiry,
+    loading
   } = userContext;
 
   const [isModal, setIsModal] = useState(false);
@@ -38,6 +41,7 @@ const TransferPage = props => {
         onOk={() => setIsModal(false)}
         onCancel={() => setIsModal(false)}
       >
+        {loading && <Spinner />}
         <TransferInfor beneficiary={beneficiary} />
       </Modal>
       {beneficiaries.map((item, key) => (

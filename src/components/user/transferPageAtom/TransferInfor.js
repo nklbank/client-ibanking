@@ -292,7 +292,7 @@ const TransferInfor = (props) => {
     }, [success])
 
 
-  
+
 
     const steps = [
         {
