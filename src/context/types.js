@@ -57,4 +57,5 @@ export const ERROR = "ERROR";
 
 export const UPDATE_DEBT = "UPDATE_DEBT";
 
+export const SET_LOADING = "SET_LOADING";
 

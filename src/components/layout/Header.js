@@ -51,7 +51,7 @@ const Header = () => {
     }
     return (<PageHeader
         title={user && user[0].fullname}
-        className="site-page-header"
+        className="site-page-header shadow-lg p-3 mb-5 bg-white rounded"
         subTitle="Welcome to NKL Bank"
         tags={<Tag color="blue">Running</Tag>}
         extra={[

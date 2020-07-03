@@ -19,7 +19,8 @@ import {
   GET_DEBTLIST,
   ADD_DEBT,
   DEL_DEBT,
-  UPDATE_DEBT
+  UPDATE_DEBT,
+  SET_LOADING
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -31,7 +32,7 @@ export default (state, action) => {
         accountsOwner: action.payload,
         error: null,
         // success: "success",
-        otpSuccess: "abc",
+        // otpSuccess: "abc",
         loading: false,
       };
     // case ADD_BENEFICIARY:
@@ -53,7 +54,8 @@ export default (state, action) => {
     case ADD_BENEFICIARY:
       return {
         ...state,
-        addBeneficiaryRes: action.payload,
+        // addBeneficiaryRes: action.payload,
+        // beneficiaries: { ...state.beneficiaries, 4: { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name } },
         error: null,
         success: "add beneficiary successfully",
         loading: false,
@@ -101,14 +103,14 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: action.payload,
+        success: "Transfer successfully" ,
         loading: false
       }
     case POST_TRANSFERINTERBANK:
       return {
         ...state,
         error: null,
-        success: { msg: "Transfer successfully" },
+        success: "Transfer successfully" ,
         loading: false
       }
 
@@ -116,14 +118,16 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: action.payload
+        success: "verifily otp successfully",
+        loading: false
       }
 
     case GET_OTP:
       return {
         ...state,
         error: null,
-        success: action.payload
+        success: "send otp successfully, Check your email",
+        loading: false
       }
 
     case USER_ERROR:
@@ -170,16 +174,21 @@ export default (state, action) => {
         const { payers } = debts;
         const { id } = action.payload;
         const index = payers.findIndex(obj => obj.id = id);
-        const updatedDebt = Object.assign({...payers[index]}, {...action.payload});       
+        const updatedDebt = Object.assign({ ...payers[index] }, { ...action.payload });
         payers[index] = updatedDebt;
         console.log('debts', debts)
-         return {
+        return {
           ...state,
           error: null,
           success: "update debt successfully",
           loading: false,
         };
       }
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: true
+      };
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

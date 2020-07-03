@@ -20,7 +20,7 @@ const TransferPage = props => {
 
   const [isModal, setIsModal] = useState(false);
 // const [beneficiaryInfor, setBeneficiaryInfor] = ({})
-const onTransfer = (item)=>{
+const onTransfer = (item)=>{s
   console.log(item)
   getBeneficiry({ account_number: item.beneficiary_account,bank: item.partner_bank })
 //  console.log(beneficiary)

@@ -83,7 +83,7 @@ const NavBar = () => {
   };
   return (
     <div className="row">
-      <div className="col-3">
+      <div className="col-2" style={{ backgroundColor: '#001529' }}>
         <Menu
           defaultSelectedKeys={["0"]}
           defaultOpenKeys={["sub1", "sub2", "sub3"]}
@@ -104,23 +104,27 @@ const NavBar = () => {
             Lịch sử giao dịch
           </Menu.Item>
 
-          <SubMenu key="sub1" icon={<MailOutlined />} title="Chuyển tiền">
-            <Menu.Item key="3">Ngân hàng nội địa</Menu.Item>
-            {/* <Menu.Item key="4">Ngân hàng khác</Menu.Item> */}
-          </SubMenu>
+          <Menu.Item key="3" icon={<ContainerOutlined />}>
+            Chuyển tiền
+          </Menu.Item>
 
           <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Danh sách">
             <Menu.Item key="5">Danh sách nợ</Menu.Item>
             <Menu.Item key="6">Danh sách người nhận</Menu.Item>
 
-            <SubMenu key="sub3" title="Tài khoản">
+            {/* <SubMenu key="sub3" title="Tài khoản">
               <Menu.Item key="7">Đổi mật khẩu</Menu.Item>
 
-            </SubMenu>
+            </SubMenu> */}
           </SubMenu>
+
+          <Menu.Item key="7" icon={<ContainerOutlined />}>
+            Đổi mật khẩu
+          </Menu.Item>
+
         </Menu>
       </div>
-      <div className="col-8 p-5 shadow bg-white rounded border ">
+      <div className="col-8 offset-1 p-5 shadow bg-white rounded border ">
         {" "}
         <h2> {comp[key].title}</h2>
         {/* {users.error && <span className="text-danger">ERROR: {users.error}</span>}

@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
 import UserContext from "../../../context/user/userContext";
 // import { layout, tailLayout } from '../../layout/layoutConfig'
+import VerifyOTP from './VerifyOTP'
 
 const layout = {
     labelCol: {
@@ -21,6 +22,60 @@ const { Step } = Steps;
 const { Option } = Select;
 let transferInfor = {}
 
+
+// const VerifyOTP = () => {
+//     const userContext = useContext(UserContext);
+//     const {
+
+//         getOTP,
+//         verifyOTP,
+//         success,
+//         error,
+//     } = userContext;
+
+//     useEffect(() => {
+//         getOTP()
+//       }, []);
+//     const onFinish = values => {
+//         // console.log('successState:', successState);
+
+//         verifyOTP(values)
+
+
+//         // setCurrentStep(0)
+//     };
+
+//     const onFinishFailed = errorInfo => {
+//     };
+
+//     return (
+//         <Form
+//             {...layout}
+//             name="basic"
+//             onFinish={onFinish}
+//             onFinishFailed={onFinishFailed}
+//         >
+//             <Form.Item
+//                 label="Verify OTP"
+//                 name="otp"
+//                 rules={[{ required: true, message: 'Please input OTP!' }]}
+//             >
+//                 <Input />
+//             </Form.Item>
+
+//             <Form.Item>
+//                 <Button onClick={() => getOTP()}>Reload OTP</Button>
+//             </Form.Item>
+
+//             <Form.Item >
+//                 <Button {...tailLayout} type="primary" htmlType="submit">
+//                     Submit
+//           </Button>
+//             </Form.Item>
+//         </Form>
+//     )
+// }
+
 const TransferInfor = (props) => {
 
     const userContext = useContext(UserContext);
@@ -31,8 +86,6 @@ const TransferInfor = (props) => {
         transferIntraBank,
         addBeneficiary,
         transferInterBank,
-        getOTP,
-        verifyOTP,
         success,
         error,
     } = userContext;
@@ -57,7 +110,9 @@ const TransferInfor = (props) => {
         };
 
         return (
-            <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish} initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }} >
+            <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish}
+                initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }}
+            >
                 <Form.Item
                     name="partner_bank"
                     label="Bank Name"
@@ -81,7 +136,7 @@ const TransferInfor = (props) => {
                     name="receiver"
                     label="Number"
                     autoFocus
-                    onBlur={onSearchAccount}
+                    // onBlur={onSearchAccount}
                     rules={[
                         {
                             required: true,
@@ -203,8 +258,9 @@ const TransferInfor = (props) => {
     useEffect(() => {
         // setSuccess(success);
 
-        if (success && success.msg === "OTP is valid") {
+        if (success === "verifily otp successfully") {
 
+            console.log("transferInfor", transferInfor)
             if (transferInfor.partner_bank === "NKL Bank" || transferInfor.partner_bank === undefined) {
                 transferIntraBank({
                     depositor: transferInfor.depositor,
@@ -236,47 +292,7 @@ const TransferInfor = (props) => {
     }, [success])
 
 
-    const VerifyOTP = () => {
-
-        const onFinish = values => {
-            // console.log('successState:', successState);
-
-            verifyOTP(values)
-
-
-            // setCurrentStep(0)
-        };
-
-        const onFinishFailed = errorInfo => {
-        };
-
-        return (
-            <Form
-                {...layout}
-                name="basic"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-            >
-                <Form.Item
-                    label="Verify OTP"
-                    name="otp"
-                    rules={[{ required: true, message: 'Please input OTP!' }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item>
-                    <Button onClick={() => getOTP()}>load OTP</Button>
-                </Form.Item>
-
-                <Form.Item >
-                    <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
-              </Button>
-                </Form.Item>
-            </Form>
-        )
-    }
+  
 
     const steps = [
         {
