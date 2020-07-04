@@ -37,6 +37,13 @@ const CreateAccount = () => {
         createCustomerAccount(values)
     };
 
+    useEffect(() => {
+        if (success === "create account successfully, check you email to access your account")
+            message.success(success)
+        else if (error === "create account error, please check your connection or input")
+            message.error(error)
+    }, [success, error])
+
 
     return (
         <div >

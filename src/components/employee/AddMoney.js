@@ -48,9 +48,21 @@ const AddMoney = () => {
     } = userContext;
 
 
+    const {
+        error
+    } = employeeContext;
+
+
     useEffect(() => {
         refresh()
     }, [])
+
+    useEffect(() => {
+        if (error === "add money error, please check your connection or input")
+            message.error(error)
+        if (userContext.error === "get beneficiary error, please check the connection or input")
+            message.error(userContext.error)
+    }, [error, userContext.error])
 
     const addMoneySuccess = (addmoneyInfor, beneficiary) => {
         return (<Modal

@@ -35,7 +35,7 @@ export default (state, action) => {
                 ...state,
                 error: null,
                 customerAccount: action.payload,
-                success: "create account successfully",
+                success: "create account successfully, check you email to access your account",
                 loading: false
             }
         case CREATECUSTOMERACCOUNT_ERROR:
@@ -58,7 +58,7 @@ export default (state, action) => {
         case GETDEPOSITHISTORY_ERROR:
             return {
                 // error: action.payload,
-                error: "get depository error, please check your connection or input",
+                error: "get history error, please check your connection or input",
                 success: null,
                 loading: false
             }
@@ -73,7 +73,7 @@ export default (state, action) => {
         case GETTRANSFERTHISTORY_ERROR:
             return {
                 // error: action.payload,
-                error: "get transfer error, please check your connection or input",
+                error: "get history error, please check your connection or input",
                 success: null,
                 loading: false
             }
@@ -88,7 +88,7 @@ export default (state, action) => {
         case GETDEBTHISTORY_ERROR:
             return {
                 // error: action.payload,
-                error: "get debt error, please check your connection or input",
+                error: "get history error, please check your connection or input",
                 success: null,
                 loading: false
             }

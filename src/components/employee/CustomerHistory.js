@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import EmployeeContext from '../../context/employee/employeeContext'
 import UserContext from '../../context/user/userContext'
-import { Form, Input, Button, Select, Table } from 'antd';
+import { Form, Input, Button, Select, message } from 'antd';
 import Formatter from '../layout/CurrencyFormat'
 
 const { Option } = Select;
@@ -75,6 +75,7 @@ const CustomerHistory = () => {
         debtList,
         transferList,
         depositList,
+        error,
         loading } = employeeContext;
 
     const [form] = Form.useForm();
@@ -108,13 +109,19 @@ const CustomerHistory = () => {
         else if (success === "get debt successfully")
             setData(debtList)
 
-    }, [success])
+        else if (error === "get history error, please check your connection or input")
+            message.error(error)
+        else if (userContext.error === "get beneficiary error, please check the connection or input")
+            message.error(userContext.error)
+
+    }, [success, error, userContext.error])
+
+
     const onSearch = (value) => {
         getBeneficiry({ account_number: value })
     }
 
-    // data && console.log(data)
-    // console.log(success)
+
     return (
         <div>
             {beneficiary && customerInfor(beneficiary)}
