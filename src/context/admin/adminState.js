@@ -27,7 +27,11 @@ const AdminState = (props) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
+      dispatch({
+        type: LOADING,
+      });
       const res = await axios.get("/api/admin/personnel");
+
       dispatch({
         type: GET_LIST_EMPLOYEES,
         payload: res.data,
@@ -50,6 +54,7 @@ const AdminState = (props) => {
       const res = await axios.post(`api/admin/personnel`, person);
       dispatch({ type: ADD_PERSONNEL, payload: res });
     } catch (err) {
+      console.log("ADD ERR", err.response);
       dispatch({
         type: ERROR,
         payload: err.response,
@@ -94,6 +99,7 @@ const AdminState = (props) => {
       value={{
         listEmployees: state.listEmployees,
         loading: state.loading,
+        error: state.error,
         getListEmployees,
         deleteEmployee,
         updateEmployee,

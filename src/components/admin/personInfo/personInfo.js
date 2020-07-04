@@ -34,9 +34,13 @@ const formatNumber = (value) => {
 };
 
 const PersonInfo = (props) => {
+  const [form] = Form.useForm();
   const [person, setPerson] = useState(props.person);
   const { loading } = useContext(adminContext);
-  useEffect(() => {});
+  useEffect(() => {
+    setPerson(props.person);
+    form.setFieldsValue(props.person);
+  }, [props.person]);
   const formatPhoneNumber = (str) => {
     console.log(str);
     //Filter only numbers from the input
@@ -65,8 +69,16 @@ const PersonInfo = (props) => {
   };
   return (
     <div>
-      <Form {...layout}>
-        <Form.Item label="Họ tên">
+      <Form form={form} {...layout} onFinish={() => props.onConfirm(person)}>
+        <Form.Item
+          label="Full name"
+          name="fullname"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
           <Input
             value={person.fullname}
             onChange={(e) => {
@@ -76,13 +88,21 @@ const PersonInfo = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Tên đăng nhập">
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
           <Input
-            defaultValue={person.username}
+            value={person.username}
             onChange={(e) => setPerson({ ...person, username: e.target.value })}
           />
         </Form.Item>
-        <Form.Item label="Chức vụ">
+        <Form.Item label="Position">
           <Select
             value={person.admin}
             onSelect={(value) => {
@@ -98,11 +118,27 @@ const PersonInfo = (props) => {
         {/* <Form.Item label="Ngày sinh">
           <DatePicker format={dateFormat} />
         </Form.Item> */}
-        {isPassword()}
-        <Form.Item label="Email">
-          <Input defaultValue={person.email} />
+        {/* {isPassword()} */}
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input
+            value={person.email}
+            onChange={(e) => {
+              setPerson({
+                ...person,
+                email: e.target.value,
+              });
+            }}
+          />
         </Form.Item>
-        <Form.Item label="Điện thoại">
+        <Form.Item label="Phone">
           <Input
             value={person.phone}
             onChange={(value) => {
@@ -118,7 +154,7 @@ const PersonInfo = (props) => {
             loading={loading}
             className="offset-8"
             type="primary"
-            onClick={(e) => props.onConfirm(person)}
+            htmlType="submit"
           >
             Xác nhận
           </Button>

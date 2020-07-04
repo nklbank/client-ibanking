@@ -21,10 +21,10 @@ import PersonInfo from "../personInfo/personInfo";
 const { Option } = Select;
 
 const defaultPersonInfo = {
-  name: "",
+  fullname: "",
   username: "",
   password: "",
-  admin: "",
+  admin: 0,
   email: "",
   phone: "",
 };
@@ -35,7 +35,7 @@ const ListEmployees = (props) => {
       {
         name: "LuuDeffault",
         username: "default",
-        position: "default",
+        admin: "default",
         email: "default",
         phone: "default",
         key: "key",
@@ -46,32 +46,31 @@ const ListEmployees = (props) => {
   const columnsDefault = [
     { title: "ID", dataIndex: "id", key: "key" },
     {
-      title: "Tên",
+      title: "Full name",
       dataIndex: "fullname",
       key: "fullname",
       width: 1500,
     },
 
     {
-      title: "Chức vụ",
-      dataIndex: "position",
-      key: "position",
+      title: "Position",
+      dataIndex: "admin",
+      key: "admin",
+      render: (text, record) => (parseInt(text) > 0 ? "Admin" : "Employee"),
     },
     {
-      title: "Điện thoại",
+      title: "Phone",
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Thao tác",
+      title: "Action",
       key: "action",
       render: (text, record) => (
         <Space size="small" align="baseline">
           <Popconfirm
-            title="Bạn có chắc muốn xóa nhân viên này"
+            title="Sure you want to delete?"
             onConfirm={() => handlerDelete(record)}
-            okText="Xóa"
-            cancelText="Bỏ qua"
           >
             <Button type="text" className="text-danger">
               <DeleteOutlined />
@@ -100,9 +99,8 @@ const ListEmployees = (props) => {
     console.log("emplyee", employees);
     for (let index = 0; index < employees.length; index++) {
       const element = employees[index];
-      const position = element.admin > 0 ? "Admin" : "Employee";
 
-      newList[index] = { ...element, key: element.id, position: position };
+      newList[index] = { ...element, key: element.id };
       delete newList[index].password;
     }
     const count = employees.length;
@@ -134,6 +132,7 @@ const ListEmployees = (props) => {
       setModalVisible(false);
       setAddModalVisible(false);
     }
+    setSelectedPerson({ ...selectedPerson, loading: loading });
   }, [loading]);
   useEffect(() => {
     setDataSource(validateListEmployees(listEmployees));
@@ -146,7 +145,7 @@ const ListEmployees = (props) => {
 
     setDataSource({ data: newDS.data, count: newDS.data.length });
     console.log("newDS", newDS);
-    //deleteEmployee(person.id);
+    deleteEmployee(person.id);
   };
 
   const handlerEdit = (person) => {
@@ -157,27 +156,31 @@ const ListEmployees = (props) => {
   };
 
   const OnSubmitEdit = (person) => {
-    var personSubmit = { ...person };
-    delete personSubmit.position;
-    delete personSubmit.key;
-    updateEmployee(personSubmit);
     var newData = dataSource.data.map((data) => {
       if (data.id === person.id) return person;
       return data;
     });
     console.log("onSubmitEdit", { ...dataSource, data: newData });
     setDataSource({ ...dataSource, data: newData });
+    var personSubmit = { ...person };
+    delete personSubmit.key;
+    updateEmployee(personSubmit);
     console.log("edit person ", person);
   };
 
   const OnSubmitAdd = (person) => {
     console.log("ADD person ", person);
+
+    (async () => {
+      await addEmployee(person);
+      await getListEmployees();
+    })();
   };
 
   const renderAddWindow = () => {
     return (
       <Modal
-        title="Thêm nhân viên"
+        title="Add personnel"
         visible={isAddModalVisible}
         footer={null}
         onCancel={() => setAddModalVisible(false)}
@@ -197,7 +200,7 @@ const ListEmployees = (props) => {
     if (selectedPerson) {
       return (
         <Modal
-          title="Chỉnh sửa thông tin"
+          title="Information"
           visible={isModalVisible}
           footer={null}
           onCancel={() => setModalVisible(false)}
@@ -221,7 +224,7 @@ const ListEmployees = (props) => {
       <Row justify="end" gutter={[16, 24]}>
         <Col offset={12}>
           <Button type="primary" onClick={() => setAddModalVisible(true)}>
-            <UserAddOutlined /> Thêm nhân viên
+            <UserAddOutlined /> Add personnel
           </Button>
         </Col>
       </Row>
