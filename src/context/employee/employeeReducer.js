@@ -96,6 +96,13 @@ export default (state, action) => {
                 ...state,
                 loading: true
             };
+        case REFRESH:
+            return {
+                ...state,
+                error: null,
+                success: null,
+
+            }
         default:
             return state
     }
