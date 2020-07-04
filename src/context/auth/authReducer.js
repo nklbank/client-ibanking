@@ -22,6 +22,7 @@ export default (state, action) => {
         loading: false,
       };
     case USER_LOADED:
+      // localStorage.setItem("user", JSON.stringify(action.payload));
       return {
         ...state,
         isAuthenticated: true,
