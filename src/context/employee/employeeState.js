@@ -15,7 +15,8 @@ import {
     GETTRANSFERTHISTORY_ERROR,
     GET_DEBTHISTORY,
     GETDEBTHISTORY_ERROR,
-    SET_LOADING
+    SET_LOADING,
+    REFRESH
 } from '../types'
 
 const EmployeeState = props => {
@@ -24,6 +25,7 @@ const EmployeeState = props => {
         error: null,
         success: null,
         customerAccount: null,
+        addmoneyInfor: null,
         depositList: null,
         transferList: null,
         debtList: null,
@@ -133,6 +135,7 @@ const EmployeeState = props => {
         }
     };
 
+    const refresh = () => dispatch({ type: REFRESH })
     const setLoading = () => dispatch({ type: SET_LOADING });
 
     return (
@@ -145,6 +148,7 @@ const EmployeeState = props => {
                 depositList: state.depositList,
                 transferList: state.transferList,
                 debtList: state.debtList,
+                addmoneyInfor: state.addmoneyInfor,
                 addMoney,
                 createCustomerAccount,
                 depositHistory,

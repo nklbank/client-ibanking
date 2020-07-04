@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { Menu } from 'antd';
+import React, { useState, useContext, useEffect } from 'react'
+import { Menu, message } from 'antd';
 import {
     PieChartOutlined,
     DesktopOutlined,
     ContainerOutlined,
 } from '@ant-design/icons';
+
+import EmployeeContext from '../../context/employee/employeeContext'
+import UserContext from '../../context/user/userContext'
 
 import CreateAccount from '../employee/CreateAccount'
 import AddMoney from '../employee/AddMoney'
@@ -27,14 +30,18 @@ const comp = {
 
 
 const NavBarEmploy = props => {
+    const employeeContext = useContext(EmployeeContext);
+    const userContext = useContext(UserContext);
+
     const [key, setKey] = useState("0");
 
     const handleClick = (e) => {
         setKey(e.key);
     };
-
     return (
         <div className="row">
+            {/* {employeeContext.error && message.error(employeeContext.error)}
+            {userContext.error && message.error(userContext.error ? userContext.error : userContext.error.msg)} */}
             <div className="col-3">
                 <Menu
                     defaultSelectedKeys={['0']}

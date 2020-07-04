@@ -1,13 +1,14 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
     Form,
     Input,
     message,
-    Button
+    Button,
+    Modal
 } from 'antd';
 import UserContext from '../../context/user/userContext'
 import EmployeeContext from '../../context/employee/employeeContext'
-
+import Formatter from '../layout/CurrencyFormat'
 const { Search } = Input;
 const layout = {
     labelCol: {
@@ -24,25 +25,55 @@ const tailLayout = {
     },
 };
 
+const customerInfor = (beneficiary) => (
+    beneficiary.beneficiary_account && <div className="card mb-5 text-center ">
+        <img style={{ height: '200px' }} src="https://i.ytimg.com/vi/gx5nVJCG4ng/maxresdefault.jpg" className="card-img-top" alt="..." />
+        <div className="card-body">
+            <p className="card-text"><b >To:</b> {beneficiary.beneficiary_account}</p>
+            <h6 className="card-title">Account Name: {beneficiary.beneficiary_name}</h6>
+            <p className="card-text"><small className="text-muted">please enter amount</small></p>
+        </div>
+    </div>
+)
+
 const AddMoney = () => {
 
     const userContext = useContext(UserContext);
     const employeeContext = useContext(EmployeeContext);
 
     const {
-        // loading,
-        getBeneficiry
+        getBeneficiry,
+        beneficiary,
+        refresh
     } = userContext;
 
-    const { addMoney } = employeeContext;
+
+    useEffect(() => {
+        refresh()
+    }, [])
+
+    const addMoneySuccess = (addmoneyInfor, beneficiary) => {
+        return (<Modal
+            title="Add money successfully"
+            visible={isShow}
+            onOk={() => setIsShow(false)}
+            onCancel={() => setIsShow(false)}
+        >
+            <div className="text-center">
+                <div> <b>Account Number :</b> {addmoneyInfor.account_number}</div>
+                <div> <b>Account Name   :</b> {beneficiary.beneficiary_name}</div>
+                <div> <b>Account Balance:</b> {Formatter.format(addmoneyInfor.account_balance)}</div>
+            </div>
+        </Modal>)
+    }
+
+    const { addMoney, addmoneyInfor } = employeeContext;
+    const [isShow, setIsShow] = useState(true)
     const [form] = Form.useForm();
 
-    // const [search, SetSearch] = useState(false)
 
     const onSearch = (value) => {
-        // SetSearch(true);
         getBeneficiry({ account_number: value })
-        // SetSearch(false)
     }
 
     const onFinish = values => {
@@ -53,6 +84,8 @@ const AddMoney = () => {
 
     return (
         <div >
+            {addmoneyInfor && addMoneySuccess(addmoneyInfor, beneficiary)}
+            {beneficiary && customerInfor(beneficiary)}
             <Form
                 {...layout}
                 form={form}
@@ -67,12 +100,12 @@ const AddMoney = () => {
                     {/* <Input suffix="" /> */}
                     <Search placeholder="input search loading default" onSearch={onSearch} loading={userContext.loading} />
                 </Form.Item>
-                <Form.Item name='amount' label="Amount" rules={[{ required: true }]}>
-                    <Input />
+                <Form.Item name='amount' label="Amount" rules={[{ required: true }]} >
+                    <Input suffix="VNĐ" />
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit" loading={employeeContext.loading}>
+                    <Button type="primary" htmlType="submit" loading={employeeContext.loading} disabled={!beneficiary.beneficiary_account}>
                         Add Money
         </Button>
                 </Form.Item>

@@ -25,8 +25,8 @@ import {
   GET_OTP,
   DEL_DEBT,
   UPDATE_DEBT,
-  SET_LOADING
-
+  SET_LOADING,
+  REFRESH
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -386,6 +386,7 @@ const UserState = (props) => {
 
   const setLoading = () => dispatch({ type: SET_LOADING });
 
+  const refresh = () => dispatch({ type: REFRESH })
   return (
     <UserContext.Provider
       value={{
@@ -413,7 +414,8 @@ const UserState = (props) => {
         transferInterBank,
         getOTP,
         verifyOTP,
-        getAccountInfo
+        getAccountInfo,
+        refresh
       }}
     >
       {props.children}

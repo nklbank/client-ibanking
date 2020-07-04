@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import EmployeeContext from '../../context/employee/employeeContext'
 import UserContext from '../../context/user/userContext'
 import { Form, Input, Button, Select, Table } from 'antd';
-import TransferList from 'antd/lib/transfer/list';
+import Formatter from '../layout/CurrencyFormat'
 
 const { Option } = Select;
 const { Search } = Input;
@@ -15,65 +15,6 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-
-
-const columns = [
-    {
-        title: 'depositor',
-        dataIndex: 'depositor',
-    },
-    {
-        title: 'receiver',
-        dataIndex: 'receiver',
-        // sorter: {
-        //     compare: (a, b) => a.chinese - b.chinese,
-        //     multiple: 3,
-        // },
-    },
-    {
-        title: 'amount',
-        dataIndex: 'amount',
-        // sorter: {
-        //     compare: (a, b) => a.english - b.english,
-        //     multiple: 1,
-        // },
-    },
-    {
-        title: 'Bank',
-        dataIndex: 'partner_bank',
-        // sorter: {
-        //     compare: (a, b) => a.math - b.math,
-        //     multiple: 2,
-        // },
-    },
-    {
-        title: 'Description',
-        dataIndex: 'note',
-        // sorter: {
-        //     compare: (a, b) => a.english - b.english,
-        //     multiple: 1,
-        // },
-    },
-    {
-        title: 'charge_include',
-        dataIndex: 'charge_include',
-        // sorter: {
-        //     compare: (a, b) => a.english - b.english,
-        //     multiple: 1,
-        // },
-    },
-    {
-        title: 'Time',
-        dataIndex: 'timestamp',
-        // sorter: {
-        //     compare: (a, b) => a.english - b.english,
-        //     multiple: 1,
-        // },
-    },
-
-
-];
-
 const table = (data) => <table className="table">
     <thead>
         <tr>
@@ -83,27 +24,39 @@ const table = (data) => <table className="table">
             <th scope="col">amount</th>
             <th scope="col">Bank</th>
             <th scope="col">Description</th>
-            <th scope="col">charge_include</th>
+            <th scope="col">Charge</th>
             <th scope="col">Time</th>
 
         </tr>
     </thead>
     <tbody>
         {data.map((item, key) =>
-            <tr>
+            <tr key={key}>
                 <th scope="row" key={key}>{key + 1}</th>
                 <td>{item.depositor}</td>
                 <td>{item.receiver}</td>
-                <td>{item.amount}</td>
+                <td>{Formatter.format(item.amount)}</td>
                 <td>{item.partner_bank}</td>
                 <td>{item.note}</td>
-                <td>{item.charge_include}</td>
-                <td>{item.timestamp}</td>
+                <td>{item.charge_include == 1 ? item.depositor : item.receiver}</td>
+                <td>{new Date(item.timestamp).toLocaleString()}</td>
             </tr>
         )}
 
     </tbody>
 </table>
+
+const customerInfor = (beneficiary) => (
+    beneficiary.beneficiary_account && <div className="card mb-5 text-center ">
+        <img style={{ height: '200px' }} src="https://i.ytimg.com/vi/gx5nVJCG4ng/maxresdefault.jpg" className="card-img-top" alt="..." />
+        <div className="card-body">
+            <p className="card-text"><b >To:</b> {beneficiary.beneficiary_account}</p>
+            <h6 className="card-title">Account Name: {beneficiary.beneficiary_name}</h6>
+            <p className="card-text"><small className="text-muted">please enter amount</small></p>
+        </div>
+    </div>
+)
+
 
 const CustomerHistory = () => {
     const userContext = useContext(UserContext);
@@ -111,10 +64,12 @@ const CustomerHistory = () => {
 
     const {
         // loading,
-        getBeneficiry
+        getBeneficiry,
+        beneficiary,
+        refresh
     } = userContext;
 
-    const { success, error, depositHistory,
+    const { success, depositHistory,
         transferHistory,
         debtHistory,
         debtList,
@@ -139,9 +94,13 @@ const CustomerHistory = () => {
         }
     };
 
+
+    useEffect(() => {
+        refresh()
+    }, [])
+
     useEffect(() => {
         if (success === "get transfer successfully") {
-            console.log(transferList)
             setData(transferList)
         }
         else if (success === "get deposit successfully")
@@ -151,15 +110,15 @@ const CustomerHistory = () => {
 
     }, [success])
     const onSearch = (value) => {
-        // SetSearch(true);
         getBeneficiry({ account_number: value })
-        // SetSearch(false)
     }
 
-    data && console.log(data)
-    console.log(success)
+    // data && console.log(data)
+    // console.log(success)
     return (
         <div>
+            {beneficiary && customerInfor(beneficiary)}
+
             <Form {...layout} form={form} name="control-hooks" onFinish={onFinish}>
                 <Form.Item name='receiver' label="Receiver" rules={[{ required: true }]}>
                     {/* <Input suffix="" /> */}
@@ -169,6 +128,8 @@ const CustomerHistory = () => {
                     <Select
                         placeholder="Select a option and change input text above"
                         allowClear
+                    // onSelect={onFinish}
+                    // loading={loading}
                     >
                         <Option value="deposit">Deposit</Option>
                         <Option value="transfer">Transfer</Option>

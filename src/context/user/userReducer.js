@@ -20,7 +20,8 @@ import {
   ADD_DEBT,
   DEL_DEBT,
   UPDATE_DEBT,
-  SET_LOADING
+  SET_LOADING,
+  REFRESH
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -81,9 +82,16 @@ export default (state, action) => {
         ...state,
         beneficiary: action.payload,
         error: null,
-        // success: "success",
+        // success: "get beneficiary successfully",
         loading: false,
       };
+    case BENEFICIARY_ERROR:
+      return {
+        ...state,
+        error: "get beneficiary error, please check the connection or input",
+        success: null,
+        loading: false,
+      }
     case GET_TRANSACTIONS:
       return {
         ...state,
@@ -103,14 +111,14 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "Transfer successfully" ,
+        success: "Transfer successfully",
         loading: false
       }
     case POST_TRANSFERINTERBANK:
       return {
         ...state,
         error: null,
-        success: "Transfer successfully" ,
+        success: "Transfer successfully",
         loading: false
       }
 
@@ -189,6 +197,13 @@ export default (state, action) => {
         ...state,
         loading: true
       };
+    case REFRESH:
+      return {
+        ...state,
+        error: null,
+        success: null,
+        beneficiary: {}
+      }
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

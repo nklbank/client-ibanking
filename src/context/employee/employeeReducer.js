@@ -18,27 +18,29 @@ export default (state, action) => {
         case ADD_MONEY:
             return {
                 ...state,
-                erorr: null,
+                error: null,
+                addmoneyInfor: action.payload,
                 success: "add money successfully",
                 loading: false
             }
         case ADDMONEY_ERROR:
             return {
-                erorr: action.payload,
+                error: "add money error, please check your connection or input",
                 success: null,
                 loading: false
             }
         case CREATE_CUSTOMERACCOUNT:
             return {
                 ...state,
-                erorr: null,
+                error: null,
                 customerAccount: action.payload,
                 success: "create account successfully",
                 loading: false
             }
         case CREATECUSTOMERACCOUNT_ERROR:
+
             return {
-                erorr: action.payload,
+                error: "create account error, please check your connection or input",
                 success: null,
                 loading: false
             }
@@ -47,42 +49,45 @@ export default (state, action) => {
         case GET_DEPOSITHISTORY:
             return {
                 ...state,
-                erorr: null,
+                error: null,
                 depositList: action.payload,
                 success: "get deposit successfully",
                 loading: false
             }
         case GETDEPOSITHISTORY_ERROR:
             return {
-                erorr: action.payload,
+                // error: action.payload,
+                error: "get depository error, please check your connection or input",
                 success: null,
                 loading: false
             }
         case GET_TRANSFERHISTORY:
             return {
                 ...state,
-                erorr: null,
+                error: null,
                 transferList: action.payload,
                 success: "get transfer successfully",
                 loading: false
             }
         case GETTRANSFERTHISTORY_ERROR:
             return {
-                erorr: action.payload,
+                // error: action.payload,
+                error: "get transfer error, please check your connection or input",
                 success: null,
                 loading: false
             }
         case GET_DEBTHISTORY:
             return {
                 ...state,
-                erorr: null,
+                error: null,
                 debtList: action.payload,
                 success: "get debt successfully",
                 loading: false
             }
         case GETDEBTHISTORY_ERROR:
             return {
-                erorr: action.payload,
+                // error: action.payload,
+                error: "get debt error, please check your connection or input",
                 success: null,
                 loading: false
             }
