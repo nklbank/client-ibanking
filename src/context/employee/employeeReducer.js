@@ -10,7 +10,8 @@ import {
     GETTRANSFERTHISTORY_ERROR,
     GET_DEBTHISTORY,
     GETDEBTHISTORY_ERROR,
-    SET_LOADING
+    SET_LOADING,
+    REFRESH
 } from '../types'
 
 export default (state, action) => {
