@@ -18,6 +18,10 @@ import {
   USER_ERROR,
   GET_DEBTLIST,
   ADD_DEBT,
+  DEL_DEBT,
+  UPDATE_DEBT,
+  SET_LOADING,
+  REFRESH
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -29,7 +33,7 @@ export default (state, action) => {
         accountsOwner: action.payload,
         error: null,
         // success: "success",
-        otpSuccess: "abc",
+        // otpSuccess: "abc",
         loading: false,
       };
     // case ADD_BENEFICIARY:
@@ -51,7 +55,8 @@ export default (state, action) => {
     case ADD_BENEFICIARY:
       return {
         ...state,
-        addBeneficiaryRes: action.payload,
+        // addBeneficiaryRes: action.payload,
+        // beneficiaries: { ...state.beneficiaries, 4: { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name } },
         error: null,
         success: "add beneficiary successfully",
         loading: false,
@@ -77,9 +82,16 @@ export default (state, action) => {
         ...state,
         beneficiary: action.payload,
         error: null,
-        // success: "success",
+        // success: "get beneficiary successfully",
         loading: false,
       };
+    case BENEFICIARY_ERROR:
+      return {
+        ...state,
+        error: "get beneficiary error, please check the connection or input",
+        success: null,
+        loading: false,
+      }
     case GET_TRANSACTIONS:
       return {
         ...state,
@@ -99,14 +111,14 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: action.payload,
+        success: "Transfer successfully",
         loading: false
       }
     case POST_TRANSFERINTERBANK:
       return {
         ...state,
         error: null,
-        success: { msg: "Transfer successfully" },
+        success: "Transfer successfully",
         loading: false
       }
 
@@ -114,14 +126,16 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: action.payload
+        success: "verifily otp successfully",
+        loading: false
       }
 
     case GET_OTP:
       return {
         ...state,
         error: null,
-        success: action.payload
+        success: "send otp successfully, Check your email",
+        loading: false
       }
 
     case USER_ERROR:
@@ -132,17 +146,64 @@ export default (state, action) => {
         loading: false,
       };
     case ADD_DEBT:
-      const { debts } = state;
-      const { creditors } = debts;
-      console.log('debts', debts);
-      console.log('creditors', creditors);
+      {
+        const { debts } = state;
+        const { creditors } = debts;
+        console.log('debts', debts);
+        console.log('creditors', creditors);
+        return {
+          ...state,
+          debts: { ...debts, creditors: [...creditors, action.payload] },
+          error: null,
+          success: "add debt successfully",
+          loading: false,
+        };
+      }
+    case DEL_DEBT:
+      {
+        const { debts } = state;
+        const { creditors } = debts;
+        console.log('debts', debts);
+        const removedIndex = creditors.findIndex(obj => obj.id === action.payload)
+        return {
+          ...state,
+          debts: {
+            ...debts, creditors: [...creditors.slice(0, removedIndex),
+            ...creditors.slice(removedIndex + 1)]
+          },
+          error: null,
+          success: "delete debt successfully",
+          loading: false,
+        }
+      }
+    case UPDATE_DEBT:
+      {
+        const { debts } = state;
+        const { payers } = debts;
+        const { id } = action.payload;
+        const index = payers.findIndex(obj => obj.id = id);
+        const updatedDebt = Object.assign({ ...payers[index] }, { ...action.payload });
+        payers[index] = updatedDebt;
+        console.log('debts', debts)
+        return {
+          ...state,
+          error: null,
+          success: "update debt successfully",
+          loading: false,
+        };
+      }
+    case SET_LOADING:
       return {
         ...state,
-        debts: { ...debts, creditors: [...creditors, action.payload] },
-        error: null,
-        success: "add debt successfully",
-        loading: false,
+        loading: true
       };
+    case REFRESH:
+      return {
+        ...state,
+        error: null,
+        success: null,
+        beneficiary: {}
+      }
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

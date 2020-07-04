@@ -77,8 +77,8 @@ const AuthState = (props) => {
 
   // Load User
   const loadUser = async () => {
-    setAuthToken(localStorage.token.accessToken);
-
+    // setAuthToken(localStorage.token.accessToken);
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get("/api/customer/");
 
@@ -141,7 +141,7 @@ const AuthState = (props) => {
         user: state.user,
         error: state.error,
         // register,
-        // loadUser,
+        loadUser,
         login,
         logout,
         personnelLogin,

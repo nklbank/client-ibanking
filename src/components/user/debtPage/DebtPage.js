@@ -5,6 +5,7 @@ import { Table, Button, Tag, Space } from "antd";
 import { PlusOutlined } from '@ant-design/icons'
 import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
+import DelDebtModal from './del_debt_modal'
 
 var listAccount;
 
@@ -56,16 +57,29 @@ const columns = [
         key: "description",
     },
     {
+        title: "Thời gian",
+        dataIndex: "timestamp",
+        key: "timestamp",
+    },
+    {
         title: "Thao tác",
         dataIndex: "paid",
         key: "action",
-        render: (paid, { payer, visibleToPayer }) => {
-            const del_btn = (<Button danger size="small">Xóa</Button>);
+        render: (paid, { creditor, visibleToPayer, id }) => {
+            const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} />);
+
+
+            // const del_btn = (<Button danger size="small">Xóa</Button>);
             const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
             const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
-            if (paid === 0 && visibleToPayer === 0) return (<><Space>{del_btn}{remind_btn}</Space></>)
-            if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<><Space>{del_btn}{pay_btn}</Space></>)
-            else return (<>{del_btn}</>)
+            // if (paid === 0 && visibleToPayer === 0) return (<><Space>{del_btn}{remind_btn}</Space></>)
+            // if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<><Space>{del_btn}{pay_btn}</Space></>)
+            // else return (<>{del_btn}</>)
+            // nếu mình là chủ nợ
+            if (listAccount.indexOf(creditor) !== -1)
+                return visibleToPayer === 0 ? (<><Space>{del_btn(true)}{remind_btn}</Space></>) : (<>{del_btn(true)}</>)
+            else
+                return paid === 0 ? (<><Space>{del_btn(false)}{pay_btn}</Space></>) : (<>{del_btn(false)}</>)
         }
     }
 ];
@@ -74,8 +88,10 @@ const adjustedDataSource = (debts) => {
     const { creditors, payers } = debts;
     console.log('debts', debts)
     const visible_debt = [...payers].filter(debt => debt.visibleToPayer === 1)
-    const list = [...creditors, ...visible_debt]
-    console.log(creditors);
+    const list = [...creditors, ...visible_debt].sort(function (a, b) {
+        return a.id - b.id;
+    });
+    console.log('adjustedDataSource', list)
     return list
 }
 

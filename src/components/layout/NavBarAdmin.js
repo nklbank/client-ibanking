@@ -1,26 +1,13 @@
 import React, { useState, useContext } from "react";
 import { Menu, Button } from "antd";
-import { Link } from "react-router-dom";
 import {
-  AppstoreOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   PieChartOutlined,
   DesktopOutlined,
   ContainerOutlined,
-  MailOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import AuthContext from "../../context/auth/authContext";
-
-import Register from "../auth/Register";
-import UserAccount from "../user/UserAccount";
-import BeneficiaryInforPage from "../user/BeneficiaryInforPage";
 import ChangePasswordPage from "../user/ChangePasswordPage";
-import TransferPage from "../user/TransferPage";
-import TransactionsPage from "../user/transactionsPage/TransactionsPage";
-import { useEffect } from "react";
-import DebtPage from "../user/debtPage/DebtPage";
 import ListEmployees from "../admin/listStaff/ListEmployees";
 
 const comp = [
