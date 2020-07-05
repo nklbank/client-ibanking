@@ -74,7 +74,7 @@ const ListEmployees = (props) => {
           >
             <Button type="text" className="text-danger">
               <DeleteOutlined />
-              Xóa
+              Delete
             </Button>
           </Popconfirm>
           <Button
@@ -83,7 +83,7 @@ const ListEmployees = (props) => {
             onClick={() => handlerEdit(record)}
           >
             <EditOutlined />
-            Sửa
+            Edit
           </Button>
         </Space>
       ),
@@ -172,8 +172,10 @@ const ListEmployees = (props) => {
     console.log("ADD person ", person);
 
     (async () => {
-      await addEmployee(person);
-      await getListEmployees();
+      const { error } = await addEmployee(person);
+      if (!error) {
+        await getListEmployees();
+      }
     })();
   };
 

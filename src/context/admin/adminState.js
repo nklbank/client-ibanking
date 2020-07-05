@@ -59,6 +59,7 @@ const AdminState = (props) => {
         type: ERROR,
         payload: err.response,
       });
+      return { error: err };
     }
   };
 
