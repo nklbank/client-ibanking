@@ -9,10 +9,10 @@ import {
 import AuthContext from "../../context/auth/authContext";
 import ChangePasswordPage from "../user/ChangePasswordPage";
 import ListEmployees from "../admin/listStaff/ListEmployees";
-
+import Transactions from "../admin/transactions/Transactions";
 const comp = [
   {
-    title: "Danh sách nhân viên",
+    title: "Manage list personnel",
     content: <ListEmployees />,
   },
   {
@@ -21,7 +21,7 @@ const comp = [
   },
   {
     title: "Lịch sử giao dịch",
-    content: "Lịch sử giao dịch",
+    content: <Transactions />,
   },
   {
     title: "change password",
