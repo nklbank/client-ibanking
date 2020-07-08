@@ -1,14 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { Button, Space, Table, Tag } from "antd";
+import React, { useContext, useEffect, useState } from 'react';
+import io from 'socket.io-client'
 
-import { Table, Button, Tag, Space } from "antd";
-import { PlusOutlined } from '@ant-design/icons'
 import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
-import DelDebtModal from './del_debt_modal'
+import DelDebtModal from './del_debt_modal';
 import PayDebtModal from './pay_debt_modal';
 
+const { proxy } = require('../../../../package.json');
+
 var listAccount;
+let socket;
 
 const columns = [
     {
@@ -101,14 +103,23 @@ const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
 
 
-
 const DebtPage = () => {
     const [dataSource, setdataSource] = useState({});
+    const [username, setusername] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { debts, getDebts, accountsOwner } = userContext;
+    const { debts, getDebts, accountsOwner, getCustomerInfo } = userContext;
 
     listAccount = listAccounts(accountsOwner);
+    // const customerUsername = (async () => { const res = await getCustomerInfo(); const { username } = res; setusername(username) })();
+    // customerUsername();
+
+    (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
+
+
+    console.log('username', username)
+    console.log('proxy', proxy);
+
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
@@ -118,6 +129,23 @@ const DebtPage = () => {
     useEffect(() => {
         setdataSource({ ...debts })
     }, [debts]);
+
+
+    useEffect(() => {
+        if (username) {
+            socket = io(proxy);
+            console.log('socket', socket)
+
+            socket.emit('join', { username }, () => {
+            });
+
+            return () => {
+                socket.emit('disconnect')
+                socket.off();
+            }
+        }
+    }, [username])
+
 
     console.log('dataSource', dataSource)
     if (Object.keys(dataSource).length !== 0) {
@@ -131,9 +159,6 @@ const DebtPage = () => {
     else return (<div></div>)
 }
 
-DebtPage.propTypes = {
-
-}
 
 export default DebtPage
 

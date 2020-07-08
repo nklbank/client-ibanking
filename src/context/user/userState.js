@@ -362,6 +362,21 @@ const UserState = (props) => {
       });
     }
   };
+
+  const getCustomerInfo = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get(
+        "/api/customer");
+        console.log('res.data', res.data)
+      return res.data;
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
   return (
     <UserContext.Provider
       value={{
@@ -388,7 +403,8 @@ const UserState = (props) => {
         transferInterBank,
         getOTP,
         verifyOTP,
-        getAccountInfo
+        getAccountInfo,
+        getCustomerInfo
       }}
     >
       {props.children}
