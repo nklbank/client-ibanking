@@ -91,7 +91,7 @@ const BeneficiaryInforPage = () => {
 
     const userContext = useContext(UserContext)
 
-    const { beneficiaries, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo } = userContext
+    const { beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiry } = userContext
 
     const [dataSource, setDataSource] = useState(
         beneficiaries
@@ -184,6 +184,15 @@ const BeneficiaryInforPage = () => {
             name: values.remindname || ''
         })
 
+        // const { count, dataSource } = this.state;
+        // const newData = {
+        //   key: count,
+        //   name: `Edward King ${count}`,
+        //   age: 32,
+        //   address: `London, Park Lane no. ${count}`,
+        // };
+        // setDataSource(...dataSource, values);
+
         if (!addBeneficiaryRes) {
             //change state here for add
         }
@@ -200,7 +209,13 @@ const BeneficiaryInforPage = () => {
         // }, [])
     }
 
-    // console.log(dataSource);
+
+    const onSearchAccount = (e) => {
+        const value = e.target.value
+        // getBeneficiry({ account_number: value });
+    }
+
+    console.log(dataSource);
     return (
         <div>
             <Button
@@ -224,19 +239,26 @@ const BeneficiaryInforPage = () => {
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
+                    // initialValues={{ accountnumber: beneficiary.beneficiary_account, remindname: beneficiary.beneficiary_name }}
                     >
-                        <Form.Item
-                            name="remindname"
-                        // rules={[{ required: true, message: 'Please input beneficiary name!' }]}
-                        >
-                            <Input placeholder="Remind Name" />
-                        </Form.Item>
 
                         <Form.Item
                             name="accountnumber"
                             rules={[{ required: true, message: 'Please input beneficiary account number!' }]}
+                            onBlur={onSearchAccount}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
                         >
                             <Input placeholder="beneficiary account number" />
+                        </Form.Item>
+                        <Form.Item
+                            name="remindname"
+
+                        >
+                            <Input placeholder="Remind Name" value={beneficiary.beneficiary_name} />
                         </Form.Item>
 
                         <Form.Item >
