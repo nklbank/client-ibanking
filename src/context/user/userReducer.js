@@ -181,9 +181,8 @@ export default (state, action) => {
         const { debts } = state;
         const { payers } = debts;
         const { id } = action.payload;
-        const index = payers.findIndex(obj => obj.id = id);
-        const updatedDebt = Object.assign({ ...payers[index] }, { ...action.payload });
-        payers[index] = updatedDebt;
+        const index = payers.findIndex(obj => obj.id === id);
+        Object.assign(payers[index], {...action.payload}); 
         console.log('debts', debts)
         return {
           ...state,

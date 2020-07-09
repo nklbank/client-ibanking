@@ -1,13 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { Button, Space, Table, Tag } from "antd";
+import React, { useContext, useEffect, useState } from 'react';
+import io from 'socket.io-client'
 
-import { Table, Button, Tag, Space } from "antd";
-import { PlusOutlined } from '@ant-design/icons'
 import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
-import DelDebtModal from './del_debt_modal'
+import DelDebtModal from './del_debt_modal';
+import PayDebtModal from './pay_debt_modal';
+
+const { proxy } = require('../../../../package.json');
 
 var listAccount;
+let socket;
 
 const columns = [
     {
@@ -65,12 +68,13 @@ const columns = [
         title: "Thao tác",
         dataIndex: "paid",
         key: "action",
-        render: (paid, { creditor, visibleToPayer, id }) => {
+        render: (paid, { creditor, visibleToPayer, id, payer, amount }) => {
             const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} />);
 
 
             // const del_btn = (<Button danger size="small">Xóa</Button>);
-            const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
+            // const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
+            const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount}></PayDebtModal>)
             const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
             // if (paid === 0 && visibleToPayer === 0) return (<><Space>{del_btn}{remind_btn}</Space></>)
             // if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<><Space>{del_btn}{pay_btn}</Space></>)
@@ -79,7 +83,7 @@ const columns = [
             if (listAccount.indexOf(creditor) !== -1)
                 return visibleToPayer === 0 ? (<><Space>{del_btn(true)}{remind_btn}</Space></>) : (<>{del_btn(true)}</>)
             else
-                return paid === 0 ? (<><Space>{del_btn(false)}{pay_btn}</Space></>) : (<>{del_btn(false)}</>)
+                return paid === 0 ? (<><Space>{del_btn(false)}{pay_btn(id, creditor, payer, amount)}</Space></>) : (<>{del_btn(false)}</>)
         }
     }
 ];
@@ -99,14 +103,23 @@ const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
 
 
-
 const DebtPage = () => {
     const [dataSource, setdataSource] = useState({});
+    const [username, setusername] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { debts, getDebts, accountsOwner } = userContext;
+    const { debts, getDebts, accountsOwner, getCustomerInfo } = userContext;
 
     listAccount = listAccounts(accountsOwner);
+    // const customerUsername = (async () => { const res = await getCustomerInfo(); const { username } = res; setusername(username) })();
+    // customerUsername();
+
+    (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
+
+
+    console.log('username', username)
+    console.log('proxy', proxy);
+
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
@@ -116,6 +129,23 @@ const DebtPage = () => {
     useEffect(() => {
         setdataSource({ ...debts })
     }, [debts]);
+
+
+    useEffect(() => {
+        if (username) {
+            socket = io(proxy);
+            console.log('socket', socket)
+
+            socket.emit('join', { username }, () => {
+            });
+
+            return () => {
+                socket.emit('disconnect')
+                socket.off();
+            }
+        }
+    }, [username])
+
 
     console.log('dataSource', dataSource)
     if (Object.keys(dataSource).length !== 0) {
@@ -129,9 +159,6 @@ const DebtPage = () => {
     else return (<div></div>)
 }
 
-DebtPage.propTypes = {
-
-}
 
 export default DebtPage
 

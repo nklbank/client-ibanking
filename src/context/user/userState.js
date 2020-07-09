@@ -307,13 +307,11 @@ const UserState = (props) => {
     // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post("/api/account", account);
-      console.log("res.data", res.data);
-      return res.data;
-      // dispatch({
-      //   type: GET_ACCOUNT_INFO,
-      //   payload: res.data,
-      // });
+      const res = await axios.post(
+        "/api/account", account
+      );
+      console.log('res.data', res.data)
+      return res.data
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -359,8 +357,10 @@ const UserState = (props) => {
     // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post("/api/customer/update-debts", debt);
-
+      const res = await axios.post(
+        "/api/customer/update-debts", debt
+      );
+      console.log('updatedDebt', debt)
       dispatch({
         type: UPDATE_DEBT,
         payload: debt,
@@ -373,6 +373,20 @@ const UserState = (props) => {
     }
   };
 
+  const getCustomerInfo = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get(
+        "/api/customer");
+        console.log('res.data', res.data)
+      return res.data;
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
   const setLoading = () => dispatch({ type: SET_LOADING });
 
   const refresh = () => dispatch({ type: REFRESH });
@@ -404,7 +418,8 @@ const UserState = (props) => {
         getOTP,
         verifyOTP,
         getAccountInfo,
-        refresh,
+        getCustomerInfo,
+        refresh
       }}
     >
       {props.children}
