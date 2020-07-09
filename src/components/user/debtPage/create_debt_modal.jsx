@@ -4,15 +4,14 @@ import { Button, Input, Form, Modal, Select, Descriptions } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../../context/user/userContext';
-import io from 'socket.io-client'
-let socket;
 
-
-const { proxy } = require('../../../../package.json');
+// import io from 'socket.io-client'
+// let socket;
+// const { proxy } = require('../../../../package.json');
 
 const { Option } = Select;
 
-const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
+const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     const [form] = Form.useForm();
     // const [payer, setpayer] = useState(null)
     const [creditor, setcreditor] = useState(null)
@@ -41,6 +40,22 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
         }
     }
 
+    const sendNotif = (sender, receiver, message) => {
+        // socket = io(proxy);
+        console.log('socket', socket)
+        console.log('sender :>> ', sender);
+        console.log('receiver :>> ', receiver);
+
+        // socket.emit('join', { owner, receiver, message }, () => {
+        // });
+
+        socket.emit('sendNotif', { receiver, message })
+
+        return () => {
+            socket.emit('disconnect')
+            socket.off();
+        }
+    }
 
     return (
         <Modal
@@ -57,8 +72,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
 
 
                         onCreate(values);
-                        // const _payer = payer[0];
-                        const { beneficiary_account } = payer;
+                        const { beneficiary_account, username } = payer;
 
                         console.log('_payer :>> ', beneficiary_account);
                         const newDebt = { creditor, payer: beneficiary_account, amount, description };
@@ -71,7 +85,8 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                         setcreditor(null);
                         setpayer(null);
                         setdescription(null);
-                        // setpayerName("")
+
+                        sendNotif(owner, username, newDebt);
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
@@ -131,7 +146,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     );
 };
 
-const CreateDebtModal = () => {
+const CreateDebtModal = ({ owner, socket }) => {
     const [visible, setVisible] = useState(false);
 
     const onCreate = values => {
@@ -158,6 +173,8 @@ const CreateDebtModal = () => {
                 onCancel={() => {
                     setVisible(false);
                 }}
+                owner={owner}
+                socket={socket}
             />
         </div>
     );
