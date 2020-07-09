@@ -1,16 +1,16 @@
 import { Button, Space, Table, Tag } from "antd";
 import React, { useContext, useEffect, useState } from 'react';
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 
 import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
 import DelDebtModal from './del_debt_modal';
 import PayDebtModal from './pay_debt_modal';
 
-const { proxy } = require('../../../../package.json');
+// const { proxy } = require('../../../../package.json');
 
 var listAccount;
-let socket;
+// let socket;
 
 const columns = [
     {
@@ -114,11 +114,11 @@ const DebtPage = () => {
     // const customerUsername = (async () => { const res = await getCustomerInfo(); const { username } = res; setusername(username) })();
     // customerUsername();
 
-    (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
+    // (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
 
 
-    console.log('username', username)
-    console.log('proxy', proxy);
+    // console.log('username', username)
+    // console.log('proxy', proxy);
 
 
     if (Object.keys(dataSource).length === 0) {
@@ -131,20 +131,20 @@ const DebtPage = () => {
     }, [debts]);
 
 
-    useEffect(() => {
-        if (username) {
-            socket = io(proxy);
-            console.log('socket', socket)
+    // useEffect(() => {
+    //     if (username) {
+    //         socket = io(proxy);
+    //         console.log('socket', socket)
 
-            socket.emit('join', { username }, () => {
-            });
+    //         socket.emit('join', { username }, () => {
+    //         });
 
-            return () => {
-                socket.emit('disconnect')
-                socket.off();
-            }
-        }
-    }, [username])
+    //         return () => {
+    //             socket.emit('disconnect')
+    //             socket.off();
+    //         }
+    //     }
+    // }, [username])
 
 
     console.log('dataSource', dataSource)
