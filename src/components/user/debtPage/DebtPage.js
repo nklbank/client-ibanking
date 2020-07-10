@@ -1,16 +1,16 @@
 import { Button, Space, Table, Tag } from "antd";
 import React, { useContext, useEffect, useState } from 'react';
-import io from 'socket.io-client'
 
 import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
 import DelDebtModal from './del_debt_modal';
 import PayDebtModal from './pay_debt_modal';
 
+import io from 'socket.io-client'
 const { proxy } = require('../../../../package.json');
 
+let socket
 var listAccount;
-let socket;
 
 const columns = [
     {
@@ -106,6 +106,7 @@ const listAccounts = (accountsOwner) =>
 const DebtPage = () => {
     const [dataSource, setdataSource] = useState({});
     const [username, setusername] = useState(null)
+    const [message, setmessage] = useState(null)
 
     const userContext = useContext(UserContext);
     const { debts, getDebts, accountsOwner, getCustomerInfo } = userContext;
@@ -117,9 +118,24 @@ const DebtPage = () => {
     (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
 
 
-    console.log('username', username)
-    console.log('proxy', proxy);
 
+    // console.log('proxy', proxy);
+
+
+    useEffect(() => {
+        if (username) {
+            socket = io(proxy)
+            console.log('socket', socket)
+            console.log('username', username)
+
+            socket.emit('join', { username }, (error) => alert(error))
+
+            socket.on('getNotif', ({ message }) => {
+                setmessage({ ...message })
+                console.log('message', message)
+            })
+        }
+    }, [username])
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
@@ -131,27 +147,11 @@ const DebtPage = () => {
     }, [debts]);
 
 
-    useEffect(() => {
-        if (username) {
-            socket = io(proxy);
-            console.log('socket', socket)
-
-            socket.emit('join', { username }, () => {
-            });
-
-            return () => {
-                socket.emit('disconnect')
-                socket.off();
-            }
-        }
-    }, [username])
-
-
     console.log('dataSource', dataSource)
     if (Object.keys(dataSource).length !== 0) {
         const data = adjustedDataSource(dataSource)
         return (<>
-            <CreateDebtModal></CreateDebtModal>
+            <CreateDebtModal owner={username} socket={socket}></CreateDebtModal>
             <div><Table dataSource={data} columns={columns} /></div>
         </>
         )

@@ -1,19 +1,25 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Input, Form, Modal, Select, Descriptions } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../../context/user/userContext';
 
+// import io from 'socket.io-client'
+// let socket;
+// const { proxy } = require('../../../../package.json');
+
 const { Option } = Select;
 
-const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
+const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     const [form] = Form.useForm();
-    const [payer, setpayer] = useState(null)
+    // const [payer, setpayer] = useState(null)
     const [creditor, setcreditor] = useState(null)
     const [amount, setamount] = useState(0)
     const [description, setdescription] = useState(null)
-    const [payerName, setpayerName] = useState(null)
+    // const [payerName, setpayerName] = useState(null)
+
+    const [payer, setpayer] = useState(null)
 
     const userContext = useContext(UserContext);
     const { addDebt, accountsOwner, beneficiaries, debts, getAccountInfo } = userContext
@@ -26,10 +32,31 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
         const payerInfo = value.length !== 0 ? await getAccountInfo({ account_number: value }) : null;
         console.log('payerInfo', payerInfo);
         if (payerInfo) {
-            setpayer(value)
-            setpayerName(payerInfo.beneficiary_name)
+            setpayer({ ...payerInfo })
+            console.log('payer :>> ', payer);
+
+            // setpayer(value)
+            // setpayerName(payerInfo.beneficiary_name)
         }
     }
+
+    const sendNotif = (sender, receiver, message) => {
+        // socket = io(proxy);
+        console.log('socket', socket)
+        console.log('sender :>> ', sender);
+        console.log('receiver :>> ', receiver);
+
+        // socket.emit('join', { owner, receiver, message }, () => {
+        // });
+
+        socket.emit('sendNotif', { receiver, message })
+
+        return () => {
+            socket.emit('disconnect')
+            socket.off();
+        }
+    }
+
     return (
         <Modal
             visible={visible}
@@ -45,8 +72,10 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
 
 
                         onCreate(values);
-                        const _payer = payer[0];
-                        const newDebt = { creditor, payer: _payer, amount, description };
+                        const { beneficiary_account, username } = payer;
+
+                        console.log('_payer :>> ', beneficiary_account);
+                        const newDebt = { creditor, payer: beneficiary_account, amount, description };
                         console.log('newDebt :>> ', newDebt);
                         addDebt(newDebt)
                         console.log('debts :>> ', debts);
@@ -56,7 +85,8 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                         setcreditor(null);
                         setpayer(null);
                         setdescription(null);
-                        setpayerName("")
+
+                        sendNotif(owner, username, newDebt);
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
@@ -92,7 +122,12 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
                     <Select mode="tags" onChange={(value) => { enterPayer(value) }} tokenSeparators={[',']}>
                         {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account}</Option>))}
                     </Select>
-                    <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions>
+                    {/* <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions> */}
+
+                    {payer !== null ?
+                        <Descriptions><Descriptions.Item>{payer.beneficiary_name}</Descriptions.Item></Descriptions>
+                        : null}
+
                 </Form.Item>
                 <Form.Item name="amount" label="Số tiền"
                     rules={[
@@ -111,13 +146,16 @@ const CreateDebtForm = ({ visible, onCreate, onCancel }) => {
     );
 };
 
-const CreateDebtModal = () => {
+const CreateDebtModal = ({ owner, socket }) => {
     const [visible, setVisible] = useState(false);
 
     const onCreate = values => {
         console.log('Received values of form: ', values);
         setVisible(false);
     };
+
+
+
 
     return (
         <div>
@@ -135,6 +173,8 @@ const CreateDebtModal = () => {
                 onCancel={() => {
                     setVisible(false);
                 }}
+                owner={owner}
+                socket={socket}
             />
         </div>
     );
