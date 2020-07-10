@@ -1,4 +1,4 @@
-import { Button, Space, Table, Tag } from "antd";
+import { Button, Space, Table, Tag, notification, message } from "antd";
 import React, { useContext, useEffect, useState } from 'react';
 
 import UserContext from '../../../context/user/userContext';
@@ -99,6 +99,16 @@ const adjustedDataSource = (debts) => {
     return list
 }
 
+const openNotification = (message) => {
+    notification.open({
+        message: 'Notification Title',
+        description: JSON.stringify(message),
+        onClick: () => {
+            console.log('Notification Clicked!');
+        },
+    });
+};
+
 const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
 
@@ -128,7 +138,7 @@ const DebtPage = () => {
             console.log('socket', socket)
             console.log('username', username)
 
-            socket.emit('join', { username }, (error) => alert(error))
+            socket.emit('join', { username }, (error) => console.log('error', error))
 
             socket.on('getNotif', ({ message }) => {
                 setmessage({ ...message })
@@ -136,6 +146,15 @@ const DebtPage = () => {
             })
         }
     }, [username])
+
+    useEffect(() => {
+        if (message)
+        {
+            console.log('message :>>', message)
+            openNotification(message)
+
+        }
+    }, [message])
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
