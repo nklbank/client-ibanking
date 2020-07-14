@@ -5,6 +5,7 @@ import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
 import DelDebtModal from './del_debt_modal';
 import PayDebtModal from './pay_debt_modal';
+// import { openNotification } from './notification'
 
 import io from 'socket.io-client'
 const { proxy } = require('../../../../package.json');
@@ -99,8 +100,9 @@ const adjustedDataSource = (debts) => {
     return list
 }
 
-const openNotification = (message) => {
-    notification.open({
+const openNotification = (message, type) => {
+    const _type = type === "create" ? "info" : (type === "del" ? "warning" : "success")
+    notification[_type]({
         message: 'Notification Title',
         description: JSON.stringify(message),
         onClick: () => {
@@ -128,10 +130,6 @@ const DebtPage = () => {
     (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
 
 
-
-    // console.log('proxy', proxy);
-
-
     useEffect(() => {
         if (username) {
             socket = io(proxy)
@@ -148,11 +146,10 @@ const DebtPage = () => {
     }, [username])
 
     useEffect(() => {
-        if (message)
-        {
+        if (message) {
             console.log('message :>>', message)
-            openNotification(message)
 
+            openNotification(message, "create")
         }
     }, [message])
 
