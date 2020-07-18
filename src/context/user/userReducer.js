@@ -21,7 +21,8 @@ import {
   DEL_DEBT,
   UPDATE_DEBT,
   SET_LOADING,
-  REFRESH
+  REFRESH,
+  GET_NOTIFS
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -56,7 +57,7 @@ export default (state, action) => {
       return {
         ...state,
         // addBeneficiaryRes: action.payload,
-        // beneficiaries: { ...state.beneficiaries, 4: { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name } },
+        // beneficiaries: { ...state.benefinotifsciaries, 4: { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name } },
         error: null,
         success: "add beneficiary successfully",
         loading: false,
@@ -182,7 +183,7 @@ export default (state, action) => {
         const { payers } = debts;
         const { id } = action.payload;
         const index = payers.findIndex(obj => obj.id === id);
-        Object.assign(payers[index], {...action.payload}); 
+        Object.assign(payers[index], { ...action.payload });
         console.log('debts', debts)
         return {
           ...state,
@@ -202,6 +203,17 @@ export default (state, action) => {
         error: null,
         success: null,
         beneficiary: {}
+      }
+    case GET_NOTIFS:
+      {
+        console.log('action.payload', action.payload)
+        console.log('state', state)
+        return {
+          ...state,
+          notifs: action.payload,
+          error: null,
+          loading: false,
+        }
       }
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
