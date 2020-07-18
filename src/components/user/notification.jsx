@@ -2,20 +2,35 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Dropdown, Badge, Menu, Typography } from 'antd'
 import { BellOutlined, CheckCircleTwoTone, ExclamationCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
 import UserContext from '../../context/user/userContext';
+import io from 'socket.io-client'
 
 const { Text } = Typography
 
+// const { proxy } = require('../../../../package.json');
+// let socket
 
-function Notification(props) {
+function Notification({socket}) {
 
     const userContext = useContext(UserContext);
-    const { notifs, getNotifs, getCustomerInfo } = userContext;
+    const { notifs, getNotifs, getCustomerInfo, addNotif } = userContext;
     const [menu, setMenu] = useState(<Menu><Menu.Item></Menu.Item></Menu>)
     const [username, setUsername] = useState(null);
     (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setUsername(username) })();
-
+    
     useEffect(() => {
         getNotifs(username)
+        if (username) {
+            // socket = io(proxy)
+            console.log('socket', socket)
+            console.log('username', username)
+
+            socket.emit('join', { username }, (error) => console.log('error', error))
+
+            socket.on('getNotif', ({ message }) => {
+                // "message": {"id":6,"sender":"54321","receiver":"444749419483","type":"createdebt","timestamp":"2020-07-18T12:28:33.000Z","amount":"200000","unread":1,"fullname":"NGUYEN THI NGAN KHANH"}
+                addNotif(message)
+            })
+        }
     }, [username])
 
     useEffect(() => {
@@ -40,7 +55,7 @@ function Notification(props) {
                     break;
                 case 'hidedebt':
                     description = "đã ẩn khoản nợ"
-                    icon = (<CloseCircleTwoTone twoToneColor="#fa7d09"/>)
+                    icon = (<CloseCircleTwoTone twoToneColor="#fa7d09" />)
                     break;
                 default:
                     break;
@@ -50,7 +65,6 @@ function Notification(props) {
         })
         setMenu(<Menu>{items}</Menu>)
     }, [notifs])
-
 
     return (
         <Dropdown overlay={menu} trigger={['click']}>

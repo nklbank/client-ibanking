@@ -22,7 +22,8 @@ import {
   UPDATE_DEBT,
   SET_LOADING,
   REFRESH,
-  GET_NOTIFS
+  GET_NOTIFS,
+  ADD_NOTIFS
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -206,8 +207,6 @@ export default (state, action) => {
       }
     case GET_NOTIFS:
       {
-        console.log('action.payload', action.payload)
-        console.log('state', state)
         return {
           ...state,
           notifs: action.payload,
@@ -215,6 +214,15 @@ export default (state, action) => {
           loading: false,
         }
       }
+    case ADD_NOTIFS: {
+      const { notifs } = state
+      return {
+        ...state,
+        notifs: [...notifs, action.payload],
+        error: null,
+        loading: false,
+      }
+    }
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

@@ -7,10 +7,10 @@ import DelDebtModal from './del_debt_modal';
 import PayDebtModal from './pay_debt_modal';
 // import { openNotification } from './notification'
 
-import io from 'socket.io-client'
-const { proxy } = require('../../../../package.json');
+// import io from 'socket.io-client'
+// const { proxy } = require('../../../../package.json');
 
-let socket
+// let socket
 var listAccount;
 
 const columns = [
@@ -115,9 +115,9 @@ const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
 
 
-const DebtPage = () => {
+const DebtPage = ({ socket, username }) => {
     const [dataSource, setdataSource] = useState({});
-    const [username, setusername] = useState(null)
+    // const [username, setusername] = useState(null)
     const [message, setmessage] = useState(null)
 
     const userContext = useContext(UserContext);
@@ -127,23 +127,23 @@ const DebtPage = () => {
     // const customerUsername = (async () => { const res = await getCustomerInfo(); const { username } = res; setusername(username) })();
     // customerUsername();
 
-    (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
+    // (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
 
+    console.log('socket', socket)
+    // useEffect(() => {
+    //     if (username) {
+    //         socket = io(proxy)
+    //         console.log('socket', socket)
+    //         console.log('username', username)
 
-    useEffect(() => {
-        if (username) {
-            socket = io(proxy)
-            console.log('socket', socket)
-            console.log('username', username)
+    //         socket.emit('join', { username }, (error) => console.log('error', error))
 
-            socket.emit('join', { username }, (error) => console.log('error', error))
-
-            socket.on('getNotif', ({ message }) => {
-                setmessage({ ...message })
-                console.log('message', message)
-            })
-        }
-    }, [username])
+    //         socket.on('getNotif', ({ message }) => {
+    //             setmessage({ ...message })
+    //             console.log('message', message)
+    //         })
+    //     }
+    // }, [username])
 
     useEffect(() => {
         if (message) {

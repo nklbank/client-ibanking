@@ -154,9 +154,6 @@ const CreateDebtModal = ({ owner, socket }) => {
         setVisible(false);
     };
 
-
-
-
     return (
         <div>
             <Button

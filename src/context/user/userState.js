@@ -27,7 +27,8 @@ import {
   UPDATE_DEBT,
   SET_LOADING,
   REFRESH,
-  GET_NOTIFS
+  GET_NOTIFS,
+  ADD_NOTIFS
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -409,6 +410,11 @@ const UserState = (props) => {
       });
     }
   }
+
+  const addNotif = (notif) => dispatch({
+    type: ADD_NOTIFS,
+    payload: notif,
+  });
   return (
     <UserContext.Provider
       value={{
@@ -440,7 +446,8 @@ const UserState = (props) => {
         getAccountInfo,
         getCustomerInfo,
         refresh,
-        getNotifs
+        getNotifs,
+        addNotif
       }}
     >
       {props.children}
