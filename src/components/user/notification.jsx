@@ -9,14 +9,14 @@ const { Text } = Typography
 // const { proxy } = require('../../../../package.json');
 // let socket
 
-function Notification({socket}) {
+function Notification({ socket }) {
 
     const userContext = useContext(UserContext);
-    const { notifs, getNotifs, getCustomerInfo, addNotif } = userContext;
+    const { notifs, getNotifs, getCustomerInfo, addNotif, getDebts } = userContext;
     const [menu, setMenu] = useState(<Menu><Menu.Item></Menu.Item></Menu>)
     const [username, setUsername] = useState(null);
     (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setUsername(username) })();
-    
+
     useEffect(() => {
         getNotifs(username)
         if (username) {
@@ -28,7 +28,12 @@ function Notification({socket}) {
 
             socket.on('getNotif', ({ message }) => {
                 // "message": {"id":6,"sender":"54321","receiver":"444749419483","type":"createdebt","timestamp":"2020-07-18T12:28:33.000Z","amount":"200000","unread":1,"fullname":"NGUYEN THI NGAN KHANH"}
+                console.log('message :>> ', message);
                 addNotif(message)
+                console.log('notifs :>> ', notifs);
+                const { type } = message
+                if (type === "createdebt")
+                    getDebts()
             })
         }
     }, [username])
@@ -38,7 +43,7 @@ function Notification({socket}) {
         const items = notifs.map(notif => {
             const { fullname, type, timestamp, amount } = notif
             var _timestamp = new Date(timestamp)
-            var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth()}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${_timestamp.getMinutes()}`
+            var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${_timestamp.getMinutes()}`
             var description, icon
             switch (type) {
                 case 'transfer':

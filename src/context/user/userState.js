@@ -395,7 +395,6 @@ const UserState = (props) => {
   const refresh = () => dispatch({ type: REFRESH });
 
   const getNotifs = async (username) => {
-    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(`/api/notifs/${username}`);
       console.log('res', res)
@@ -411,10 +410,26 @@ const UserState = (props) => {
     }
   }
 
+  // update state.notifs
   const addNotif = (notif) => dispatch({
     type: ADD_NOTIFS,
     payload: notif,
   });
+
+  // update database.notifs
+  const postNotif = async (notif) => {
+    try {
+      const ret =  await axios.post(`/api/notifs`, notif);
+      return ret.data
+    } catch (error) {
+      dispatch({
+        type: USER_ERROR,
+        payload: error.response,
+      });
+    }
+
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -447,7 +462,8 @@ const UserState = (props) => {
         getCustomerInfo,
         refresh,
         getNotifs,
-        addNotif
+        addNotif,
+        postNotif
       }}
     >
       {props.children}

@@ -121,7 +121,7 @@ const DebtPage = ({ socket, username }) => {
     const [message, setmessage] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { debts, getDebts, accountsOwner, getCustomerInfo } = userContext;
+    const { debts, getDebts, accountsOwner, getCustomerInfo, notifs } = userContext;
 
     listAccount = listAccounts(accountsOwner);
     // const customerUsername = (async () => { const res = await getCustomerInfo(); const { username } = res; setusername(username) })();
@@ -160,7 +160,7 @@ const DebtPage = ({ socket, username }) => {
 
     useEffect(() => {
         setdataSource({ ...debts })
-    }, [debts]);
+    }, [debts, notifs]);
 
 
     console.log('dataSource', dataSource)

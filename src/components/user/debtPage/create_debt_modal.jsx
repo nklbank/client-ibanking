@@ -13,16 +13,14 @@ const { Option } = Select;
 
 const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     const [form] = Form.useForm();
-    // const [payer, setpayer] = useState(null)
     const [creditor, setcreditor] = useState(null)
     const [amount, setamount] = useState(0)
     const [description, setdescription] = useState(null)
-    // const [payerName, setpayerName] = useState(null)
 
     const [payer, setpayer] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { addDebt, accountsOwner, beneficiaries, debts, getAccountInfo } = userContext
+    const { addDebt, accountsOwner, beneficiaries, debts, getAccountInfo, postNotif } = userContext
     console.log('beneficiaries :>> ', beneficiaries);
     const creditorAccounts = accountsOwner.map(account => account.account_number);
     const intraBeneficiaries = beneficiaries.filter(account => account.partner_bank === null)
@@ -34,21 +32,13 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
         if (payerInfo) {
             setpayer({ ...payerInfo })
             console.log('payer :>> ', payer);
-
-            // setpayer(value)
-            // setpayerName(payerInfo.beneficiary_name)
         }
     }
 
     const sendNotif = (sender, receiver, message) => {
-        // socket = io(proxy);
         console.log('socket', socket)
         console.log('sender :>> ', sender);
         console.log('receiver :>> ', receiver);
-
-        // socket.emit('join', { owner, receiver, message }, () => {
-        // });
-
         socket.emit('sendNotif', { receiver, message })
 
         return () => {
@@ -86,7 +76,45 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                         setpayer(null);
                         setdescription(null);
 
-                        sendNotif(owner, username, newDebt);
+                        (async () => {
+                            const ret = await postNotif({
+                                sender: creditor, receiver: payer.beneficiary_account[0], type: "createdebt", amount
+                            })
+                            console.log('creditorAccounts[0] :>> ', creditorAccounts[0]);
+                            const accountInfo = await getAccountInfo({ account_number: creditorAccounts[0] })
+                            const { beneficiary_name } = accountInfo
+                            console.log('ret :>> ', ret);
+                            const { insertId, now } = ret
+                            console.log('insertId :>> ', insertId);
+                            console.log('beneficiary_name :>> ', beneficiary_name);
+                            const message = {
+                                id: insertId,
+                                sender: creditor,
+                                receiver: payer.beneficiary_account[0],
+                                type: "createdebt",
+                                amount,
+                                fullname: beneficiary_name,
+                                timestamp: now,
+                                description
+                            }
+                            sendNotif(owner, username, message);
+                        }
+                        )()
+                        // console.log('ret :>> ', ret);
+                        // const { insertId, now } = ret
+                        // console.log('insertId :>> ', insertId);
+                        // console.log('beneficiary_name :>> ', beneficiary_name);
+                        // const message = {
+                        //     id: insertId,
+                        //     sender: creditor,
+                        //     receiver: payer.beneficiary_account[0],
+                        //     type: "createdebt",
+                        //     amount,
+                        //     fullname: beneficiary_name,
+                        //     timestamp: now,
+                        //     description
+                        // }
+                        // sendNotif(owner, username, message);
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
