@@ -218,7 +218,7 @@ export default (state, action) => {
       const { notifs } = state
       return {
         ...state,
-        notifs: [...notifs, action.payload],
+        notifs: [action.payload, ...notifs],
         error: null,
         loading: false,
       }

@@ -2,12 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Dropdown, Badge, Menu, Typography } from 'antd'
 import { BellOutlined, CheckCircleTwoTone, ExclamationCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
 import UserContext from '../../context/user/userContext';
-import io from 'socket.io-client'
 
 const { Text } = Typography
-
-// const { proxy } = require('../../../../package.json');
-// let socket
 
 function Notification({ socket }) {
 
@@ -20,7 +16,6 @@ function Notification({ socket }) {
     useEffect(() => {
         getNotifs(username)
         if (username) {
-            // socket = io(proxy)
             console.log('socket', socket)
             console.log('username', username)
 
@@ -41,32 +36,33 @@ function Notification({ socket }) {
     useEffect(() => {
 
         const items = notifs.map(notif => {
-            const { fullname, type, timestamp, amount } = notif
+            const { fullname, type, timestamp, amount, description } = notif
             var _timestamp = new Date(timestamp)
             var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${_timestamp.getMinutes()}`
-            var description, icon
+            var action, icon
             switch (type) {
                 case 'transfer':
-                    description = "đã chuyển khoản"
+                    action = "đã chuyển khoản"
                     icon = (<CheckCircleTwoTone twoToneColor="#52c41a" />)
                     break;
                 case 'paydebt':
-                    description = "đã thanh toán khoản nợ"
+                    action = "đã thanh toán khoản nợ"
                     icon = (<CheckCircleTwoTone twoToneColor="#52c41a" />)
                     break;
                 case 'createdebt':
-                    description = "đã tạo nhắc nợ"
+                    action = "đã tạo nhắc nợ"
                     icon = (<ExclamationCircleTwoTone />)
                     break;
                 case 'hidedebt':
-                    description = "đã ẩn khoản nợ"
+                    action = "đã ẩn khoản nợ"
                     icon = (<CloseCircleTwoTone twoToneColor="#fa7d09" />)
                     break;
                 default:
                     break;
             }
-            var ret = `${fullname} ${description} ${amount !== null ? amount : ""}<br>${timestring}`
-            return <Menu.Item>{icon} <Text strong>{fullname}</Text> {description} {amount !== null ? amount + "VND" : ""}<br /><div style={{ fontSize: "small", color: "gray" }}>{timestring}</div></Menu.Item>
+            return <Menu.Item>{icon} <Text strong>{fullname}</Text> {action} {amount !== null ? amount + "VND" : ""}
+                <div style={{ fontSize: "smaill" }}>{description ? `"${description}"` : ""}</div>
+                <div style={{ fontSize: "x-small", color: "gray" }}>{timestring}</div></Menu.Item>
         })
         setMenu(<Menu>{items}</Menu>)
     }, [notifs])
