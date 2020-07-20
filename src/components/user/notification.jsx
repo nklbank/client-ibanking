@@ -26,9 +26,9 @@ function Notification({ socket }) {
                 console.log('message :>> ', message);
                 addNotif(message)
                 console.log('notifs :>> ', notifs);
-                const { type } = message
-                if (type === "createdebt")
-                    getDebts()
+                // const { type } = message
+                // // if (type === "createdebt")
+                getDebts()
             })
         }
     }, [username])
