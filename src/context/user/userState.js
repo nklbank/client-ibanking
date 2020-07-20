@@ -348,6 +348,7 @@ const UserState = (props) => {
         type: DEL_DEBT,
         payload: id,
       });
+      return res.data
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -368,6 +369,7 @@ const UserState = (props) => {
         type: UPDATE_DEBT,
         payload: debt,
       });
+      return res.data
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -419,7 +421,7 @@ const UserState = (props) => {
   // update database.notifs
   const postNotif = async (notif) => {
     try {
-      const ret =  await axios.post(`/api/notifs`, notif);
+      const ret = await axios.post(`/api/notifs`, notif);
       return ret.data
     } catch (error) {
       dispatch({

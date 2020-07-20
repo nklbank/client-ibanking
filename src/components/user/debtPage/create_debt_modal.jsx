@@ -97,29 +97,14 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                                 timestamp: now,
                                 description
                             }
+                            console.log('owner :>> ', owner);
                             sendNotif(owner, username, message);
                         }
                         )()
-                        // console.log('ret :>> ', ret);
-                        // const { insertId, now } = ret
-                        // console.log('insertId :>> ', insertId);
-                        // console.log('beneficiary_name :>> ', beneficiary_name);
-                        // const message = {
-                        //     id: insertId,
-                        //     sender: creditor,
-                        //     receiver: payer.beneficiary_account[0],
-                        //     type: "createdebt",
-                        //     amount,
-                        //     fullname: beneficiary_name,
-                        //     timestamp: now,
-                        //     description
-                        // }
-                        // sendNotif(owner, username, message);
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
-
             }}
         >
             <Form
@@ -209,4 +194,3 @@ CreateDebtModal.propTypes = {
 }
 
 export default CreateDebtModal
-

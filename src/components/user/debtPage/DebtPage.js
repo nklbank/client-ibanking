@@ -64,17 +64,11 @@ const columns = [
         title: "Thao tác",
         dataIndex: "paid",
         key: "action",
-        render: (paid, { creditor, visibleToPayer, id, payer, amount }) => {
-            const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} />);
-
-
-            // const del_btn = (<Button danger size="small">Xóa</Button>);
-            // const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
-            const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount}></PayDebtModal>)
+        render: (paid, { creditor, visibleToPayer, id, payer, amount, socket, owner }) => {
+            console.log('socket in table', socket)
+            const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} socket={socket} owner={owner} />);
+            const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount} socket={socket}></PayDebtModal>)
             const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
-            // if (paid === 0 && visibleToPayer === 0) return (<><Space>{del_btn}{remind_btn}</Space></>)
-            // if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<><Space>{del_btn}{pay_btn}</Space></>)
-            // else return (<>{del_btn}</>)
             // nếu mình là chủ nợ
             if (listAccount.indexOf(creditor) !== -1)
                 return visibleToPayer === 0 ? (<><Space>{del_btn(true)}{remind_btn}</Space></>) : (<>{del_btn(true)}</>)
@@ -84,11 +78,11 @@ const columns = [
     }
 ];
 
-const adjustedDataSource = (debts) => {
+const adjustedDataSource = (debts, socket, username) => {
     const { creditors, payers } = debts;
     console.log('debts', debts)
     const visible_debt = [...payers].filter(debt => debt.visibleToPayer === 1)
-    const list = [...creditors, ...visible_debt].sort(function (a, b) {
+    const list = [...creditors, ...visible_debt].map(element => ({ ...element, socket, owner: username })).sort(function (a, b) {
         return a.id - b.id;
     });
     console.log('adjustedDataSource', list)
@@ -119,9 +113,9 @@ const DebtPage = ({ socket, username }) => {
     const { debts, getDebts, accountsOwner, notifs } = userContext;
 
     listAccount = listAccounts(accountsOwner);
-  
+
     console.log('socket', socket)
-  
+
 
     useEffect(() => {
         if (message) {
@@ -143,7 +137,7 @@ const DebtPage = ({ socket, username }) => {
 
     console.log('dataSource', dataSource)
     if (Object.keys(dataSource).length !== 0) {
-        const data = adjustedDataSource(dataSource)
+        const data = adjustedDataSource(dataSource, socket, username)
         return (<>
             <CreateDebtModal owner={username} socket={socket}></CreateDebtModal>
             <div><Table dataSource={data} columns={columns} /></div>
