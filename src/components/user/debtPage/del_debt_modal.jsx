@@ -48,23 +48,24 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
                             const type = permanentDel ? "deldebt" : "hidedebt"
                             const { creditor, payer, amount } = affectedDebt;
                             console.log('affectedDebt :>> ', affectedDebt);
-                            const ret = await postNotif({
-                                sender: creditor, receiver: payer, type, amount
-                            })
-                            console.log('creditor :>> ', creditor);
-                            const receiverInfo = await getAccountInfo({ account_number: creditor })
-                            console.log('creditorInfo :>> ', receiverInfo);
-                            const senderInfo = await getAccountInfo({ account_number: payer })
-                            console.log('creditorInfo :>> ', receiverInfo);
-                            console.log('payerInfo :>> ', senderInfo);
+
+                            // "hidedebt" means payer wanted to, payer is notif sender
+                            const sender = type === "hidedebt" ? payer : creditor
+                            const receiver = type === "hidedebt" ? creditor : payer
+
+                            const ret = await postNotif({ sender, receiver, type, amount })
+                            const receiverInfo = await getAccountInfo({ account_number: receiver })
+                            const senderInfo = await getAccountInfo({ account_number: sender })
+                            console.log('receiverInfo :>> ', receiverInfo);
+                            console.log('senderInfo :>> ', senderInfo);
 
                             const { username } = receiverInfo
                             const { beneficiary_name } = senderInfo
                             const { insertId, now } = ret
                             const message = {
                                 id: insertId,
-                                sender: creditor,
-                                receiver: payer,
+                                sender,
+                                receiver,
                                 type,
                                 amount,
                                 fullname: beneficiary_name,
