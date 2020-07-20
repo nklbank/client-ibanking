@@ -43,32 +43,36 @@ function Notification({ socket }) {
             switch (type) {
                 case 'transfer':
                     action = "đã chuyển khoản"
-                    icon = (<CheckCircleTwoTone twoToneColor="#52c41a" />)
+                    icon = <CheckCircleTwoTone twoToneColor="#52c41a" />
                     break;
                 case 'paydebt':
                     action = "đã thanh toán khoản nợ"
-                    icon = (<CheckCircleTwoTone twoToneColor="#52c41a" />)
+                    icon = <CheckCircleTwoTone twoToneColor="#52c41a" />
                     break;
                 case 'createdebt':
                     action = "đã tạo nhắc nợ"
-                    icon = (<ExclamationCircleTwoTone />)
+                    icon = <ExclamationCircleTwoTone />
                     break;
                 case 'hidedebt':
                     action = "đã ẩn khoản nợ"
-                    icon = (<CloseCircleTwoTone twoToneColor="#fa7d09" />)
+                    icon = <CloseCircleTwoTone twoToneColor="#fa7d09" />
                     break;
                 case 'deldebt':
                     action = "đã xóa khoản nợ"
-                    icon = (<MinusCircleTwoTone twoToneColor="#52c41a" />)
+                    icon = <MinusCircleTwoTone twoToneColor="#52c41a" />
                     break;
                 default:
                     break;
             }
-            return <Menu.Item>{icon} <Text strong>{fullname}</Text> {action} {amount !== null ? amount + "VND" : ""}
-                <div style={{ fontSize: "smaill" }}>{description ? `"${description}"` : ""}</div>
-                <div style={{ fontSize: "x-small", color: "gray" }}>{timestring}</div></Menu.Item>
+            return <Menu.Item style={{ whiteSpace: 'normal', height: 'auto' }} icon={icon}>
+                <strong>{fullname}</strong>
+                {` ${action}`}
+                {amount !== null ? ` ${amount} VND` : ""}
+                <br />{description ? `"${description}"` : ""}
+                <div style={{ fontSize: "x-small", color: "gray" }}>{timestring}</div>
+            </Menu.Item >
         })
-        setMenu(<Menu>{items}</Menu>)
+        setMenu(<Menu style={{ width: 350, overflowX: "auto", height: 500 }}>{items}</Menu>)
     }, [notifs])
 
     return (
