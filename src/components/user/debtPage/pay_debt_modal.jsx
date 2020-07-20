@@ -49,11 +49,11 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
             onCreate(values);
 
             console.log(id, creditor, payer, amount, otp);
-            const transaction = { depositor: payer, receiver: creditor, amount, pay_debt: id, otp };
+            const transaction = { depositor: payer, receiver: creditor, amount, pay_debt: id };
 
             (async () => {
-              // verifyOTP({ otp });
-              verifyOTP(otp);
+              verifyOTP({ otp });
+              // verifyOTP(otp);
               await transferIntraBank(transaction)
               const affectedDebt = await updateDebt({ id, paid: 1 })
 
