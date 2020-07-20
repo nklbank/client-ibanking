@@ -18,7 +18,7 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
         console.log('socket', socket)
         console.log('sender :>> ', sender);
         console.log('receiver :>> ', receiver);
-        socket.emit('sendNotif', { receiver, message })
+        socket.emit('sendNotif', { receiver, message: { ...message, unread: 1 } })
 
         return () => {
             socket.emit('disconnect')

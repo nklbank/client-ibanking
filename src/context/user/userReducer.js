@@ -23,7 +23,8 @@ import {
   SET_LOADING,
   REFRESH,
   GET_NOTIFS,
-  ADD_NOTIFS
+  ADD_NOTIFS,
+  READ_NOTIF
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -223,6 +224,18 @@ export default (state, action) => {
         loading: false,
       }
     }
+    case READ_NOTIF: {
+      const { notifs } = state
+      const readNotifs = notifs.map(notif => ({ ...notif, unread: false }))
+      console.log('readNotifs', readNotifs)
+      return {
+        ...state,
+        notifs: [...readNotifs],
+        error: null,
+        loading: false,
+      }
+    }
+
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

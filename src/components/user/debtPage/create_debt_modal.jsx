@@ -39,7 +39,9 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
         console.log('socket', socket)
         console.log('sender :>> ', sender);
         console.log('receiver :>> ', receiver);
-        socket.emit('sendNotif', { receiver, message })
+        socket.emit('sendNotif', { receiver, message: { ...message, unread: 1 } })
+
+        // socket.emit('sendNotif', { receiver, message })
 
         return () => {
             socket.emit('disconnect')

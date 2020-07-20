@@ -8,7 +8,7 @@ const { Text } = Typography
 function Notification({ socket }) {
 
     const userContext = useContext(UserContext);
-    const { notifs, getNotifs, getCustomerInfo, addNotif, getDebts } = userContext;
+    const { notifs, getNotifs, getCustomerInfo, addNotif, getDebts, readNotif } = userContext;
     const [menu, setMenu] = useState(<Menu><Menu.Item></Menu.Item></Menu>)
     const [username, setUsername] = useState(null);
     (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setUsername(username) })();
@@ -73,12 +73,14 @@ function Notification({ socket }) {
             </Menu.Item >
         })
         setMenu(<Menu style={{ width: 350, overflowX: "auto", height: 500 }}>{items}</Menu>)
+
+        console.log('notifs :>> ', notifs);
     }, [notifs])
 
     return (
         <Dropdown overlay={menu} trigger={['click']}>
-            <a className="nav-link active ant-dropdown-link" onClick={e => e.preventDefault()}>
-                <Badge count={notifs.length}>
+            <a className="nav-link active ant-dropdown-link" onClick={e => { e.preventDefault(); readNotif() }} href="#">
+                <Badge count={notifs.filter(notif => notif.unread === 1).length}>
                     <BellOutlined />
                 </Badge>
             </a>

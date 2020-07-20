@@ -28,7 +28,8 @@ import {
   SET_LOADING,
   REFRESH,
   GET_NOTIFS,
-  ADD_NOTIFS
+  ADD_NOTIFS,
+  READ_NOTIF
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -432,6 +433,8 @@ const UserState = (props) => {
 
   }
 
+  const readNotif = () => dispatch({ type: READ_NOTIF })
+
   return (
     <UserContext.Provider
       value={{
@@ -465,7 +468,8 @@ const UserState = (props) => {
         refresh,
         getNotifs,
         addNotif,
-        postNotif
+        postNotif,
+        readNotif
       }}
     >
       {props.children}
