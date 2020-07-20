@@ -2,11 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Button, Modal, Form, Input } from 'antd';
 import UserContext from '../../../context/user/userContext';
 
-const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount }) => {
+const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount, socket, owner }) => {
   const [form] = Form.useForm();
 
   const userContext = useContext(UserContext);
-  const { verifyOTP, transferIntraBank, updateDebt, error } = userContext
+  const { verifyOTP, transferIntraBank, updateDebt, error, postNotif, getAccountInfo } = userContext
 
   const [otp, setotp] = useState(null)
   const [messageOTP, setmessageOTP] = useState("OTP không hợp lệ")
@@ -21,6 +21,18 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount 
       setstatusOTP("success")
     }
   }, [error])
+
+  const sendNotif = (sender, receiver, message) => {
+    console.log('socket', socket)
+    console.log('sender :>> ', sender);
+    console.log('receiver :>> ', receiver);
+    socket.emit('sendNotif', { receiver, message })
+
+    return () => {
+      socket.emit('disconnect')
+      socket.off();
+    }
+  }
 
   return (
     <Modal
@@ -37,12 +49,44 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount 
             onCreate(values);
 
             console.log(id, creditor, payer, amount, otp);
+            const transaction = { depositor: payer, receiver: creditor, amount, pay_debt: id, otp };
 
-            verifyOTP({ otp });
-            transferIntraBank({ depositor: payer, receiver: creditor, amount, pay_debt: id })
-            updateDebt({ id, paid: 1 })
+            (async () => {
+              // verifyOTP({ otp });
+              verifyOTP(otp);
+              await transferIntraBank(transaction)
+              const affectedDebt = await updateDebt({ id, paid: 1 })
 
-            setotp(null)
+              const { creditor, payer, amount } = affectedDebt;
+              console.log('affectedDebt :>> ', affectedDebt);
+
+              const notif = {
+                sender: payer,
+                receiver: creditor,
+                type: "paydebt",
+                amount
+              }
+
+              const ret = await postNotif(notif)
+              const receiverInfo = await getAccountInfo({ account_number: notif.receiver })
+              const senderInfo = await getAccountInfo({ account_number: notif.sender })
+              console.log('receiverInfo :>> ', receiverInfo);
+              console.log('senderInfo :>> ', senderInfo);
+
+              const { username } = receiverInfo
+              const { beneficiary_name } = senderInfo
+              const { insertId, now } = ret
+              const message = {
+                ...notif,
+                id: insertId,
+                fullname: beneficiary_name,
+                timestamp: now,
+              }
+              console.log('message :>> ', message);
+              sendNotif(owner, username, message);
+              setotp(null)
+            }
+            )()
           })
           .catch(info => {
             console.log('Validate Failed:', info);
@@ -71,7 +115,7 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount 
   );
 };
 
-const PayDebtModal = ({ id, creditor, payer, amount }) => {
+const PayDebtModal = ({ id, creditor, payer, amount, socket, owner }) => {
   const [visible, setVisible] = useState(false);
 
   const userContext = useContext(UserContext);
@@ -101,6 +145,7 @@ const PayDebtModal = ({ id, creditor, payer, amount }) => {
           setVisible(false);
         }}
         id={id} creditor={creditor} payer={payer} amount={amount}
+        socket={socket} owner={owner}
       />
     </div>
   );

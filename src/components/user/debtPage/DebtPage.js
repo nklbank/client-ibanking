@@ -67,7 +67,7 @@ const columns = [
         render: (paid, { creditor, visibleToPayer, id, payer, amount, socket, owner }) => {
             console.log('socket in table', socket)
             const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} socket={socket} owner={owner} />);
-            const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount} socket={socket}></PayDebtModal>)
+            const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount} socket={socket} owner={owner}></PayDebtModal>)
             const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
             // nếu mình là chủ nợ
             if (listAccount.indexOf(creditor) !== -1)
