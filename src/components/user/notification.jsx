@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Dropdown, Badge, Menu, Typography } from 'antd'
-import { BellOutlined, CheckCircleTwoTone, ExclamationCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
+import { BellOutlined, CheckCircleTwoTone, ExclamationCircleTwoTone, CloseCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons'
 import UserContext from '../../context/user/userContext';
 
 const { Text } = Typography
@@ -56,6 +56,10 @@ function Notification({ socket }) {
                 case 'hidedebt':
                     action = "đã ẩn khoản nợ"
                     icon = (<CloseCircleTwoTone twoToneColor="#fa7d09" />)
+                    break;
+                case 'deldebt':
+                    action = "đã xóa khoản nợ"
+                    icon = (<MinusCircleTwoTone twoToneColor="#52c41a" />)
                     break;
                 default:
                     break;
