@@ -433,7 +433,15 @@ const UserState = (props) => {
 
   }
 
-  const readNotif = () => dispatch({ type: READ_NOTIF })
+  const readNotif = async (id) => {
+    try {
+      await axios.post(`/api/notifs/update`, { id: id })
+      dispatch({ type: READ_NOTIF })
+    } catch (error) {
+
+    }
+  }
+
 
   return (
     <UserContext.Provider

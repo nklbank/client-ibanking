@@ -79,8 +79,8 @@ function Notification({ socket }) {
 
     return (
         <Dropdown overlay={menu} trigger={['click']}>
-            <a className="nav-link active ant-dropdown-link" onClick={e => { e.preventDefault(); readNotif() }} href="#">
-                <Badge count={notifs.filter(notif => notif.unread === 1).length}>
+            <a className="nav-link active ant-dropdown-link" onClick={e => { e.preventDefault(); readNotif(notifs[0].id) }} href="#">
+                <Badge count={notifs.length ? (notifs.findIndex(notif => notif.unread !== 1) === -1 ? notifs.length : notifs.findIndex(notif => notif.unread !== 1)) : 0}>
                     <BellOutlined />
                 </Badge>
             </a>

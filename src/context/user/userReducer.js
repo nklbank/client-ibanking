@@ -226,11 +226,11 @@ export default (state, action) => {
     }
     case READ_NOTIF: {
       const { notifs } = state
-      const readNotifs = notifs.map(notif => ({ ...notif, unread: false }))
-      console.log('readNotifs', readNotifs)
+      const lastRead = { ...notifs[0], unread: notifs[0].id }
+      console.log('lastRead', lastRead)
       return {
         ...state,
-        notifs: [...readNotifs],
+        notifs: [lastRead, ...notifs.slice(1)],
         error: null,
         loading: false,
       }
