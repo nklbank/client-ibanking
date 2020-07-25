@@ -27,6 +27,9 @@ import {
   UPDATE_DEBT,
   SET_LOADING,
   REFRESH,
+  GET_NOTIFS,
+  ADD_NOTIFS,
+  READ_NOTIF
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -43,6 +46,7 @@ const UserState = (props) => {
     getTransactions: null,
     token: localStorage.getItem("token"),
     debts: {},
+    notifs: []
   };
 
   const [state, dispatch] = useReducer(userReducer, initialState);
@@ -345,6 +349,7 @@ const UserState = (props) => {
         type: DEL_DEBT,
         payload: id,
       });
+      return res.data
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -365,6 +370,7 @@ const UserState = (props) => {
         type: UPDATE_DEBT,
         payload: debt,
       });
+      return res.data
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -378,7 +384,7 @@ const UserState = (props) => {
     try {
       const res = await axios.get(
         "/api/customer");
-        console.log('res.data', res.data)
+      console.log('res.data', res.data)
       return res.data;
     } catch (err) {
       dispatch({
@@ -390,6 +396,53 @@ const UserState = (props) => {
   const setLoading = () => dispatch({ type: SET_LOADING });
 
   const refresh = () => dispatch({ type: REFRESH });
+
+  const getNotifs = async (username) => {
+    try {
+      const res = await axios.get(`/api/notifs/${username}`);
+      console.log('res', res)
+      dispatch({
+        type: GET_NOTIFS,
+        payload: res.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: USER_ERROR,
+        payload: error.response,
+      });
+    }
+  }
+
+  // update state.notifs
+  const addNotif = (notif) => dispatch({
+    type: ADD_NOTIFS,
+    payload: notif,
+  });
+
+  // update database.notifs
+  const postNotif = async (notif) => {
+    try {
+      const ret = await axios.post(`/api/notifs`, notif);
+      return ret.data
+    } catch (error) {
+      dispatch({
+        type: USER_ERROR,
+        payload: error.response,
+      });
+    }
+
+  }
+
+  const readNotif = async (id) => {
+    try {
+      await axios.post(`/api/notifs/update`, { id: id })
+      dispatch({ type: READ_NOTIF })
+    } catch (error) {
+
+    }
+  }
+
+
   return (
     <UserContext.Provider
       value={{
@@ -399,6 +452,7 @@ const UserState = (props) => {
         beneficiary: state.beneficiary,
         transactions: state.transactions,
         debts: state.debts,
+        notifs: state.notifs,
         success: state.success,
         error: state.error,
         loading: state.loading,
@@ -419,7 +473,11 @@ const UserState = (props) => {
         verifyOTP,
         getAccountInfo,
         getCustomerInfo,
-        refresh
+        refresh,
+        getNotifs,
+        addNotif,
+        postNotif,
+        readNotif
       }}
     >
       {props.children}

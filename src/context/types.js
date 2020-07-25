@@ -84,3 +84,9 @@ export const GET_DEBTHISTORY = "GET_DEBTHISTORY";
 export const GETDEBTHISTORY_ERROR = "GETDEBTHISTORY_ERROR";
 
 export const REFRESH = "REFRESH";
+
+export const GET_NOTIFS = "GET_NOTIFS";
+
+export const ADD_NOTIFS = "ADD_NOTIFS";
+
+export const READ_NOTIF = "READ_NOTIF";

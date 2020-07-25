@@ -4,15 +4,29 @@ import { Button, Modal, Form, Input, Row } from 'antd';
 import { DeleteTwoTone, EyeInvisibleTwoTone } from '@ant-design/icons';
 import UserContext from '../../../context/user/userContext';
 
-const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel }) => {
+const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, owner }) => {
     const [form] = Form.useForm();
     const message = permanentDel ? "Xóa nhắc nợ vĩnh viễn" : "Ẩn nhắc nợ. Nhắc nợ chỉ được xóa bởi chủ nợ"
     const icon = permanentDel ? (<DeleteTwoTone twoToneColor="red" />) : (<EyeInvisibleTwoTone twoToneColor="orange" />);
 
 
     const userContext = useContext(UserContext);
-    const { delDebt, updateDebt } = userContext
+    const { delDebt, updateDebt, postNotif, getAccountInfo } = userContext
 
+
+    const sendNotif = (sender, receiver, message) => {
+        console.log('socket', socket)
+        console.log('sender :>> ', sender);
+        console.log('receiver :>> ', receiver);
+        socket.emit('sendNotif', { receiver, message: { ...message, unread: 1 } })
+
+        return () => {
+            socket.emit('disconnect')
+            socket.off();
+        }
+    }
+
+    console.log('socket in deleting :>> ', socket);
     return (
         <Modal
             visible={visible}
@@ -28,10 +42,39 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel }) => {
                         onCreate(values);
 
                         console.log('id', id);
-                        if (permanentDel)
-                            delDebt(id);
-                        else updateDebt({ id, visibleToPayer: 0 })
 
+                        (async () => {
+                            const affectedDebt = permanentDel ? await delDebt(id) : await updateDebt({ id, visibleToPayer: 0 });
+                            const type = permanentDel ? "deldebt" : "hidedebt"
+                            const { creditor, payer, amount } = affectedDebt;
+                            console.log('affectedDebt :>> ', affectedDebt);
+
+                            // "hidedebt" means payer wanted to, payer is notif sender
+                            const sender = type === "hidedebt" ? payer : creditor
+                            const receiver = type === "hidedebt" ? creditor : payer
+
+                            const ret = await postNotif({ sender, receiver, type, amount })
+                            const receiverInfo = await getAccountInfo({ account_number: receiver })
+                            const senderInfo = await getAccountInfo({ account_number: sender })
+                            console.log('receiverInfo :>> ', receiverInfo);
+                            console.log('senderInfo :>> ', senderInfo);
+
+                            const { username } = receiverInfo
+                            const { beneficiary_name } = senderInfo
+                            const { insertId, now } = ret
+                            const message = {
+                                id: insertId,
+                                sender,
+                                receiver,
+                                type,
+                                amount,
+                                fullname: beneficiary_name,
+                                timestamp: now,
+                            }
+                            console.log('message :>> ', message);
+                            sendNotif(owner, username, message);
+                        }
+                        )()
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
@@ -66,7 +109,7 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel }) => {
     );
 };
 
-const DelDebtModal = ({ id, permanentDel }) => {
+const DelDebtModal = ({ id, permanentDel, socket, owner }) => {
     const [visible, setVisible] = useState(false);
 
     const onCreate = values => {
@@ -92,6 +135,8 @@ const DelDebtModal = ({ id, permanentDel }) => {
                 }}
                 id={id}
                 permanentDel={permanentDel}
+                socket={socket}
+                owner={owner}
             />
         </div>
     );

@@ -1,60 +1,76 @@
 import React, { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, Form, Modal, Select, Descriptions } from 'antd'
+import { Button, Input, Form, Modal, Select, Descriptions, Divider } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../../context/user/userContext';
-
-// import io from 'socket.io-client'
-// let socket;
-// const { proxy } = require('../../../../package.json');
 
 const { Option } = Select;
 
 const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     const [form] = Form.useForm();
-    // const [payer, setpayer] = useState(null)
     const [creditor, setcreditor] = useState(null)
     const [amount, setamount] = useState(0)
     const [description, setdescription] = useState(null)
-    // const [payerName, setpayerName] = useState(null)
-
     const [payer, setpayer] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { addDebt, accountsOwner, beneficiaries, debts, getAccountInfo } = userContext
+    const { addDebt, accountsOwner, beneficiaries, debts, getAccountInfo, postNotif } = userContext
     console.log('beneficiaries :>> ', beneficiaries);
     const creditorAccounts = accountsOwner.map(account => account.account_number);
-    const intraBeneficiaries = beneficiaries.filter(account => account.partner_bank === null)
+    const beneAccount = beneficiaries.filter(account => account.partner_bank === null).map(account => account.beneficiary_account)
 
-    const enterPayer = async (value) => {
-        console.log('...value', value)
-        const payerInfo = value.length !== 0 ? await getAccountInfo({ account_number: value }) : null;
-        console.log('payerInfo', payerInfo);
-        if (payerInfo) {
-            setpayer({ ...payerInfo })
-            console.log('payer :>> ', payer);
+    const [optionPayers, setOptionPayers] = useState({ accounts: [...beneAccount], inputPayer: null })
 
-            // setpayer(value)
-            // setpayerName(payerInfo.beneficiary_name)
-        }
-    }
+    // const enterPayer = async (value) => {
+    //     console.log('...value', value)
+    //     const payerInfo = value.length !== 0 ? await getAccountInfo({ account_number: value }) : null;
+    //     console.log('payerInfo', payerInfo);
+    //     if (payerInfo) {
+    //         setpayer({ ...payerInfo })
+    //         console.log('payer :>> ', payer);
+    //     }
+    // }
 
     const sendNotif = (sender, receiver, message) => {
-        // socket = io(proxy);
         console.log('socket', socket)
         console.log('sender :>> ', sender);
         console.log('receiver :>> ', receiver);
+        socket.emit('sendNotif', { receiver, message: { ...message, unread: 1 } })
 
-        // socket.emit('join', { owner, receiver, message }, () => {
-        // });
-
-        socket.emit('sendNotif', { receiver, message })
+        // socket.emit('sendNotif', { receiver, message })
 
         return () => {
             socket.emit('disconnect')
             socket.off();
         }
+    }
+
+    const onNameChange = (event) => {
+        console.log('event :>> ', event.target.value);
+        const account = event.target.value;
+
+        setOptionPayers({ ...optionPayers, inputPayer: account });
+    };
+
+    const addItem = () => {
+        console.log('addItem');
+        const { accounts, inputPayer } = optionPayers
+        setOptionPayers({
+            accounts: [...accounts, inputPayer],
+            inputPayer: null
+        })
+
+    };
+
+    const onSelectPayer = (e) => {
+        console.log('e :>> ', e);
+        (async () => {
+            const payerInfo = e.length !== 0 ? await getAccountInfo({ account_number: e }) : null
+            if (payerInfo) {
+                setpayer({ ...payerInfo })
+            }
+        })()
     }
 
     return (
@@ -86,12 +102,35 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                         setpayer(null);
                         setdescription(null);
 
-                        sendNotif(owner, username, newDebt);
+                        (async () => {
+                            const ret = await postNotif({
+                                sender: creditor, receiver: payer.beneficiary_account[0], type: "createdebt", amount, description
+                            })
+                            console.log('creditorAccounts[0] :>> ', creditorAccounts[0]);
+                            const accountInfo = await getAccountInfo({ account_number: creditorAccounts[0] })
+                            const { beneficiary_name } = accountInfo
+                            console.log('ret :>> ', ret);
+                            const { insertId, now } = ret
+                            console.log('insertId :>> ', insertId);
+                            console.log('beneficiary_name :>> ', beneficiary_name);
+                            const message = {
+                                id: insertId,
+                                sender: creditor,
+                                receiver: payer.beneficiary_account[0],
+                                type: "createdebt",
+                                amount,
+                                fullname: beneficiary_name,
+                                timestamp: now,
+                                description
+                            }
+                            console.log('owner :>> ', owner);
+                            sendNotif(owner, username, message);
+                        }
+                        )()
                     })
                     .catch(info => {
                         console.log('Validate Failed:', info);
                     });
-
             }}
         >
             <Form
@@ -119,10 +158,24 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                     name="payer"
                     label="Tài khoản mượn nợ"
                 >
-                    <Select mode="tags" onChange={(value) => { enterPayer(value) }} tokenSeparators={[',']}>
-                        {intraBeneficiaries.map(account => (<Option value={account.beneficiary_account}>{account.beneficiary_account}</Option>))}
+
+                    <Select
+                        onSelect={(e) => onSelectPayer(e)}
+                        dropdownRender={menu => (
+                            <div>
+                                {menu}
+                                <Divider style={{ margin: '4px 0' }} />
+                                <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+                                    <Input style={{ flex: 'auto' }} onChange={(e) => onNameChange(e)} />
+                                    <div style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }} onClick={addItem}>
+                                        <PlusOutlined /> Add item</div>
+                                </div>
+                            </div>
+                        )}
+                    >
+                        {optionPayers.accounts.map(account => (<Option value={account}>{account}</Option>))}
+
                     </Select>
-                    {/* <Descriptions visible={payerName !== null}><Descriptions.Item>{payerName}</Descriptions.Item></Descriptions> */}
 
                     {payer !== null ?
                         <Descriptions><Descriptions.Item>{payer.beneficiary_name}</Descriptions.Item></Descriptions>
@@ -154,9 +207,6 @@ const CreateDebtModal = ({ owner, socket }) => {
         setVisible(false);
     };
 
-
-
-
     return (
         <div>
             <Button
@@ -184,4 +234,3 @@ CreateDebtModal.propTypes = {
 }
 
 export default CreateDebtModal
-
