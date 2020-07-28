@@ -9,7 +9,8 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
   const { verifyOTP, transferIntraBank, updateDebt, error, postNotif, getAccountInfo } = userContext
 
   const [otp, setotp] = useState(null)
-  const [messageOTP, setmessageOTP] = useState("OTP không hợp lệ")
+  // const [messageOTP, setmessageOTP] = useState("OTP không hợp lệ")
+  const [messageOTP, setmessageOTP] = useState(null)
   const [statusOTP, setstatusOTP] = useState(null)
 
   useEffect(() => {
@@ -39,9 +40,9 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
   return (
     <Modal
       visible={visible}
-      title="Xác nhận thanh toán nợ"
-      okText="Thanh toán"
-      cancelText="Hủy"
+      title="Debt payment confirmation"
+      okText="Pay debt"
+      cancelText="Cancel"
       onCancel={onCancel}
       onOk={() => {
         form
@@ -103,7 +104,7 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
           modifier: 'public',
         }}
       >
-        <Form.Item name="otp" label="Xác nhận OTP"
+        <Form.Item name="otp" label="Enter OTP"
           validateStatus={statusOTP}
           help={messageOTP}
         >
@@ -138,7 +139,7 @@ const PayDebtModal = ({ id, creditor, payer, amount, socket, owner }) => {
           getOTP()
         }}
       >
-        Thanh toán
+        Pay
       </Button>
       <PayDebtForm
         visible={visible}

@@ -10,7 +10,7 @@ var listAccount;
 
 const columns = [
     {
-        title: "Chủ nợ",
+        title: "Creditor",
         dataIndex: "creditor",
         key: "creditor",
         render: creditor => {
@@ -20,7 +20,7 @@ const columns = [
         }
     },
     {
-        title: "Người mượn nợ",
+        title: "Payer",
         dataIndex: "payer",
         key: "payer",
         render: payer => {
@@ -30,48 +30,47 @@ const columns = [
         }
     },
     {
-        title: "Số tiền",
+        title: "Amount",
         dataIndex: "amount",
         key: "amount",
     },
     {
-        title: "Tình trạng",
+        title: "Status",
         dataIndex: "paid",
         key: "paid",
         render: (paid, { visibleToPayer }) => {
             console.log('visibleToPayer', visibleToPayer);
             let color = paid === 0 ? 'red' : 'green';
-            let text = (paid === 0 ? 'chưa thanh' : 'đã thanh');
+            let text = (paid === 0 ? 'unpaid' : 'paid');
             if (visibleToPayer === 1)
                 return (<Tag color={color} key={paid}>{text.toUpperCase()}</Tag>)
             else return (<>
                 <Tag color={color} key={paid}>{text.toUpperCase()}</Tag>
-                <Tag>Xóa</Tag>
+                <Tag>Deleted</Tag>
             </>)
         }
     },
     {
-        title: "Mô tả",
+        title: "Description",
         dataIndex: "description",
         key: "description",
     },
     {
-        title: "Thời gian",
+        title: "Time",
         dataIndex: "timestamp",
         key: "timestamp",
     },
     {
-        title: "Thao tác",
+        title: "Action",
         dataIndex: "paid",
         key: "action",
         render: (paid, { creditor, visibleToPayer, id, payer, amount, socket, owner }) => {
             console.log('socket in table', socket)
             const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} socket={socket} owner={owner} />);
             const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount} socket={socket} owner={owner}></PayDebtModal>)
-            const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
             // nếu mình là chủ nợ
             if (listAccount.indexOf(creditor) !== -1)
-                return visibleToPayer === 0 ? (<><Space>{del_btn(true)}{remind_btn}</Space></>) : (<>{del_btn(true)}</>)
+                return visibleToPayer === 0 ? (<><Space>{del_btn(true)}</Space></>) : (<>{del_btn(true)}</>)
             else
                 return paid === 0 ? (<><Space>{del_btn(false)}{pay_btn(id, creditor, payer, amount)}</Space></>) : (<>{del_btn(false)}</>)
         }
