@@ -46,11 +46,15 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     const addItem = () => {
         console.log('addItem');
         const { accounts, inputPayer } = optionPayers
-        setOptionPayers({
-            accounts: [...accounts, inputPayer],
-            inputPayer: null
-        })
 
+        // check if inputPayer === accountOwner's accounts
+        if (!creditorAccounts.includes(inputPayer)) {
+            console.log("Payer account invalid");
+            setOptionPayers({
+                accounts: [...accounts, inputPayer],
+                inputPayer: null
+            })
+        }
     };
 
     const onSelectPayer = (e) => {
