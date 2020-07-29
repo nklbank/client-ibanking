@@ -38,7 +38,8 @@ function Notification({ socket }) {
         const items = notifs.map(notif => {
             const { fullname, type, timestamp, amount, description } = notif
             var _timestamp = new Date(timestamp)
-            var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${_timestamp.getMinutes()}`
+            const mins = _timestamp.getMinutes() < 10 ? `0${_timestamp.getMinutes()}` : _timestamp.getMinutes()
+            var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`            
             var action, icon
             switch (type) {
                 case 'transfer':

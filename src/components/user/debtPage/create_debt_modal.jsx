@@ -84,7 +84,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                         const { beneficiary_account, username } = payer;
 
                         console.log('_payer :>> ', beneficiary_account);
-                        const newDebt = { creditor, payer: beneficiary_account, amount, description };
+                        const newDebt = { creditor, payer: beneficiary_account, amount, description};
                         console.log('newDebt :>> ', newDebt);
                         addDebt(newDebt)
                         console.log('debts :>> ', debts);
