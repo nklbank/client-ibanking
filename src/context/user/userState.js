@@ -271,12 +271,18 @@ const UserState = (props) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post("/api/customer/debts", debt);
-      console.log("res.data", res.data);
+      console.log('res.data :>> ', res.data);
+      const { timestamp } = res.data
+      const  _timestamp = new Date(timestamp)
+      const mins = _timestamp.getMinutes() < 10 ? `0${_timestamp.getMinutes()}` : _timestamp.getMinutes()
+      const timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`
+      console.log('timestring :>> ', timestring);
       const newDebt = {
         ...debt,
         id: res.data.insertId,
         paid: 0,
         visibleToPayer: 1,
+        timestamp
       };
       console.log("newDebt", newDebt);
       dispatch({

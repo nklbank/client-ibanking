@@ -84,8 +84,16 @@ const adjustedDataSource = (debts, socket, username) => {
     const list = [...creditors, ...visible_debt].map(element => ({ ...element, socket, owner: username })).sort(function (a, b) {
         return a.id - b.id;
     });
+    const timestampFormatList = list.map(element => {
+        const { timestamp } = element
+        const _timestamp = new Date(timestamp)
+        const mins = _timestamp.getMinutes() < 10 ? `0${_timestamp.getMinutes()}` : _timestamp.getMinutes()
+        var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`
+        return { ...element, timestamp: timestring }
+    })
     console.log('adjustedDataSource', list)
-    return list
+    console.log('timestampFormatList :>> ', timestampFormatList);
+    return timestampFormatList
 }
 
 const openNotification = (message, type) => {
