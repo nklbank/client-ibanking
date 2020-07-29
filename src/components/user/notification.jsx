@@ -42,23 +42,23 @@ function Notification({ socket }) {
             var action, icon
             switch (type) {
                 case 'transfer':
-                    action = "đã chuyển khoản"
+                    action = "transfered you"
                     icon = <CheckCircleTwoTone twoToneColor="#52c41a" />
                     break;
                 case 'paydebt':
-                    action = "đã thanh toán khoản nợ"
+                    action = "paid you a debt"
                     icon = <CheckCircleTwoTone twoToneColor="#52c41a" />
                     break;
                 case 'createdebt':
-                    action = "đã tạo nhắc nợ"
+                    action = "reminded you a debt"
                     icon = <ExclamationCircleTwoTone />
                     break;
                 case 'hidedebt':
-                    action = "đã ẩn khoản nợ"
+                    action = "hid your debt"
                     icon = <CloseCircleTwoTone twoToneColor="#fa7d09" />
                     break;
                 case 'deldebt':
-                    action = "đã xóa khoản nợ"
+                    action = "deleted your debt"
                     icon = <MinusCircleTwoTone twoToneColor="#52c41a" />
                     break;
                 default:

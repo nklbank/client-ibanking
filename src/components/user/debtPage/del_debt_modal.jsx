@@ -6,7 +6,7 @@ import UserContext from '../../../context/user/userContext';
 
 const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, owner }) => {
     const [form] = Form.useForm();
-    const message = permanentDel ? "Xóa nhắc nợ vĩnh viễn" : "Ẩn nhắc nợ. Nhắc nợ chỉ được xóa bởi chủ nợ"
+    const message = permanentDel ? "Permanently delete the debt" : "Hide the debt, which is only deleted by debt creator"
     const icon = permanentDel ? (<DeleteTwoTone twoToneColor="red" />) : (<EyeInvisibleTwoTone twoToneColor="orange" />);
 
 
@@ -30,9 +30,9 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
     return (
         <Modal
             visible={visible}
-            title="Xóa nhắc nợ"
-            okText="Xóa nhắc nợ"
-            cancelText="Hủy"
+            title="Delete debt"
+            okText="Delete debt"
+            cancelText="Cancel"
             onCancel={onCancel}
             onOk={() => {
                 form
@@ -94,15 +94,15 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
 
                 <Form.Item
                     name="deletorNote"
-                    label="Nội dung"
+                    label="Note"
                     rules={[
                         {
                             required: true,
-                            message: 'Nhập nội dung lời nhắn',
+                            message: 'Enter your note',
                         },
                     ]}
                 >
-                    <Input placeholder="Nhập lời nhắc khi xóa nhắc nợ" />
+                    <Input placeholder="Enter your note..." />
                 </Form.Item>
             </Form>
         </Modal>
@@ -125,7 +125,7 @@ const DelDebtModal = ({ id, permanentDel, socket, owner }) => {
                     setVisible(true);
                 }}
             >
-                Xóa
+                Delete
       </Button>
             <DelDebtForm
                 visible={visible}

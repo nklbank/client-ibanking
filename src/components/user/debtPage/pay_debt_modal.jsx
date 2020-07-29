@@ -6,27 +6,42 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
   const [form] = Form.useForm();
 
   const userContext = useContext(UserContext);
-  const { verifyOTP, transferIntraBank, updateDebt, error, postNotif, getAccountInfo } = userContext
+  const { verifyOTP, transferIntraBank, updateDebt, postNotif, getAccountInfo, success, error } = userContext
 
   const [otp, setotp] = useState(null)
-  const [messageOTP, setmessageOTP] = useState("OTP không hợp lệ")
-  const [statusOTP, setstatusOTP] = useState(null)
+  const [OTP, setOTP] = useState({ message: null, status: null })
 
   useEffect(() => {
+    const { message, status } = OTP
+    console.log('message :>> ', message);
+    console.log('status :>> ', status);
+    console.log('otp :>> ', otp);
     if (error) {
-      setmessageOTP("OTP không hợp lệ")
-      setstatusOTP("error")
-    } else {
-      setmessageOTP("OTP hợp lệ")
-      setstatusOTP("success")
+      setOTP({ ...OTP, message: error.data.msg, status: "error" })
+      console.log('OTP :>> ', OTP);
     }
   }, [error])
+
+
+  useEffect(() => {
+    const { message, status } = OTP
+    console.log('message :>> ', message);
+    console.log('status :>> ', status);
+    if (success && success.toLowerCase().includes("otp")) {
+      setOTP({ ...OTP, message: success, status: "success" })
+      console.log('OTP :>> ', OTP);
+    }
+  }, [success])
+
+  useEffect(() => {
+    console.log('otp :>> ', otp);
+    (async () => { if (otp !== null) await verifyOTP({ otp }) })()
+  }, [otp])
 
   const sendNotif = (sender, receiver, message) => {
     console.log('socket', socket)
     console.log('sender :>> ', sender);
     console.log('receiver :>> ', receiver);
-    // socket.emit('sendNotif', { receiver, message })
     socket.emit('sendNotif', { receiver, message: { ...message, unread: 1 } })
 
 
@@ -39,9 +54,9 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
   return (
     <Modal
       visible={visible}
-      title="Xác nhận thanh toán nợ"
-      okText="Thanh toán"
-      cancelText="Hủy"
+      title="Debt payment"
+      okText="Pay debt"
+      cancelText="Cancel"
       onCancel={onCancel}
       onOk={() => {
         form
@@ -54,7 +69,7 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
             const transaction = { depositor: payer, receiver: creditor, amount, pay_debt: id };
 
             (async () => {
-              verifyOTP({ otp });
+              // await verifyOTP({ otp })
               // verifyOTP(otp);
               await transferIntraBank(transaction)
               const affectedDebt = await updateDebt({ id, paid: 1 })
@@ -87,6 +102,7 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
               console.log('message :>> ', message);
               sendNotif(owner, username, message);
               setotp(null)
+              setOTP({ ...OTP, message: null, status: null})
             }
             )()
           })
@@ -103,13 +119,13 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
           modifier: 'public',
         }}
       >
-        <Form.Item name="otp" label="Xác nhận OTP"
-          validateStatus={statusOTP}
-          help={messageOTP}
+        <Form.Item name="otp" label="Enter OTP"
+          validateStatus={OTP.status}
+          help={OTP.message}
         >
           <Input type="textarea" onChange={(e) => {
+            e.preventDefault()
             setotp(e.target.value);
-            verifyOTP({ otp: e.target.value });
           }} />
         </Form.Item>
       </Form>
@@ -138,7 +154,7 @@ const PayDebtModal = ({ id, creditor, payer, amount, socket, owner }) => {
           getOTP()
         }}
       >
-        Thanh toán
+        Pay
       </Button>
       <PayDebtForm
         visible={visible}
