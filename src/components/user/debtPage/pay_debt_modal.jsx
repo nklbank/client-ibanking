@@ -102,7 +102,7 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
               console.log('message :>> ', message);
               sendNotif(owner, username, message);
               setotp(null)
-              setOTP({ ...OTP, message: null, status: null })
+              setOTP({ ...OTP, message: null, status: null})
             }
             )()
           })
