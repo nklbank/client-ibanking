@@ -94,7 +94,7 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
 
                 <Form.Item
                     name="deletorNote"
-                    label="Nội dung"
+                    label="Note"
                     rules={[
                         {
                             required: true,

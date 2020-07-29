@@ -295,11 +295,13 @@ const UserState = (props) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post("/api/auth/otp", otp);
+      console.log('res.data :>> ', res.data);
       dispatch({
         type: VERIFY_OTP,
         payload: res.data,
       });
     } catch (err) {
+      console.log('err.response :>> ', err.response);
       dispatch({
         type: USER_ERROR,
         payload: err.response,

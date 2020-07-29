@@ -58,7 +58,6 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     };
 
     const onSelectPayer = (e) => {
-        console.log('e :>> ', e);
         (async () => {
             const payerInfo = e.length !== 0 ? await getAccountInfo({ account_number: e }) : null
             if (payerInfo) {

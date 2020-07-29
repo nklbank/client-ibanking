@@ -129,7 +129,8 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "verifily otp successfully",
+        // success: "Verify otp successfully",
+        success: action.payload.msg,
         loading: false
       }
 
@@ -137,7 +138,7 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "send otp successfully, Check your email",
+        success: "Send otp successfully. Check your email",
         loading: false
       }
 
