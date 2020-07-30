@@ -56,15 +56,18 @@ export default (state, action) => {
       return {
         ...state,
         // addBeneficiaryRes: action.payload,
-        // beneficiaries: { ...state.beneficiaries, 4: { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name } },
+        beneficiaries: [...state.beneficiaries.filter(item => item.type !== "del"), { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name }],
+        // beneficiaries: { ...state.beneficiaries, beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name },
         error: null,
         success: "add beneficiary successfully",
         loading: false,
       };
     case UPDATE_BENEFICIARIES:
+      console.log(action.payload)
       return {
         ...state,
         res: action.payload,
+        beneficiaries: state.beneficiaries.filter(item => item.type !== "del"),
         error: null,
         success: "update successfully",
         loading: false,
@@ -182,7 +185,7 @@ export default (state, action) => {
         const { payers } = debts;
         const { id } = action.payload;
         const index = payers.findIndex(obj => obj.id === id);
-        Object.assign(payers[index], {...action.payload}); 
+        Object.assign(payers[index], { ...action.payload });
         console.log('debts', debts)
         return {
           ...state,

@@ -93,10 +93,14 @@ const BeneficiaryInforPage = () => {
 
     const { beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiry } = userContext
 
-    const [dataSource, setDataSource] = useState(
-        beneficiaries
-    )
+    const [dataSource, setDataSource] = useState(beneficiaries)
     const [visible, setVisible] = useState(false)
+
+
+    useEffect(() => {
+        setDataSource(beneficiaries)
+    }, [beneficiaries]);
+
 
     const handleDelete = row => {
 
@@ -215,7 +219,8 @@ const BeneficiaryInforPage = () => {
         // getBeneficiry({ account_number: value });
     }
 
-    console.log(dataSource);
+    console.log(beneficiaries);
+    console.log(dataSource)
     return (
         <div>
             <Button
