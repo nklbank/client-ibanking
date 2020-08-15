@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
+import { Form, Input, Select, Steps, Button, message } from 'antd';
 import UserContext from "../../../context/user/userContext";
 // import { layout, tailLayout } from '../../layout/layoutConfig'
 
@@ -33,16 +33,24 @@ const VerifyOTP = () => {
     } = userContext;
 
     useEffect(() => {
-        console.log("otp", success)
         getOTP()
-      }, []);
+    }, []);
+
+    useEffect(() => {
+        if (error === "send otp failed" || error === "verify otp failed") {
+            message.error(error)
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (success === "Send otp successfully. Check your email") {
+            message.success(success)
+        }
+    }, [success]);
     const onFinish = values => {
-        // console.log('successState:', successState);
 
         verifyOTP(values)
 
-
-        // setCurrentStep(0)
     };
 
     const onFinishFailed = errorInfo => {

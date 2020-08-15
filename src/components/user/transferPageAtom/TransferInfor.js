@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
+import { Form, Input, Select, Steps, Button, Checkbox, message } from 'antd';
 import UserContext from "../../../context/user/userContext";
 // import { layout, tailLayout } from '../../layout/layoutConfig'
 import VerifyOTP from './VerifyOTP'
@@ -22,59 +22,6 @@ const { Step } = Steps;
 const { Option } = Select;
 let transferInfor = {}
 
-
-// const VerifyOTP = () => {
-//     const userContext = useContext(UserContext);
-//     const {
-
-//         getOTP,
-//         verifyOTP,
-//         success,
-//         error,
-//     } = userContext;
-
-//     useEffect(() => {
-//         getOTP()
-//       }, []);
-//     const onFinish = values => {
-//         // console.log('successState:', successState);
-
-//         verifyOTP(values)
-
-
-//         // setCurrentStep(0)
-//     };
-
-//     const onFinishFailed = errorInfo => {
-//     };
-
-//     return (
-//         <Form
-//             {...layout}
-//             name="basic"
-//             onFinish={onFinish}
-//             onFinishFailed={onFinishFailed}
-//         >
-//             <Form.Item
-//                 label="Verify OTP"
-//                 name="otp"
-//                 rules={[{ required: true, message: 'Please input OTP!' }]}
-//             >
-//                 <Input />
-//             </Form.Item>
-
-//             <Form.Item>
-//                 <Button onClick={() => getOTP()}>Reload OTP</Button>
-//             </Form.Item>
-
-//             <Form.Item >
-//                 <Button {...tailLayout} type="primary" htmlType="submit">
-//                     Submit
-//           </Button>
-//             </Form.Item>
-//         </Form>
-//     )
-// }
 
 const TransferInfor = (props) => {
 
@@ -257,10 +204,10 @@ const TransferInfor = (props) => {
     // const [successState,setSuccess] = useState({})
     useEffect(() => {
         // setSuccess(success);
+        console.log("---------------", success);
 
-        if (success === "verifily otp successfully") {
-
-            console.log("transferInfor", transferInfor)
+        if (success === "Verify otp successfully") {
+            // console.log("transferInfor", transferInfor)
             if (transferInfor.partner_bank === "NKL Bank" || transferInfor.partner_bank === undefined) {
                 transferIntraBank({
                     depositor: transferInfor.depositor,
@@ -287,10 +234,16 @@ const TransferInfor = (props) => {
                     name: transferInfor.beneficiary
                 })
             }
-            setCurrentStep(0)
+            // setCurrentStep(0)
         }
     }, [success])
 
+
+    useEffect(() => {
+        if (error === "Account balance not enough" || error === "Transfer money fail") {
+            message.error(error)
+        }
+    }, [error]);
 
 
 

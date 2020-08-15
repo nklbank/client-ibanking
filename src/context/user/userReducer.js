@@ -4,6 +4,7 @@ import {
   GET_BENEFICIARIES,
   BENEFICIARIES_ERROR,
   ADD_BENEFICIARY,
+  ADD_BENEFICIARY_ERROR,
   BENEFICIARY_ERROR,
   UPDATE_BENEFICIARIES,
   UPDATE_BENEFICIARIES_ERROR,
@@ -13,7 +14,10 @@ import {
   GET_TRANSACTIONS,
   POST_TRANSFERINTRABANK,
   POST_TRANSFERINTERBANK,
+  POST_TRANSFERBANK_ERROR,
   VERIFY_OTP,
+  VERIFY_OTP_ERROR,
+  GET_OTP_ERROR,
   GET_OTP,
   USER_ERROR,
   GET_DEBTLIST,
@@ -21,7 +25,10 @@ import {
   DEL_DEBT,
   UPDATE_DEBT,
   SET_LOADING,
-  REFRESH
+  REFRESH,
+  GET_NOTIFS,
+  ADD_NOTIFS,
+  READ_NOTIF
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -62,8 +69,15 @@ export default (state, action) => {
         success: "add beneficiary successfully",
         loading: false,
       };
+    case ADD_BENEFICIARY_ERROR:
+      console.log(action.payload);
+      return {
+        ...state,
+        error: action.payload.data.msg,
+        loading: false
+      }
     case UPDATE_BENEFICIARIES:
-      console.log(action.payload)
+      // console.log(action.payload)
       return {
         ...state,
         res: action.payload,
@@ -124,20 +138,44 @@ export default (state, action) => {
         success: "Transfer successfully",
         loading: false
       }
+    case POST_TRANSFERBANK_ERROR:
+      // console.log(action.payload);
+      return {
+        ...state,
+        error: action.payload.data.msg,
+        loading: false
+      }
 
     case VERIFY_OTP:
       return {
         ...state,
         error: null,
-        success: "verifily otp successfully",
+        success: "Verify otp successfully",
+        // success: action.payload.msg,
         loading: false
+      }
+
+    case VERIFY_OTP_ERROR:
+      return {
+        ...state,
+        error: "verify otp failed",
+        loading: false
+
+      }
+
+    case GET_OTP_ERROR:
+      return {
+        ...state,
+        error: "send otp failed",
+        loading: false
+
       }
 
     case GET_OTP:
       return {
         ...state,
         error: null,
-        success: "send otp successfully, Check your email",
+        success: "Send otp successfully. Check your email",
         loading: false
       }
 
@@ -152,8 +190,8 @@ export default (state, action) => {
       {
         const { debts } = state;
         const { creditors } = debts;
-        console.log('debts', debts);
-        console.log('creditors', creditors);
+        // console.log('debts', debts);
+        // console.log('creditors', creditors);
         return {
           ...state,
           debts: { ...debts, creditors: [...creditors, action.payload] },
@@ -166,7 +204,7 @@ export default (state, action) => {
       {
         const { debts } = state;
         const { creditors } = debts;
-        console.log('debts', debts);
+        // console.log('debts', debts);
         const removedIndex = creditors.findIndex(obj => obj.id === action.payload)
         return {
           ...state,
@@ -186,7 +224,7 @@ export default (state, action) => {
         const { id } = action.payload;
         const index = payers.findIndex(obj => obj.id === id);
         Object.assign(payers[index], { ...action.payload });
-        console.log('debts', debts)
+        // console.log('debts', debts)
         return {
           ...state,
           error: null,
@@ -206,6 +244,36 @@ export default (state, action) => {
         success: null,
         beneficiary: {}
       }
+    case GET_NOTIFS:
+      {
+        return {
+          ...state,
+          notifs: action.payload,
+          error: null,
+          loading: false,
+        }
+      }
+    case ADD_NOTIFS: {
+      const { notifs } = state
+      return {
+        ...state,
+        notifs: [action.payload, ...notifs],
+        error: null,
+        loading: false,
+      }
+    }
+    case READ_NOTIF: {
+      const { notifs } = state
+      const lastRead = { ...notifs[0], unread: notifs[0].id }
+      // console.log('lastRead', lastRead)
+      return {
+        ...state,
+        notifs: [lastRead, ...notifs.slice(1)],
+        error: null,
+        loading: false,
+      }
+    }
+
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useContext } from "react";
 import "antd/dist/antd.css";
 import "./App.css";
 import NavBar from "./components/layout/NavBar";
@@ -17,6 +17,8 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import PersonnelLogin from "./components/auth/PersonnelLogin";
 
 const App = () => {
+
+
   return (
     <AuthState>
       <UserState>

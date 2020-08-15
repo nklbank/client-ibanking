@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Menu, Button } from "antd";
 import { Link } from "react-router-dom";
 import {
@@ -22,49 +22,64 @@ import TransactionsPage from "../user/transactionsPage/TransactionsPage";
 // import { useEffect } from "react";
 import DebtPage from "../user/debtPage/DebtPage";
 import ListEmployees from "../admin/listStaff/ListEmployees";
+import socket from "socket.io-client/lib/socket";
+
+import UserContext from '../../context/user/userContext'
 
 const { SubMenu } = Menu;
-const comp = {
-  0: {
-    title: "Danh sach tai khoan",
-    content: <UserAccount />,
-  },
-  1: {
-    title: "Thong tin",
-    content: <BeneficiaryInforPage />,
-  },
-  2: {
-    title: "Lịch sử giao dịch",
-    content: <TransactionsPage />,
-  },
-  3: {
-    title: "Chuyển tiền",
-    content: <TransferPage />,
-  },
-  4: {
-    title: "Ngân hàng khác",
-    content: "<TransferInterBankPage />",
-  },
-  5: {
-    title: "Danh sách nợ",
-    content: <DebtPage />,
-  },
-  6: {
-    content: "Danh sách người nhận",
-    content: "danh sách người nhận",
-  },
-  7: {
-    title: "change password",
-    content: <ChangePasswordPage />,
-  },
-  8: {
-    title: "change password",
-    content: "Lịch sử giao dịch",
-  },
+const comp = (socket, username) => {
+  return {
+    0: {
+      title: "Danh sach tai khoan",
+      content: <UserAccount />,
+    },
+    1: {
+      title: "Thong tin",
+      content: <BeneficiaryInforPage />,
+    },
+    2: {
+      title: "Lịch sử giao dịch",
+      content: <TransactionsPage />,
+    },
+    3: {
+      title: "Chuyển tiền",
+      content: <TransferPage />,
+    },
+    4: {
+      title: "Ngân hàng khác",
+      content: "<TransferInterBankPage />",
+    },
+    5: {
+      title: "Danh sách nợ",
+      content: <DebtPage socket={socket} username={username} />,
+    },
+    6: {
+      content: "Danh sách người nhận",
+      content: "danh sách người nhận",
+    },
+    7: {
+      title: "change password",
+      content: <ChangePasswordPage />,
+    },
+    8: {
+      title: "change password",
+      content: "Lịch sử giao dịch",
+    }
+  }
 };
 
-const NavBar = () => {
+const NavBar = ({ socket, username }) => {
   const authContext = useContext(AuthContext);
+
+  const userContext = useContext(UserContext)
+
+  const { error } = userContext
+
+
+  useEffect(() => {
+    console.log(error);
+    if (error === "token expired");
+  }, [error]);
 
   const { logout, user } = authContext;
   const [collapsed, setCollapsed] = useState(false);
@@ -73,6 +88,7 @@ const NavBar = () => {
   //     setCollapsed(!collapsed)
   // };
 
+  console.log('socket', socket)
   const onLogout = () => {
     logout();
     localStorage.removeItem("token");
@@ -81,6 +97,8 @@ const NavBar = () => {
   const handleClick = (e) => {
     setKey(e.key);
   };
+
+
   return (
     <div className="row">
       <div className="col-2" style={{ backgroundColor: '#001529' }}>
@@ -126,10 +144,10 @@ const NavBar = () => {
       </div>
       <div className="col-8 offset-1 p-5 shadow bg-white rounded border ">
         {" "}
-        <h2> {comp[key].title}</h2>
+        <h2> {comp(socket, username)[key].title}</h2>
         {/* {users.error && <span className="text-danger">ERROR: {users.error}</span>}
                     {users.success && <span className="text-success">SUCCESS: {users.success}</span>} */}
-        {comp[key].content}
+        {comp(socket, username)[key].content}
       </div>
     </div>
   );
