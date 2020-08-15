@@ -9,6 +9,12 @@ import NavBarAdmin from "../layout/NavBarAdmin";
 import NavBarEmploy from "../layout/NavBarEmploy";
 import Header from "../layout/Header";
 import Spinner from "../layout/Spinner";
+// import socket from "socket.io-client/lib/socket";
+
+import io from 'socket.io-client'
+
+const { proxy } = require('../../../package.json');
+let socket
 
 const Home = () => {
   const userContext = useContext(UserContext);
@@ -17,9 +23,13 @@ const Home = () => {
   const adminContext = useContext(AdminContext);
 
   const { user, loadPersonnel } = authContext;
-  const { getBeneficiries, getAccounts, error, success, loading } = userContext;
+  const { getBeneficiries, getAccounts, error, success, loading, getCustomerInfo } = userContext;
   const { setAlert, alerts } = alertContext;
   const errorAdmin = adminContext.error;
+
+  const [username, setusername] = useState(null);
+
+  (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
 
   useEffect(() => {
     loadPersonnel();
@@ -33,6 +43,14 @@ const Home = () => {
     }
   }, [errorAdmin]);
 
+  useEffect(() => {
+    if (username) {
+      console.log('username', username)
+      socket = io(proxy)
+    }
+  }, [username])
+
+
   const switchNavBar = () => {
     console.log("user", user);
     if (user) {
@@ -43,7 +61,7 @@ const Home = () => {
           return <NavBarEmploy />;
       }
     }
-    return <NavBar />;
+    return <NavBar socket={socket} username={username} />;
   };
 
   return (
@@ -51,7 +69,7 @@ const Home = () => {
       {/* {error && message.error(error.msg ? error.msg : error.data.msg)}*/}
       {/* {success && message.success(success)}  */}
 
-      <Header />
+      <Header socket={socket} />
       {/* { loading && <Spinner />} */}
       {switchNavBar()}
     </div>

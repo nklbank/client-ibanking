@@ -1,16 +1,21 @@
 
-import React, { useContext, useEffect } from 'react'
-import { PageHeader, Button, Tag, Typography, Row } from 'antd';
-import { LogoutOutlined } from '@ant-design/icons';
+import React, { useContext, useEffect, useState } from 'react'
+import { PageHeader, Button, Tag, Typography, Row, Badge, Dropdown, Menu } from 'antd';
+import { LogoutOutlined, BellOutlined } from '@ant-design/icons';
 import AuthContext from "../../context/auth/authContext"
+import Notification from '../user/notification'
+
 const { Paragraph } = Typography;
 
-const Header = () => {
+
+const Header = ({ socket }) => {
     const authContext = useContext(AuthContext);
 
     const { logout, user } = authContext;
 
     console.log(user);
+
+    console.log('socket', socket)
 
     const onLogout = () => {
 
@@ -25,7 +30,7 @@ const Header = () => {
                 <a className="nav-link active" href="#">Active</a>
             </li>
             <li className="nav-item">
-                <a className="nav-link" href="#">Link</a>
+                <Notification socket={socket} />
             </li>
             <li className="nav-item">
                 <Button key="1" type="primary" onClick={onLogout}>
@@ -33,7 +38,6 @@ const Header = () => {
                     Logout
        </Button>
             </li>
-
         </ul>
     )
 }

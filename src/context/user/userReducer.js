@@ -21,7 +21,10 @@ import {
   DEL_DEBT,
   UPDATE_DEBT,
   SET_LOADING,
-  REFRESH
+  REFRESH,
+  GET_NOTIFS,
+  ADD_NOTIFS,
+  READ_NOTIF
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -56,8 +59,7 @@ export default (state, action) => {
       return {
         ...state,
         // addBeneficiaryRes: action.payload,
-        beneficiaries: [...state.beneficiaries.filter(item => item.type !== "del"), { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name }],
-        // beneficiaries: { ...state.beneficiaries, beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name },
+        // beneficiaries: { ...state.benefinotifsciaries, 4: { beneficiary_account: action.payload.beneficiary_account, beneficiary_name: action.payload.name } },
         error: null,
         success: "add beneficiary successfully",
         loading: false,
@@ -129,7 +131,8 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "verifily otp successfully",
+        // success: "Verify otp successfully",
+        success: action.payload.msg,
         loading: false
       }
 
@@ -137,7 +140,7 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "send otp successfully, Check your email",
+        success: "Send otp successfully. Check your email",
         loading: false
       }
 
@@ -206,6 +209,36 @@ export default (state, action) => {
         success: null,
         beneficiary: {}
       }
+    case GET_NOTIFS:
+      {
+        return {
+          ...state,
+          notifs: action.payload,
+          error: null,
+          loading: false,
+        }
+      }
+    case ADD_NOTIFS: {
+      const { notifs } = state
+      return {
+        ...state,
+        notifs: [action.payload, ...notifs],
+        error: null,
+        loading: false,
+      }
+    }
+    case READ_NOTIF: {
+      const { notifs } = state
+      const lastRead = { ...notifs[0], unread: notifs[0].id }
+      console.log('lastRead', lastRead)
+      return {
+        ...state,
+        notifs: [lastRead, ...notifs.slice(1)],
+        error: null,
+        loading: false,
+      }
+    }
+
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:
     // case UPDATE_BENEFICIARIES_ERROR:
