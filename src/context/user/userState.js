@@ -257,19 +257,12 @@ const UserState = (props) => {
 
   const transferInterBank = async (transferInfor) => {
     setLoading();
+    console.log("-------", transferInfor)
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
         "/api/customer/interbank-transfer-money",
-        // transferInfor
-        {
-          depositor: "97433",
-          receiver: "1592383172566",
-          amount: 20000,
-          note: "abc",
-          charge_include: true,
-          partner_bank: "mpbank"
-        }
+        transferInfor
       );
       dispatch({
         type: POST_TRANSFERINTERBANK,
