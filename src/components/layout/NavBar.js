@@ -73,13 +73,14 @@ const NavBar = ({ socket, username }) => {
 
   const userContext = useContext(UserContext)
 
-  const { error } = userContext
+  const { error, getNewToken } = userContext
 
 
   useEffect(() => {
     console.log(error);
+    getNewToken()
     if (error === "token expired");
-  }, [error]);
+  }, []);
 
   const { logout, user } = authContext;
   const [collapsed, setCollapsed] = useState(false);

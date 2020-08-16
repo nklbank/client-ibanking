@@ -208,7 +208,7 @@ const TransferInfor = (props) => {
 
         if (success === "Verify otp successfully") {
             // console.log("transferInfor", transferInfor)
-            if (transferInfor.partner_bank === "NKL Bank" || transferInfor.partner_bank === undefined) {
+            if (transferInfor.partner_bank === "nklbank" || transferInfor.partner_bank === undefined) {
                 transferIntraBank({
                     depositor: transferInfor.depositor,
                     receiver: transferInfor.receiver,
@@ -234,13 +234,16 @@ const TransferInfor = (props) => {
                     name: transferInfor.beneficiary
                 })
             }
-            // setCurrentStep(0)
+            setCurrentStep(0)
         }
+
+        if (success === "Transfer money succeed")
+            message.success(success)
     }, [success])
 
 
     useEffect(() => {
-        if (error === "Account balance not enough" || error === "Transfer money fail") {
+        if (error === "Account balance not enough" || error === "Transfer money fail" || error === "Transfer money less than minimun 20000") {
             message.error(error)
         }
     }, [error]);

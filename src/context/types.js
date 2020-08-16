@@ -95,3 +95,6 @@ export const GET_NOTIFS = "GET_NOTIFS";
 export const ADD_NOTIFS = "ADD_NOTIFS";
 
 export const READ_NOTIF = "READ_NOTIF";
+
+export const GET_TOKEN = "GET_TOKEN";
+export const GET_TOKEN_ERROR = "GET_TOKEN_ERROR"
