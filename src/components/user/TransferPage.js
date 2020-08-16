@@ -18,7 +18,8 @@ const TransferPage = props => {
     beneficiary,
     accountsOwner,
     getBeneficiry,
-    loading
+    loading,
+    refresh
   } = userContext;
 
   const [isModal, setIsModal] = useState(false);
@@ -34,7 +35,7 @@ const TransferPage = props => {
 
   return (
     <div>
-      <Button type="primary" onClick={() => setIsModal(true)} icon={<PlusOutlined />} >new payee  </Button>
+      <Button type="primary" onClick={() => setIsModal(true) || refresh()} icon={<PlusOutlined />} >new payee  </Button>
       <Modal
         title="Basic Modal"
         visible={isModal}

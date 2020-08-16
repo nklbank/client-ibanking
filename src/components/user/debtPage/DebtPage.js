@@ -1,17 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { Button, Space, Table, Tag, notification, message } from "antd";
+import React, { useContext, useEffect, useState } from 'react';
 
-import { Table, Button, Tag, Space } from "antd";
-import { PlusOutlined } from '@ant-design/icons'
 import UserContext from '../../../context/user/userContext';
 import CreateDebtModal from './create_debt_modal';
-import DelDebtModal from './del_debt_modal'
+import DelDebtModal from './del_debt_modal';
+import PayDebtModal from './pay_debt_modal';
 
 var listAccount;
 
 const columns = [
     {
-        title: "Chủ nợ",
+        title: "Creditor",
         dataIndex: "creditor",
         key: "creditor",
         render: creditor => {
@@ -21,7 +20,7 @@ const columns = [
         }
     },
     {
-        title: "Người mượn nợ",
+        title: "Payer",
         dataIndex: "payer",
         key: "payer",
         render: payer => {
@@ -31,82 +30,107 @@ const columns = [
         }
     },
     {
-        title: "Số tiền",
+        title: "Amount",
         dataIndex: "amount",
         key: "amount",
     },
     {
-        title: "Tình trạng",
+        title: "Status",
         dataIndex: "paid",
         key: "paid",
         render: (paid, { visibleToPayer }) => {
             console.log('visibleToPayer', visibleToPayer);
             let color = paid === 0 ? 'red' : 'green';
-            let text = (paid === 0 ? 'chưa thanh' : 'đã thanh');
+            let text = (paid === 0 ? 'unpaid' : 'paid');
             if (visibleToPayer === 1)
                 return (<Tag color={color} key={paid}>{text.toUpperCase()}</Tag>)
             else return (<>
                 <Tag color={color} key={paid}>{text.toUpperCase()}</Tag>
-                <Tag>Xóa</Tag>
+                <Tag>Deleted</Tag>
             </>)
         }
     },
     {
-        title: "Mô tả",
+        title: "Description",
         dataIndex: "description",
         key: "description",
     },
     {
-        title: "Thời gian",
+        title: "Time",
         dataIndex: "timestamp",
         key: "timestamp",
     },
     {
-        title: "Thao tác",
+        title: "Action",
         dataIndex: "paid",
         key: "action",
-        render: (paid, { creditor, visibleToPayer, id }) => {
-            const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} />);
-
-
-            // const del_btn = (<Button danger size="small">Xóa</Button>);
-            const pay_btn = (<Button type="primary" size="small">Thanh toán</Button>);
-            const remind_btn = (<Button type="primary" size="small">Nhắc lại</Button>);
-            // if (paid === 0 && visibleToPayer === 0) return (<><Space>{del_btn}{remind_btn}</Space></>)
-            // if (paid === 0 && listAccount.indexOf(payer) !== -1) return (<><Space>{del_btn}{pay_btn}</Space></>)
-            // else return (<>{del_btn}</>)
+        render: (paid, { creditor, visibleToPayer, id, payer, amount, socket, owner }) => {
+            console.log('socket in table', socket)
+            const del_btn = (isCreditor) => (<DelDebtModal id={id} permanentDel={isCreditor} socket={socket} owner={owner} />);
+            const pay_btn = (id, creditor, payer, amount) => (<PayDebtModal id={id} creditor={creditor} payer={payer} amount={amount} socket={socket} owner={owner}></PayDebtModal>)
             // nếu mình là chủ nợ
             if (listAccount.indexOf(creditor) !== -1)
-                return visibleToPayer === 0 ? (<><Space>{del_btn(true)}{remind_btn}</Space></>) : (<>{del_btn(true)}</>)
+                return visibleToPayer === 0 ? (<><Space>{del_btn(true)}</Space></>) : (<>{del_btn(true)}</>)
             else
-                return paid === 0 ? (<><Space>{del_btn(false)}{pay_btn}</Space></>) : (<>{del_btn(false)}</>)
+                return paid === 0 ? (<><Space>{del_btn(false)}{pay_btn(id, creditor, payer, amount)}</Space></>) : (<>{del_btn(false)}</>)
         }
     }
 ];
 
-const adjustedDataSource = (debts) => {
+const adjustedDataSource = (debts, socket, username) => {
     const { creditors, payers } = debts;
     console.log('debts', debts)
     const visible_debt = [...payers].filter(debt => debt.visibleToPayer === 1)
-    const list = [...creditors, ...visible_debt].sort(function (a, b) {
+    const list = [...creditors, ...visible_debt].map(element => ({ ...element, socket, owner: username })).sort(function (a, b) {
         return a.id - b.id;
     });
+    const timestampFormatList = list.map(element => {
+        const { timestamp } = element
+        const _timestamp = new Date(timestamp)
+        const mins = _timestamp.getMinutes() < 10 ? `0${_timestamp.getMinutes()}` : _timestamp.getMinutes()
+        var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1}/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`
+        return { ...element, timestamp: timestring }
+    })
     console.log('adjustedDataSource', list)
-    return list
+    console.log('timestampFormatList :>> ', timestampFormatList);
+    return timestampFormatList
 }
+
+const openNotification = (message, type) => {
+    const _type = type === "create" ? "info" : (type === "del" ? "warning" : "success")
+    notification[_type]({
+        message: 'Notification Title',
+        description: JSON.stringify(message),
+        onClick: () => {
+            console.log('Notification Clicked!');
+        },
+    });
+};
 
 const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
 
 
-
-const DebtPage = () => {
+const DebtPage = ({ socket, username }) => {
     const [dataSource, setdataSource] = useState({});
+    // const [username, setusername] = useState(null)
+    const [message, setmessage] = useState(null)
 
     const userContext = useContext(UserContext);
-    const { debts, getDebts, accountsOwner } = userContext;
+    const { debts, getDebts, accountsOwner, notifs } = userContext;
 
     listAccount = listAccounts(accountsOwner);
+
+    console.log('socket', socket)
+
+
+    useEffect(() => {
+        if (message) {
+            console.log('message :>>', message)
+
+            openNotification(message, "create")
+        }
+    }, [message])
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
@@ -115,13 +139,14 @@ const DebtPage = () => {
 
     useEffect(() => {
         setdataSource({ ...debts })
-    }, [debts]);
+    }, [debts, notifs]);
+
 
     console.log('dataSource', dataSource)
     if (Object.keys(dataSource).length !== 0) {
-        const data = adjustedDataSource(dataSource)
+        const data = adjustedDataSource(dataSource, socket, username)
         return (<>
-            <CreateDebtModal></CreateDebtModal>
+            <CreateDebtModal owner={username} socket={socket}></CreateDebtModal>
             <div><Table dataSource={data} columns={columns} /></div>
         </>
         )
@@ -129,9 +154,6 @@ const DebtPage = () => {
     else return (<div></div>)
 }
 
-DebtPage.propTypes = {
-
-}
 
 export default DebtPage
 

@@ -1,6 +1,6 @@
 
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Button, Popconfirm, Form, Modal } from 'antd';
+import { Table, Input, Button, Popconfirm, Form, Modal, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
 
 import UserContext from '../../context/user/userContext'
@@ -91,12 +91,27 @@ const BeneficiaryInforPage = () => {
 
     const userContext = useContext(UserContext)
 
-    const { beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiry } = userContext
+    const { success, beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiry, error } = userContext
 
-    const [dataSource, setDataSource] = useState(
-        beneficiaries
-    )
+    const [dataSource, setDataSource] = useState(beneficiaries)
     const [visible, setVisible] = useState(false)
+
+
+    useEffect(() => {
+        setDataSource(beneficiaries)
+    }, [beneficiaries]);
+
+    useEffect(() => {
+        // console.log(error);
+        if (error === "From nklbank: Account not found")
+            message.error(error)
+    }, [error]);
+
+    useEffect(() => {
+        // console.log(error);
+        if (success === "add beneficiary successfully")
+            message.success(success)
+    }, [success]);
 
     const handleDelete = row => {
 
@@ -215,7 +230,8 @@ const BeneficiaryInforPage = () => {
         // getBeneficiry({ account_number: value });
     }
 
-    console.log(dataSource);
+    console.log(beneficiaries);
+    console.log(dataSource)
     return (
         <div>
             <Button
