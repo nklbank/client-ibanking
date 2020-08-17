@@ -10,6 +10,7 @@ import {
   GET_LIST_EMPLOYEES,
   LOADING,
   ADD_PERSONNEL,
+  GET_TRANSACTIONS_BANK,
 } from "../types";
 
 const AdminState = (props) => {
@@ -95,16 +96,38 @@ const AdminState = (props) => {
     }
   };
 
+  const getTransactionsBank = async (info) => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      dispatch({
+        type: LOADING,
+      });
+      const res = await axios.get(
+        `api/admin/transactions/filter?${info.bankCode || ""}&from=${
+          info.dateFrom
+        }&to=${info.dateTo}`
+      );
+      dispatch({ type: GET_TRANSACTIONS_BANK, payload: res.data });
+    } catch (err) {
+      dispatch({
+        type: ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
   return (
     <AdminContext.Provider
       value={{
         listEmployees: state.listEmployees,
         loading: state.loading,
         error: state.error,
+        listTransactionsBank: state.listTransactionsBank,
         getListEmployees,
         deleteEmployee,
         updateEmployee,
         addEmployee,
+        getTransactionsBank,
       }}
     >
       {props.children}

@@ -5,6 +5,7 @@ import {
   ERROR,
   LOADING,
   ADD_PERSONNEL,
+  GET_TRANSACTIONS_BANK,
 } from "../types";
 
 export default (state, action) => {
@@ -33,6 +34,14 @@ export default (state, action) => {
         ...state,
         error: null,
         loading: false,
+        success: "Successful!",
+      };
+    case GET_TRANSACTIONS_BANK:
+      return {
+        ...state,
+        error: null,
+        loading: false,
+        listTransactionsBank: action.payload,
       };
     case ERROR:
       return {
