@@ -58,7 +58,7 @@ const TransferInfor = (props) => {
 
         return (
             <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish}
-                initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }}
+                initialValues={{ receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }}
             >
                 <Form.Item
                     name="partner_bank"
@@ -156,8 +156,6 @@ const TransferInfor = (props) => {
     const Payment = () => {
         const onFinish = values => {
             transferInfor = { ...transferInfor, ...values }
-            console.log('Success:', transferInfor);
-
             setCurrentStep(2)
         };
 
@@ -204,11 +202,10 @@ const TransferInfor = (props) => {
     // const [successState,setSuccess] = useState({})
     useEffect(() => {
         // setSuccess(success);
-        console.log("---------------", success);
 
         if (success === "Verify otp successfully") {
-            // console.log("transferInfor", transferInfor)
-            if (transferInfor.partner_bank === "NKL Bank" || transferInfor.partner_bank === undefined) {
+            console.log("transferInfor", transferInfor)
+            if (transferInfor.partner_bank === "nklbank" || transferInfor.partner_bank === undefined) {
                 transferIntraBank({
                     depositor: transferInfor.depositor,
                     receiver: transferInfor.receiver,
@@ -217,6 +214,7 @@ const TransferInfor = (props) => {
                     charge_include: transferInfor.charge_include
                 })
             } else {
+                console.log("transferInterBank");
                 transferInterBank({
                     depositor: transferInfor.depositor,
                     receiver: transferInfor.receiver,
@@ -234,13 +232,16 @@ const TransferInfor = (props) => {
                     name: transferInfor.beneficiary
                 })
             }
-            // setCurrentStep(0)
+            setCurrentStep(0)
         }
+
+        if (success === "Transfer money succeed")
+            message.success(success)
     }, [success])
 
 
     useEffect(() => {
-        if (error === "Account balance not enough" || error === "Transfer money fail") {
+        if (error === "Account balance not enough" || error === "Transfer money fail" || error === "Transfer money less than minimun 20000") {
             message.error(error)
         }
     }, [error]);

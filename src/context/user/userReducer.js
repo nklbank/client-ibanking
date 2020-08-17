@@ -28,7 +28,9 @@ import {
   REFRESH,
   GET_NOTIFS,
   ADD_NOTIFS,
-  READ_NOTIF
+  READ_NOTIF,
+  GET_TOKEN,
+  GET_TOKEN_ERROR
   // BENEFICIARY_ERROR
 } from "../types";
 
@@ -128,7 +130,7 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "Transfer successfully",
+        success: "Transfer money succeed",
         loading: false
       }
     case POST_TRANSFERINTERBANK:
@@ -273,6 +275,20 @@ export default (state, action) => {
         loading: false,
       }
     }
+
+    case GET_TOKEN:
+
+      localStorage.setItem("token", JSON.stringify(action.payload));
+
+      return {
+        ...state,
+      }
+
+    case GET_TOKEN_ERROR:
+      return {
+        ...state,
+        error: "Token expired. Login again"
+      }
 
     // case BENEFICIARIES_ERROR:
     // case BENEFICIARY_ERROR:

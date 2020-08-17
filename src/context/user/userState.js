@@ -33,7 +33,9 @@ import {
   REFRESH,
   GET_NOTIFS,
   ADD_NOTIFS,
-  READ_NOTIF
+  READ_NOTIF,
+  GET_TOKEN,
+  GET_TOKEN_ERROR
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -221,7 +223,6 @@ const UserState = (props) => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get("/api/customer/debts");
-      console.log("res.data", res.data);
       dispatch({
         type: GET_DEBTLIST,
         payload: res.data,
@@ -256,6 +257,7 @@ const UserState = (props) => {
 
   const transferInterBank = async (transferInfor) => {
     setLoading();
+    console.log("-------", transferInfor)
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -459,6 +461,32 @@ const UserState = (props) => {
     }
   }
 
+  const getNewToken = async () => {
+    // console.log(tokens);
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post(
+        "/api/auth/refresh",
+        {
+          accessToken: JSON.parse(localStorage.getItem("token"))["accessToken"],
+          refreshToken: JSON.parse(localStorage.getItem("token"))["refreshToken"]
+        }
+      );
+      dispatch({
+        type: GET_TOKEN,
+        payload: {
+          ...res.data,
+          refreshToken: JSON.parse(localStorage.getItem("token"))["refreshToken"]
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: GET_TOKEN_ERROR,
+        payload: err.response,
+      });
+    }
+  }
+
 
   return (
     <UserContext.Provider
@@ -494,7 +522,8 @@ const UserState = (props) => {
         getNotifs,
         addNotif,
         postNotif,
-        readNotif
+        readNotif,
+        getNewToken
       }}
     >
       {props.children}
