@@ -22,7 +22,7 @@ const Home = () => {
   const authContext = useContext(AuthContext);
   const adminContext = useContext(AdminContext);
 
-  const { user, loadPersonnel } = authContext;
+  const { user, loadPersonnel, getNewAccessToken } = authContext;
   const {
     getBeneficiries,
     getAccounts,
@@ -42,6 +42,7 @@ const Home = () => {
     getAccounts();
     getBeneficiries();
     getCustomerInfo();
+    getNewAccessToken();
   }, []);
   useEffect(() => {
     if (errorAdmin) {

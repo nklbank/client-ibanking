@@ -118,7 +118,7 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post("/api/auth/personnel", formData, config);
-      getNewAccessToken(res.data);
+      getNewAccessToken();
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
@@ -132,22 +132,29 @@ const AuthState = (props) => {
   };
 
   const getNewAccessToken = (info, timeDelay = 2) => {
-    const body = {
-      accessToken: info.accessToken,
-      refreshToken: info.refreshToken,
-    };
+    let body = {};
+    if (!info) {
+      body = {
+        accessToken: JSON.parse(localStorage.getItem("token"))["accessToken"],
+        refreshToken: JSON.parse(localStorage.getItem("token"))["refreshToken"],
+      };
+    } else body = info;
     setTimeout(async () => {
       try {
         const res = await axios.post("/api/auth/refresh", body);
         console.log("res rf token", res);
-        //  const newToken = {...JSON.parse(localStorage.getItem("token")), accessToken: in};
-        localStorage.setItem("token", JSON.stringify(body));
-        console.log("refresh token successful", res.data);
+        const newToken = {
+          ...JSON.parse(localStorage.getItem("token")),
+          accessToken: res.data.accessToken,
+        };
+        localStorage.setItem("token", JSON.stringify(newToken));
+        console.log(
+          "refresh token successful",
+          JSON.parse(localStorage.getItem("token"))
+        );
+        getNewAccessToken(newToken);
       } catch (error) {
-        dispatch({
-          type: LOGIN_FAIL,
-          payload: error.response.data.msg,
-        });
+        console.log(error);
       }
     }, timeDelay);
   };
@@ -166,6 +173,7 @@ const AuthState = (props) => {
         logout,
         personnelLogin,
         loadPersonnel,
+        getNewAccessToken,
         // clearErrors
       }}
     >
