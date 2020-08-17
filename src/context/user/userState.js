@@ -257,7 +257,6 @@ const UserState = (props) => {
 
   const transferInterBank = async (transferInfor) => {
     setLoading();
-    console.log("-------", transferInfor)
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(

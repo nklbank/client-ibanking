@@ -137,7 +137,7 @@ export default (state, action) => {
       return {
         ...state,
         error: null,
-        success: "Transfer successfully",
+        success: "Transfer money succeed",
         loading: false
       }
     case POST_TRANSFERBANK_ERROR:
