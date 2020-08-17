@@ -140,7 +140,8 @@ const AuthState = (props) => {
       try {
         const res = await axios.post("/api/auth/refresh", body);
         console.log("res rf token", res);
-        localStorage.setItem("token", JSON.stringify(res.data.accessToken));
+        //  const newToken = {...JSON.parse(localStorage.getItem("token")), accessToken: in};
+        localStorage.setItem("token", JSON.stringify(body));
         console.log("refresh token successful", res.data);
       } catch (error) {
         dispatch({
