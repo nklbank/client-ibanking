@@ -35,8 +35,7 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post("/api/auth", formData, config);
-
-      console.log(res.data);
+      getNewAccessToken(res.data);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
@@ -119,8 +118,7 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post("/api/auth/personnel", formData, config);
-
-      console.log(res.data);
+      getNewAccessToken();
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
@@ -132,6 +130,23 @@ const AuthState = (props) => {
       });
     }
   };
+
+  const getNewAccessToken = (info, timeDelay = 2) => {
+    setTimeout(async () => {
+      try {
+        const res = await axios.post("/api/auth/refresh", info);
+        console.log("res rf token", res);
+        localStorage.setItem("token", JSON.stringify(res.data.accessToken));
+        console.log("refresh token successful", res.data);
+      } catch (error) {
+        dispatch({
+          type: LOGIN_FAIL,
+          payload: error.response.data.msg,
+        });
+      }
+    }, timeDelay);
+  };
+
   return (
     <AuthContext.Provider
       value={{
