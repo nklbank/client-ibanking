@@ -35,24 +35,35 @@ const Home = () => {
   const { setAlert, alerts } = alertContext;
   const errorAdmin = adminContext.error;
 
+
+
   const [username, setusername] = useState(null);
+  (async () => {
+    if (username === null) {
+      const res = await getCustomerInfo();
+      const { username } = res[0];
+      setusername(username)
+    }
+  })();
+
 
   useEffect(() => {
     loadPersonnel();
     getAccounts();
     getBeneficiries();
-
-    // getCustomerInfo();
+    getNewAccessToken();
     (async () => {
       const res = await getCustomerInfo();
       const { username } = res[0];
-      setusername(username);
-      socket = io(proxy);
-      console.log('username', username)
-      console.log('socket', socket)
+      setusername(username)
+
+      // console.log('username', username)
+      // console.log('socket', socket)
+      // socket = io(proxy)
+
     })();
-    getNewAccessToken();
   }, []);
+
 
   useEffect(() => {
     if (errorAdmin) {
@@ -61,18 +72,12 @@ const Home = () => {
     }
   }, [errorAdmin]);
 
-  // useEffect(() => {
-  //   console.log("userInfo", userInfo);
-  //   if (userInfo) {
-  //     if (userInfo.username) {
-  //       setusername(userInfo.username)
-  //       console.log("username", userInfo.username);
-  //       socket = io(proxy);
-  //     }
-  //   }
-  // }, [userInfo]);
-
-
+  useEffect(() => {
+    if (username) {
+      console.log('username', username)
+      socket = io(proxy)
+    }
+  }, [username])
 
   const switchNavBar = () => {
     console.log("user", user);
@@ -92,7 +97,7 @@ const Home = () => {
       {/* {error && message.error(error.msg ? error.msg : error.data.msg)}*/}
       {/* {success && message.success(success)}  */}
 
-      <Header socket={socket} username={username} />
+      <Header socket={socket} />
       {/* { loading && <Spinner />} */}
       {switchNavBar()}
     </div>
