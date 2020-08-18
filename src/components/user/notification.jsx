@@ -11,7 +11,7 @@ import UserContext from "../../context/user/userContext";
 
 const { Text } = Typography;
 
-function Notification({ socket }) {
+function Notification({ socket, username }) {
   const userContext = useContext(UserContext);
   const {
     notifs,
@@ -20,23 +20,25 @@ function Notification({ socket }) {
     addNotif,
     getDebts,
     readNotif,
-    userInfo,
+    // userInfo,
   } = userContext;
   const [menu, setMenu] = useState(
     <Menu>
       <Menu.Item></Menu.Item>
     </Menu>
   );
-  //const [username, setUsername] = useState(userInfo.username);
-  // (async () => {
-  //   const res = await getCustomerInfo();
-  //   const { username } = res[0];
-  //   setUsername(username);
-  // })();
+  // const [username, setUsername] = useState(null);
 
-  const { username } = userInfo;
+
+  // const { username } = userInfo;
 
   useEffect(() => {
+    // (async () => {
+    //   const res = await getCustomerInfo();
+    //   const { username } = res[0];
+    //   setUsername(username);
+    // })();
+
     getNotifs(username);
     if (username && socket) {
       console.log("socket", socket);
@@ -54,7 +56,7 @@ function Notification({ socket }) {
         getDebts();
       });
     }
-  }, [username]);
+  }, []);
 
   useEffect(() => {
     const items = notifs.map((notif) => {
@@ -64,9 +66,8 @@ function Notification({ socket }) {
         _timestamp.getMinutes() < 10
           ? `0${_timestamp.getMinutes()}`
           : _timestamp.getMinutes();
-      var timestring = `${_timestamp.getDate()}/${
-        _timestamp.getMonth() + 1
-      }/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`;
+      var timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1
+        }/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`;
       var action, icon;
       switch (type) {
         case "transfer":

@@ -8,7 +8,7 @@ import Notification from '../user/notification'
 const { Paragraph } = Typography;
 
 
-const Header = ({ socket }) => {
+const Header = ({ socket, username  }) => {
     const authContext = useContext(AuthContext);
 
     const { logout, user } = authContext;
