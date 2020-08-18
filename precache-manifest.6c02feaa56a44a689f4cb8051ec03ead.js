@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6e4dcbbdf6d2c9d3fe804860eed449df",
+    "revision": "7fc233a627c9bf4870082002c24fc3c6",
     "url": "/client-ibanking/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/client-ibanking/static/css/2.4c4477be.chunk.css"
   },
   {
-    "revision": "4086170b48189d356bf9",
+    "revision": "8896a55a8ba8b8364c77",
     "url": "/client-ibanking/static/css/main.9adac687.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/client-ibanking/static/js/2.362c25a3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "4086170b48189d356bf9",
-    "url": "/client-ibanking/static/js/main.8c26e95f.chunk.js"
+    "revision": "8896a55a8ba8b8364c77",
+    "url": "/client-ibanking/static/js/main.bbcb9ae5.chunk.js"
   },
   {
     "revision": "5f432ecfb1a6242d2b78",
