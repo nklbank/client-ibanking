@@ -35,35 +35,40 @@ const Home = () => {
   const { setAlert, alerts } = alertContext;
   const errorAdmin = adminContext.error;
 
-
-
   const [username, setusername] = useState(null);
   (async () => {
-    if (username === null) {
-      const res = await getCustomerInfo();
-      const { username } = res[0];
-      setusername(username)
+    try {
+      if (username === null) {
+        const res = await getCustomerInfo();
+        const { username } = res[0];
+        setusername(username);
+      }
+    } catch (err) {
+      console.log(err);
     }
   })();
 
-
+  useEffect(() => {
+    if (!user.admin) getNewAccessToken();
+  }, []);
   useEffect(() => {
     loadPersonnel();
     getAccounts();
     getBeneficiries();
-    getNewAccessToken();
     (async () => {
-      const res = await getCustomerInfo();
-      const { username } = res[0];
-      setusername(username)
+      try {
+        const res = await getCustomerInfo();
+        const { username } = res[0];
+        setusername(username);
 
-      // console.log('username', username)
-      // console.log('socket', socket)
-      // socket = io(proxy)
-
+        // console.log('username', username)
+        // console.log('socket', socket)
+        // socket = io(proxy)
+      } catch (err) {
+        console.log(err);
+      }
     })();
   }, []);
-
 
   useEffect(() => {
     if (errorAdmin) {
@@ -74,10 +79,10 @@ const Home = () => {
 
   useEffect(() => {
     if (username) {
-      console.log('username', username)
-      socket = io(proxy)
+      console.log("username", username);
+      socket = io(proxy);
     }
-  }, [username])
+  }, [username]);
 
   const switchNavBar = () => {
     console.log("user", user);
