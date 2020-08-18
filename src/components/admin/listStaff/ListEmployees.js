@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import adminContext from "../../../context/admin/adminContext";
-import PersonInfo from "../personInfo/personInfo";
+import PersonInfo from "../personInfo/PersonInfo";
 const { Option } = Select;
 
 const defaultPersonInfo = {
