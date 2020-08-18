@@ -91,7 +91,7 @@ const BeneficiaryInforPage = () => {
 
     const userContext = useContext(UserContext)
 
-    const { success, beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiry, error } = userContext
+    const { success, beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiries, error, loading } = userContext
 
     const [dataSource, setDataSource] = useState(beneficiaries)
     const [visible, setVisible] = useState(false)
@@ -199,15 +199,6 @@ const BeneficiaryInforPage = () => {
             name: values.remindname || ''
         })
 
-        // const { count, dataSource } = this.state;
-        // const newData = {
-        //   key: count,
-        //   name: `Edward King ${count}`,
-        //   age: 32,
-        //   address: `London, Park Lane no. ${count}`,
-        // };
-        // setDataSource(...dataSource, values);
-
         if (!addBeneficiaryRes) {
             //change state here for add
         }
@@ -218,10 +209,8 @@ const BeneficiaryInforPage = () => {
     };
 
     const onSaveChanges = () => {
-        // useEffect
-        // useEffect(() => {
         updateListBeneficiaryInfo(dataSource)
-        // }, [])
+        getBeneficiries();
     }
 
 
@@ -230,8 +219,7 @@ const BeneficiaryInforPage = () => {
         // getBeneficiry({ account_number: value });
     }
 
-    console.log(beneficiaries);
-    console.log(dataSource)
+
     return (
         <div>
             <Button
@@ -292,7 +280,7 @@ const BeneficiaryInforPage = () => {
                 dataSource={dataSource.filter(item => item.type !== "del")}
                 columns={columns}
             />
-            <Button onClick={onSaveChanges}>Save changes</Button>
+            <Button loading={loading} onClick={onSaveChanges}>Save changes</Button>
         </div>
     );
 }
