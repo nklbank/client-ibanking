@@ -54,7 +54,7 @@ const UserState = (props) => {
     token: localStorage.getItem("token"),
     debts: {},
     notifs: [],
-    username: "",
+    userInfo: {},
   };
 
   const [state, dispatch] = useReducer(userReducer, initialState);
@@ -503,6 +503,7 @@ const UserState = (props) => {
         error: state.error,
         loading: state.loading,
         username: state.username,
+        userInfo: state.userInfo,
         getAccounts,
         getBeneficiries,
         updateListBeneficiaryInfo,

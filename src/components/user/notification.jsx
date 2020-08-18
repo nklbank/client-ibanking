@@ -20,18 +20,21 @@ function Notification({ socket }) {
     addNotif,
     getDebts,
     readNotif,
+    userInfo,
   } = userContext;
   const [menu, setMenu] = useState(
     <Menu>
       <Menu.Item></Menu.Item>
     </Menu>
   );
-  const [username, setUsername] = useState(null);
-  (async () => {
-    const res = await getCustomerInfo();
-    const { username } = res[0];
-    setUsername(username);
-  })();
+  //const [username, setUsername] = useState(userInfo.username);
+  // (async () => {
+  //   const res = await getCustomerInfo();
+  //   const { username } = res[0];
+  //   setUsername(username);
+  // })();
+
+  const { username } = userInfo;
 
   useEffect(() => {
     getNotifs(username);
