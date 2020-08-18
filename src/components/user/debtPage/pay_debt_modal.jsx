@@ -16,8 +16,9 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
     console.log('message :>> ', message);
     console.log('status :>> ', status);
     console.log('otp :>> ', otp);
+    console.log('error :>> ', error);
     if (error) {
-      setOTP({ ...OTP, message: error.data.msg, status: "error" })
+      setOTP({ ...OTP, message: error, status: "error" })
       console.log('OTP :>> ', OTP);
     }
   }, [error])

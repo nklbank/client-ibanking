@@ -36,7 +36,7 @@ import {
   READ_NOTIF,
   GET_TOKEN,
   GET_TOKEN_ERROR,
-  GET_USER_INFO,
+  // GET_USER_INFO,
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -54,7 +54,7 @@ const UserState = (props) => {
     token: localStorage.getItem("token"),
     debts: {},
     notifs: [],
-    userInfo: {},
+    // userInfo: {},
   };
 
   const [state, dispatch] = useReducer(userReducer, initialState);
@@ -290,9 +290,8 @@ const UserState = (props) => {
         _timestamp.getMinutes() < 10
           ? `0${_timestamp.getMinutes()}`
           : _timestamp.getMinutes();
-      const timestring = `${_timestamp.getDate()}/${
-        _timestamp.getMonth() + 1
-      }/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`;
+      const timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1
+        }/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`;
       console.log("timestring :>> ", timestring);
       const newDebt = {
         ...debt,
@@ -401,22 +400,37 @@ const UserState = (props) => {
     }
   };
 
+  // const getCustomerInfo = async () => {
+  //   setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+  //   try {
+  //     const res = await axios.get("/api/customer");
+  //     console.log("res.datas dasdas", res.data);
+  //     dispatch({ type: GET_USER_INFO, payload: res.data });
+  //     return res.data;
+  //   } catch (err) {
+  //     dispatch({
+  //       type: USER_ERROR,
+  //       payload: err.response,
+  //     });
+  //     const res = [0];
+  //     return res;
+  //   }
+  // };
+
   const getCustomerInfo = async () => {
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.get("/api/customer");
-      console.log("res.datas dasdas", res.data);
-      dispatch({ type: GET_USER_INFO, payload: res.data });
+      const res = await axios.get(
+        "/api/customer");
+      console.log('res.data', res.data)
       return res.data;
     } catch (err) {
       dispatch({
         type: USER_ERROR,
         payload: err.response,
       });
-      const res = [0];
-      return res;
     }
-  };
+  }
   const setLoading = () => dispatch({ type: SET_LOADING });
 
   const refresh = () => dispatch({ type: REFRESH });
@@ -461,7 +475,7 @@ const UserState = (props) => {
     try {
       await axios.post(`/api/notifs/update`, { id: id });
       dispatch({ type: READ_NOTIF });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const getNewToken = async () => {
