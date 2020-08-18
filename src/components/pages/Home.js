@@ -11,10 +11,10 @@ import Header from "../layout/Header";
 import Spinner from "../layout/Spinner";
 // import socket from "socket.io-client/lib/socket";
 
-import io from 'socket.io-client'
+import io from "socket.io-client";
 
-const { proxy } = require('../../../package.json');
-let socket
+const { proxy } = require("../../../package.json");
+let socket;
 
 const Home = () => {
   const userContext = useContext(UserContext);
@@ -22,20 +22,38 @@ const Home = () => {
   const authContext = useContext(AuthContext);
   const adminContext = useContext(AdminContext);
 
-  const { user, loadPersonnel } = authContext;
-  const { getBeneficiries, getAccounts, error, success, loading, getCustomerInfo } = userContext;
+  const { user, loadPersonnel, getNewAccessToken } = authContext;
+  const {
+    getBeneficiries,
+    getAccounts,
+    error,
+    success,
+    loading,
+    getCustomerInfo,
+    userInfo,
+  } = userContext;
   const { setAlert, alerts } = alertContext;
   const errorAdmin = adminContext.error;
 
   const [username, setusername] = useState(null);
 
-  (async () => { const res = await getCustomerInfo(); const { username } = res[0]; setusername(username) })();
-
   useEffect(() => {
     loadPersonnel();
     getAccounts();
     getBeneficiries();
+
+    // getCustomerInfo();
+    (async () => {
+      const res = await getCustomerInfo();
+      const { username } = res[0];
+      setusername(username);
+      socket = io(proxy);
+      console.log('username', username)
+      console.log('socket', socket)
+    })();
+    getNewAccessToken();
   }, []);
+
   useEffect(() => {
     if (errorAdmin) {
       console.log("errorAdmin", errorAdmin);
@@ -43,12 +61,17 @@ const Home = () => {
     }
   }, [errorAdmin]);
 
-  useEffect(() => {
-    if (username) {
-      console.log('username', username)
-      socket = io(proxy)
-    }
-  }, [username])
+  // useEffect(() => {
+  //   console.log("userInfo", userInfo);
+  //   if (userInfo) {
+  //     if (userInfo.username) {
+  //       setusername(userInfo.username)
+  //       console.log("username", userInfo.username);
+  //       socket = io(proxy);
+  //     }
+  //   }
+  // }, [userInfo]);
+
 
 
   const switchNavBar = () => {
@@ -69,7 +92,7 @@ const Home = () => {
       {/* {error && message.error(error.msg ? error.msg : error.data.msg)}*/}
       {/* {success && message.success(success)}  */}
 
-      <Header socket={socket} />
+      <Header socket={socket} username={username} />
       {/* { loading && <Spinner />} */}
       {switchNavBar()}
     </div>

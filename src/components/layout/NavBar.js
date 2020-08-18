@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Menu, Button } from "antd";
 import { Link } from "react-router-dom";
 import {
@@ -23,6 +23,8 @@ import TransactionsPage from "../user/transactionsPage/TransactionsPage";
 import DebtPage from "../user/debtPage/DebtPage";
 import ListEmployees from "../admin/listStaff/ListEmployees";
 import socket from "socket.io-client/lib/socket";
+
+import UserContext from '../../context/user/userContext'
 
 const { SubMenu } = Menu;
 const comp = (socket, username) => {
@@ -69,6 +71,17 @@ const comp = (socket, username) => {
 const NavBar = ({ socket, username }) => {
   const authContext = useContext(AuthContext);
 
+  const userContext = useContext(UserContext)
+
+  const { error, getNewToken } = userContext
+
+
+  useEffect(() => {
+    console.log(error);
+    getNewToken()
+    if (error === "token expired");
+  }, []);
+
   const { logout, user } = authContext;
   const [collapsed, setCollapsed] = useState(false);
   const [key, setKey] = useState("0");
@@ -85,6 +98,8 @@ const NavBar = ({ socket, username }) => {
   const handleClick = (e) => {
     setKey(e.key);
   };
+
+
   return (
     <div className="row">
       <div className="col-2" style={{ backgroundColor: '#001529' }}>
