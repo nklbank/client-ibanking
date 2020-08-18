@@ -1,7 +1,7 @@
 
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Popconfirm, Form, Modal, message } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../context/user/userContext'
 
@@ -228,6 +228,7 @@ const BeneficiaryInforPage = () => {
                 style={{
                     marginBottom: 16,
                 }}
+                icon={<PlusOutlined />}
             >
                 Add a beneficiry
         </Button>
