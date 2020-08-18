@@ -241,7 +241,7 @@ const TransferInfor = (props) => {
 
 
     useEffect(() => {
-        if (error === "Account balance not enough" || error === "Transfer money fail" || error === "Transfer money less than minimun 20000") {
+        if (error === "Account balance not enough" || error === "Transfer money fail" || error === "Transfer money less than minimun 20000" || error === "From mpbank: Account not found" || error === "Receiver account not found") {
             message.error(error)
         }
     }, [error]);

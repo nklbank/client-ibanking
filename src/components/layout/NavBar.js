@@ -30,11 +30,11 @@ const { SubMenu } = Menu;
 const comp = (socket, username) => {
   return {
     0: {
-      title: "Danh sach tai khoan",
+      title: "Danh sách tài khoản",
       content: <UserAccount />,
     },
     1: {
-      title: "Thong tin",
+      title: "Thông tin",
       content: <BeneficiaryInforPage />,
     },
     2: {
@@ -54,11 +54,10 @@ const comp = (socket, username) => {
       content: <DebtPage socket={socket} username={username} />,
     },
     6: {
-      content: "Danh sách người nhận",
-      content: "danh sách người nhận",
+      content: "Danh sách người nhận"
     },
     7: {
-      title: "change password",
+      title: "Đổi mật khẩu",
       content: <ChangePasswordPage />,
     },
     8: {
@@ -101,7 +100,7 @@ const NavBar = ({ socket, username }) => {
 
 
   return (
-    <div className="row">
+    <div className="row" style={{ minHeight: "560px" }}>
       <div className="col-2" style={{ backgroundColor: '#001529' }}>
         <Menu
           defaultSelectedKeys={["0"]}
@@ -116,7 +115,7 @@ const NavBar = ({ socket, username }) => {
           </Menu.Item>
 
           <Menu.Item key="1" icon={<DesktopOutlined />}>
-            Danh sách người nhận
+            DS người nhận
           </Menu.Item>
 
           <Menu.Item key="2" icon={<ContainerOutlined />}>
@@ -129,7 +128,7 @@ const NavBar = ({ socket, username }) => {
 
           <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Danh sách">
             <Menu.Item key="5">Danh sách nợ</Menu.Item>
-            <Menu.Item key="6">Danh sách người nhận</Menu.Item>
+            <Menu.Item key="6">Người nhận</Menu.Item>
 
             {/* <SubMenu key="sub3" title="Tài khoản">
               <Menu.Item key="7">Đổi mật khẩu</Menu.Item>
