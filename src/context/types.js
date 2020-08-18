@@ -57,7 +57,7 @@ export const VERIFY_OTP_ERROR = "VERIFY_OTP_ERROR";
 export const DEL_DEBT = "DEL_DEBT";
 
 export const GET_LIST_EMPLOYEES = "GET_LIST_EMPLOYEES";
-
+export const GET_TRANSACTIONS_BANK = "GET_TRANSACTIONS_BANK";
 export const ERROR = "ERROR";
 export const DELETE_PERSONNEL = "DELETE_PERSONNEL";
 export const UPDATE_PERSONNEL = "UPDATE_PERSONNEL";
@@ -97,4 +97,5 @@ export const ADD_NOTIFS = "ADD_NOTIFS";
 export const READ_NOTIF = "READ_NOTIF";
 
 export const GET_TOKEN = "GET_TOKEN";
-export const GET_TOKEN_ERROR = "GET_TOKEN_ERROR"
+export const GET_TOKEN_ERROR = "GET_TOKEN_ERROR";
+export const GET_USER_INFO = "GET_USER_INFO";
