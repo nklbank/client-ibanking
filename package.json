@@ -42,5 +42,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://nklbank.herokuapp.com"
+  "proxy": "https://nklbank.herokuapp.com/",
+  "secure": false
 }
