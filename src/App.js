@@ -13,7 +13,7 @@ import AdminState from "./context/admin/adminState";
 import AuthState from "./context/auth/AuthState";
 import AlertState from "./context/alert/AlertState";
 import UserState from "./context/user/userState";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, HashRouter } from "react-router-dom";
 import PersonnelLogin from "./components/auth/PersonnelLogin";
 
 const App = () => {
@@ -25,7 +25,7 @@ const App = () => {
         <AlertState>
           <EmployeeState>
             <AdminState>
-              <Router>
+              <HashRouter>
                 <Switch>
                   <Fragment>
                     <div>
@@ -45,7 +45,7 @@ const App = () => {
                     </div>
                   </Fragment>
                 </Switch>
-              </Router>
+              </HashRouter>
             </AdminState>
           </EmployeeState>
         </AlertState>
