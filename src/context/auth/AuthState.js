@@ -131,7 +131,7 @@ const AuthState = (props) => {
     }
   };
 
-  const getNewAccessToken = (info, timeDelay = 50000) => {
+  const getNewAccessToken = (info, timeDelay = 500000) => {
     let body = {};
     if (!info) {
       body = {
