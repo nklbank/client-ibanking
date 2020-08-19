@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/client-ibanking/precache-manifest.96891376bb6b2706d39e44504e6e1d74.js"
+  "/client-ibanking/precache-manifest.0aaa343bcf5e6031443794b426f048e0.js"
 );
 
 self.addEventListener('message', (event) => {
