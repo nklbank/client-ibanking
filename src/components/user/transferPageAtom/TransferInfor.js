@@ -62,7 +62,7 @@ const TransferInfor = (props) => {
             >
                 <Form.Item
                     name="partner_bank"
-                    label="Bank Name"
+                    label="Tên ngân hàng"
                     rules={[
                         {
                             required: true,
@@ -70,7 +70,7 @@ const TransferInfor = (props) => {
                     ]}
                 >
                     <Select
-                        placeholder="Select bank name"
+                        placeholder="Chọn ngân hàng"
                         allowClear
                     >
                         <Option value="nklbank">NKL Bank</Option>
@@ -81,7 +81,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="receiver"
-                    label="Number"
+                    label="Số tài khoản"
                     autoFocus
                     // onBlur={onSearchAccount}
                     rules={[
@@ -95,14 +95,14 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="accountName"
-                    label="Name"
+                    label="Tên người nhận"
                 >
                     <Input disabled />
                 </Form.Item>
 
                 <Form.Item
                     name="depositor"
-                    label="Depositor"
+                    label="Tài khoản"
                     rules={[
                         {
                             required: true,
@@ -110,7 +110,7 @@ const TransferInfor = (props) => {
                     ]}
                 >
                     <Select
-                        placeholder="Select depositor"
+                        placeholder="Chọn tài khoản"
                         // onChange={onGenderChange}
                         allowClear
                     >
@@ -122,7 +122,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="amount"
-                    label="Amount"
+                    label="Số tiền VNĐ"
                     rules={[
                         {
                             required: true,
@@ -134,7 +134,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="note"
-                    label="Description"
+                    label="Ghi chú"
                     rules={[
                         {
                             required: true,
@@ -146,7 +146,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item >
                     <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
+                        Tiếp tục
            </Button>
                 </Form.Item>
             </Form>
@@ -185,12 +185,12 @@ const TransferInfor = (props) => {
                 </Form.Item>
 
                 <Form.Item name="charge_include" valuePropName="checked">
-                    <Checkbox>You will pay the fee</Checkbox>
+                    <Checkbox>Bạn sẽ trả phí</Checkbox>
                 </Form.Item>
 
                 <Form.Item>
                     <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
+                        Tiếp tục
           </Button>
                 </Form.Item>
             </Form>
@@ -235,8 +235,9 @@ const TransferInfor = (props) => {
             setCurrentStep(0)
         }
 
-        if (success === "Transfer money succeed")
+        if (success === "Transfer money succeed") {
             message.success(success)
+        }
     }, [success])
 
 
@@ -250,16 +251,20 @@ const TransferInfor = (props) => {
 
     const steps = [
         {
-            title: `Payee's detail`,
+            title: `Người nhận`,
             content: <PayeeDetail />,
         },
         {
-            title: 'Payment',
+            title: 'Chuyển khoản',
             content: <Payment />,
         },
         {
-            title: 'Verify',
+            title: 'Xác thực',
             content: <VerifyOTP />,
+        },
+        {
+            title: 'Phản hồi',
+            content: "<VerifyOTP />",
         },
     ];
 

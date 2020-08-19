@@ -59,14 +59,14 @@ const VerifyOTP = () => {
     return (
         <Form
             {...layout}
-            name="basic"
+            name="Xác thực OTP"
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
         >
             <Form.Item
-                label="Verify OTP"
+                label="Xác thực OTP"
                 name="otp"
-                rules={[{ required: true, message: 'Please input OTP!' }]}
+                rules={[{ required: true, message: 'Nhập OTP!' }]}
             >
                 <Input />
             </Form.Item>
@@ -77,7 +77,7 @@ const VerifyOTP = () => {
 
             <Form.Item >
                 <Button {...tailLayout} type="primary" htmlType="submit">
-                    Submit
+                    Hoàn thành
           </Button>
             </Form.Item>
         </Form>

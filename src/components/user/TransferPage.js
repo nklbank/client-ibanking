@@ -35,9 +35,9 @@ const TransferPage = props => {
 
   return (
     <div>
-      <Button type="primary" onClick={() => setIsModal(true) || refresh()} icon={<PlusOutlined />} >new payee  </Button>
+      <Button type="primary" onClick={() => setIsModal(true) || refresh()} icon={<PlusOutlined />} >Chuyển khoản mới  </Button>
       <Modal
-        title="Basic Modal"
+        title="Thông tin chuyển khoản"
         visible={isModal}
         onOk={() => setIsModal(false)}
         onCancel={() => setIsModal(false)}

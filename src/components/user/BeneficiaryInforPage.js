@@ -148,21 +148,21 @@ const BeneficiaryInforPage = () => {
 
     const columnsDefault = [
         {
-            title: 'name',
+            title: 'Tên tài khoản',
             dataIndex: 'beneficiary_name',
             width: '30%',
             editable: true,
         },
         {
-            title: 'account number',
+            title: 'Số tài khoản',
             dataIndex: 'beneficiary_account',
         },
         {
-            title: 'operation',
+            title: 'Xóa',
             dataIndex: 'operation',
             render: (text, record) =>
                 beneficiaries.length >= 1 ? (
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+                    <Popconfirm title="Bạn chắc là xóa không?" onConfirm={() => handleDelete(record)}>
                         <a className="text-danger"><DeleteOutlined /> Delete  </a>
                     </Popconfirm>
                 ) : null,
@@ -230,11 +230,11 @@ const BeneficiaryInforPage = () => {
                 }}
                 icon={<PlusOutlined />}
             >
-                Add a beneficiry
+                Tạo người nhận
         </Button>
             <div>
                 <Modal
-                    title="Basic Modal"
+                    title="Thông tin người nhận"
                     visible={visible}
                     onOk={() => setVisible(false)}
                     onCancel={() => setVisible(false)}
@@ -281,7 +281,7 @@ const BeneficiaryInforPage = () => {
                 dataSource={dataSource.filter(item => item.type !== "del")}
                 columns={columns}
             />
-            <Button loading={loading} onClick={onSaveChanges}>Save changes</Button>
+            <Button loading={loading} onClick={onSaveChanges}>Lưu thay đổi</Button>
         </div>
     );
 }

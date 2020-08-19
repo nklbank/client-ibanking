@@ -17,9 +17,9 @@ const UserAccount = (props) => {
     const accountsInfor = (accountsOwner = []) => (
         accountsOwner.map((acc, i) =>
             <div key={i} className="container ml-5">
-                <div><b><IdcardOutlined className="mr-3" />So tai khoan   :</b>  {acc.account_number}</div>
-                <div><b><MoneyCollectOutlined className="mr-3" />So du hien tai :</b> {Formatter.format(acc.account_balance)} VND</div>
-                <div><b><OneToOneOutlined className="mr-3" />Loai tai khoan :</b> {acc.type === 1 ? <span>Thanh toan</span> : <span>Tiet kiem</span>}</div>
+                <div><b><IdcardOutlined className="mr-3" />Số tài khoản   :</b>  {acc.account_number}</div>
+                <div><b><MoneyCollectOutlined className="mr-3" />Số dư hiện tại :</b> {Formatter.format(acc.account_balance)} VND</div>
+                <div><b><OneToOneOutlined className="mr-3" />Loại tài khoản :</b> {acc.type === 1 ? <span>Thanh toan</span> : <span>Tiet kiem</span>}</div>
                 <br />
                 <hr />
             </div>
