@@ -1,12 +1,12 @@
 
 import React, { useState, useContext } from 'react';
-import { Button, Modal, Form, Input, Row } from 'antd';
+import { Button, Modal, Form, Input, Row, Space } from 'antd';
 import { DeleteTwoTone, EyeInvisibleTwoTone } from '@ant-design/icons';
 import UserContext from '../../../context/user/userContext';
 
 const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, owner }) => {
     const [form] = Form.useForm();
-    const message = permanentDel ? "Permanently delete the debt" : "Hide the debt, which is only deleted by debt creator"
+    const message = permanentDel ? "Xóa vĩnh viễn nhắc nợ": "Ẩn nhắc nợ, chỉ chủ nợ có thể chính thức xóa nhắc nợ."
     const icon = permanentDel ? (<DeleteTwoTone twoToneColor="red" />) : (<EyeInvisibleTwoTone twoToneColor="orange" />);
 
 
@@ -30,9 +30,9 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
     return (
         <Modal
             visible={visible}
-            title="Delete debt"
-            okText="Delete debt"
-            cancelText="Cancel"
+            title="Xóa nhắc nợ"
+            okText="Xóa nhắc nợ"
+            cancelText="Hủy"
             onCancel={onCancel}
             onOk={() => {
                 form
@@ -90,19 +90,19 @@ const DelDebtForm = ({ visible, onCreate, onCancel, id, permanentDel, socket, ow
                 }}
             >
                 <Row align="middle" style={{ marginBottom: "10px" }}>
-                    {icon} {message}</Row>
+                    <Space align="center">{icon} {message}</Space></Row>
 
                 <Form.Item
                     name="deletorNote"
-                    label="Note"
+                    label="Ghi chú"
                     rules={[
                         {
                             required: true,
-                            message: 'Enter your note',
+                            message: 'Thêm ghi chú khi xóa nhắc nợ',
                         },
                     ]}
                 >
-                    <Input placeholder="Enter your note..." />
+                    <Input placeholder="Thêm ghi chú khi xóa nhắc nợ" />
                 </Form.Item>
             </Form>
         </Modal>
@@ -125,7 +125,7 @@ const DelDebtModal = ({ id, permanentDel, socket, owner }) => {
                     setVisible(true);
                 }}
             >
-                Delete
+                Xóa
       </Button>
             <DelDebtForm
                 visible={visible}

@@ -69,9 +69,9 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
     return (
         <Modal
             visible={visible}
-            title="Create new debt"
-            okText="Creat"
-            cancelText="Cancel"
+            title="Tạo nhắc nợ"
+            okText="Tạo nhắc nợ"
+            cancelText="Hủy"
             onCancel={onCancel}
             onOk={() => {
                 form
@@ -136,7 +136,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
             >
                 <Form.Item
                     name="creditor"
-                    label="Creditor"
+                    label="Chủ nợ"
                     rules={[
                         {
                             required: true,
@@ -149,7 +149,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                 </Form.Item>
                 <Form.Item
                     name="payer"
-                    label="Payer"
+                    label="Người mượn nợ"
                 >
 
                     <Select
@@ -161,7 +161,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                                 <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
                                     <Input style={{ flex: 'auto' }} onChange={(e) => onNameChange(e)} />
                                     <div style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }} onClick={addItem}>
-                                        <PlusOutlined /> Add account</div>
+                                        <PlusOutlined /> Thêm tài khoản</div>
                                 </div>
                             </div>
                         )}
@@ -175,7 +175,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                         : null}
 
                 </Form.Item>
-                <Form.Item name="amount" label="Amount"
+                <Form.Item name="amount" label="Số tiền"
                     rules={[
                         {
                             required: true,
@@ -184,7 +184,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
                     ]}>
                     <Input type="textarea" onChange={(e) => { setamount(e.target.value) }} />
                 </Form.Item>
-                <Form.Item name="description" label="Description">
+                <Form.Item name="description" label="Mô tả">
                     <Input type="textarea" onChange={(e) => { setdescription(e.target.value) }} />
                 </Form.Item>
             </Form>
@@ -208,7 +208,7 @@ const CreateDebtModal = ({ owner, socket }) => {
                     setVisible(true);
                 }}
             >
-                <PlusOutlined />New debt
+                <PlusOutlined />Tạo nhắc nợ
         </Button>
             <CreateDebtForm
                 visible={visible}

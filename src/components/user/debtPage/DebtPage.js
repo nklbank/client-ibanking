@@ -10,7 +10,7 @@ var listAccount;
 
 const columns = [
     {
-        title: "Creditor",
+        title: "Chủ nợ",
         dataIndex: "creditor",
         key: "creditor",
         render: creditor => {
@@ -20,7 +20,7 @@ const columns = [
         }
     },
     {
-        title: "Payer",
+        title: "Người mượn nợ",
         dataIndex: "payer",
         key: "payer",
         render: payer => {
@@ -30,18 +30,18 @@ const columns = [
         }
     },
     {
-        title: "Amount",
+        title: "Số tiền",
         dataIndex: "amount",
         key: "amount",
     },
     {
-        title: "Status",
+        title: "Trạng thái",
         dataIndex: "paid",
         key: "paid",
         render: (paid, { visibleToPayer }) => {
             console.log('visibleToPayer', visibleToPayer);
             let color = paid === 0 ? 'red' : 'green';
-            let text = (paid === 0 ? 'unpaid' : 'paid');
+            let text = (paid === 0 ? 'đã thanh' : 'chưa thanh');
             if (visibleToPayer === 1)
                 return (<Tag color={color} key={paid}>{text.toUpperCase()}</Tag>)
             else return (<>
@@ -51,17 +51,17 @@ const columns = [
         }
     },
     {
-        title: "Description",
+        title: "Mô tả",
         dataIndex: "description",
         key: "description",
     },
     {
-        title: "Time",
+        title: "Thời gian",
         dataIndex: "timestamp",
         key: "timestamp",
     },
     {
-        title: "Action",
+        title: "Thao tác",
         dataIndex: "paid",
         key: "action",
         render: (paid, { creditor, visibleToPayer, id, payer, amount, socket, owner }) => {
@@ -96,16 +96,16 @@ const adjustedDataSource = (debts, socket, username) => {
     return timestampFormatList
 }
 
-const openNotification = (message, type) => {
-    const _type = type === "create" ? "info" : (type === "del" ? "warning" : "success")
-    notification[_type]({
-        message: 'Notification Title',
-        description: JSON.stringify(message),
-        onClick: () => {
-            console.log('Notification Clicked!');
-        },
-    });
-};
+// const openNotification = (message, type) => {
+//     const _type = type === "create" ? "info" : (type === "del" ? "warning" : "success")
+//     notification[_type]({
+//         message: 'Notification Title',
+//         description: JSON.stringify(message),
+//         onClick: () => {
+//             console.log('Notification Clicked!');
+//         },
+//     });
+// };
 
 const listAccounts = (accountsOwner) =>
     accountsOwner.map(account => account.account_number)
@@ -114,7 +114,7 @@ const listAccounts = (accountsOwner) =>
 const DebtPage = ({ socket, username }) => {
     const [dataSource, setdataSource] = useState({});
     // const [username, setusername] = useState(null)
-    const [message, setmessage] = useState(null)
+    // const [message, setmessage] = useState(null)
 
     const userContext = useContext(UserContext);
     const { debts, getDebts, accountsOwner, notifs } = userContext;
@@ -124,13 +124,13 @@ const DebtPage = ({ socket, username }) => {
     console.log('socket', socket)
 
 
-    useEffect(() => {
-        if (message) {
-            console.log('message :>>', message)
+    // useEffect(() => {
+    //     if (message) {
+    //         console.log('message :>>', message)
 
-            openNotification(message, "create")
-        }
-    }, [message])
+    //         openNotification(message, "create")
+    //     }
+    // }, [message])
 
     if (Object.keys(dataSource).length === 0) {
         getDebts();
