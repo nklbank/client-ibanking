@@ -19,7 +19,7 @@ const AuthState = (props) => {
     token: localStorage.getItem("token"),
     isAuthenticated: null,
     loading: null,
-    user: null,
+    user: {},
     error: null,
   };
 
@@ -35,8 +35,7 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post("/api/auth", formData, config);
-
-      console.log(res.data);
+      getNewAccessToken(res.data);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
@@ -77,8 +76,8 @@ const AuthState = (props) => {
 
   // Load User
   const loadUser = async () => {
-    setAuthToken(localStorage.token.accessToken);
-
+    // setAuthToken(localStorage.token.accessToken);
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get("/api/customer/");
 
@@ -119,8 +118,7 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post("/api/auth/personnel", formData, config);
-
-      console.log(res.data);
+      getNewAccessToken(res.data);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
@@ -132,6 +130,36 @@ const AuthState = (props) => {
       });
     }
   };
+
+  const getNewAccessToken = (info, timeDelay = 500000) => {
+    let body = {};
+    if (!info) {
+      body = {
+        accessToken: JSON.parse(localStorage.getItem("token"))["accessToken"],
+        refreshToken: JSON.parse(localStorage.getItem("token"))["refreshToken"],
+      };
+    } else body = info;
+
+    setTimeout(async () => {
+      try {
+        const res = await axios.post("/api/auth/refresh", body);
+        console.log("res rf token", res);
+        const newToken = {
+          ...JSON.parse(localStorage.getItem("token")),
+          accessToken: res.data.accessToken,
+        };
+        localStorage.setItem("token", JSON.stringify(newToken));
+        console.log(
+          "refresh token successful",
+          JSON.parse(localStorage.getItem("token"))
+        );
+        getNewAccessToken(newToken);
+      } catch (error) {
+        console.log(error);
+      }
+    }, timeDelay);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -141,11 +169,12 @@ const AuthState = (props) => {
         user: state.user,
         error: state.error,
         // register,
-        // loadUser,
+        loadUser,
         login,
         logout,
         personnelLogin,
         loadPersonnel,
+        getNewAccessToken,
         // clearErrors
       }}
     >

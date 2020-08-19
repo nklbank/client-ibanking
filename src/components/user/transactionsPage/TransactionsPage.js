@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Form, Select, Table } from "antd";
 import UserContext from "../../../context/user/userContext";
+import { useEffect } from "react";
 const { Option } = Select;
 
 const layout = {
@@ -49,16 +50,21 @@ const types = [
 ];
 const TransactionsPage = (props) => {
   const userContext = useContext(UserContext);
-  const { transactions, accountsOwner, getTransactions } = userContext;
+  const { loading, transactions, accountsOwner, getTransactions } = userContext;
   const [dataSource, setDataSource] = useState(dataSourceDefault);
   const [columns, setColumns] = useState(columnsDefault);
   const [selectedAccount, setSelectedAccount] = useState();
+  const [curType, setCurType] = useState(types[0]);
 
   const onAccountSelected = (selectedAccount) => {
     console.log("finish ", selectedAccount);
+    setSelectedAccount(selectedAccount);
     getTransactions(selectedAccount);
   };
 
+  useEffect(() => {
+    renderListTransactions(curType);
+  }, [transactions]);
   const onAccountFinishFailed = () => {};
 
   const Types = (types) => {
@@ -79,8 +85,12 @@ const TransactionsPage = (props) => {
       </Option>
     ));
 
+  const onSelectType = (type) => {
+    renderListTransactions(type);
+    setCurType(type);
+  };
+
   const renderListTransactions = (type) => {
-    console.log("type", transactions);
     switch (type) {
       case "receiver":
         setDataSource(validateTransactionsData(transactions.receivers));
@@ -129,12 +139,16 @@ const TransactionsPage = (props) => {
           className="border-bottom border-light p-3"
           name="selectType"
         >
-          <Select onSelect={renderListTransactions} placeholder="Chọn">
+          <Select
+            onSelect={onSelectType}
+            placeholder="Chọn"
+            disabled={selectedAccount ? false : true}
+          >
             {Types(types)}
           </Select>
         </Form.Item>
       </Form>
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={dataSource} columns={columns} loading={loading} />
     </div>
   );
 };

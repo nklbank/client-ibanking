@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Form, Input, Select, Steps, Button, Checkbox } from 'antd';
+import { Form, Input, Select, Steps, Button, Checkbox, message } from 'antd';
 import UserContext from "../../../context/user/userContext";
 // import { layout, tailLayout } from '../../layout/layoutConfig'
+import VerifyOTP from './VerifyOTP'
 
 const layout = {
     labelCol: {
@@ -21,6 +22,7 @@ const { Step } = Steps;
 const { Option } = Select;
 let transferInfor = {}
 
+
 const TransferInfor = (props) => {
 
     const userContext = useContext(UserContext);
@@ -31,8 +33,6 @@ const TransferInfor = (props) => {
         transferIntraBank,
         addBeneficiary,
         transferInterBank,
-        getOTP,
-        verifyOTP,
         success,
         error,
     } = userContext;
@@ -57,10 +57,12 @@ const TransferInfor = (props) => {
         };
 
         return (
-            <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish} initialValues={{ partner_bank: "nklbank", receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }} >
+            <Form   {...layout} form={form} name="control-hooks" onFinish={onFinish}
+                initialValues={{ receiver: beneficiary.beneficiary_account, accountName: beneficiary.beneficiary_name }}
+            >
                 <Form.Item
                     name="partner_bank"
-                    label="Bank Name"
+                    label="Tên ngân hàng"
                     rules={[
                         {
                             required: true,
@@ -68,7 +70,7 @@ const TransferInfor = (props) => {
                     ]}
                 >
                     <Select
-                        placeholder="Select bank name"
+                        placeholder="Chọn ngân hàng"
                         allowClear
                     >
                         <Option value="nklbank">NKL Bank</Option>
@@ -79,9 +81,9 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="receiver"
-                    label="Number"
+                    label="Số tài khoản"
                     autoFocus
-                    onBlur={onSearchAccount}
+                    // onBlur={onSearchAccount}
                     rules={[
                         {
                             required: true,
@@ -93,14 +95,14 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="accountName"
-                    label="Name"
+                    label="Tên người nhận"
                 >
                     <Input disabled />
                 </Form.Item>
 
                 <Form.Item
                     name="depositor"
-                    label="Depositor"
+                    label="Tài khoản"
                     rules={[
                         {
                             required: true,
@@ -108,7 +110,7 @@ const TransferInfor = (props) => {
                     ]}
                 >
                     <Select
-                        placeholder="Select depositor"
+                        placeholder="Chọn tài khoản"
                         // onChange={onGenderChange}
                         allowClear
                     >
@@ -120,7 +122,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="amount"
-                    label="Amount"
+                    label="Số tiền VNĐ"
                     rules={[
                         {
                             required: true,
@@ -132,7 +134,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item
                     name="note"
-                    label="Description"
+                    label="Ghi chú"
                     rules={[
                         {
                             required: true,
@@ -144,7 +146,7 @@ const TransferInfor = (props) => {
 
                 <Form.Item >
                     <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
+                        Tiếp tục
            </Button>
                 </Form.Item>
             </Form>
@@ -154,8 +156,6 @@ const TransferInfor = (props) => {
     const Payment = () => {
         const onFinish = values => {
             transferInfor = { ...transferInfor, ...values }
-            console.log('Success:', transferInfor);
-
             setCurrentStep(2)
         };
 
@@ -185,12 +185,12 @@ const TransferInfor = (props) => {
                 </Form.Item>
 
                 <Form.Item name="charge_include" valuePropName="checked">
-                    <Checkbox>You will pay the fee</Checkbox>
+                    <Checkbox>Bạn sẽ trả phí</Checkbox>
                 </Form.Item>
 
                 <Form.Item>
                     <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
+                        Tiếp tục
           </Button>
                 </Form.Item>
             </Form>
@@ -203,9 +203,9 @@ const TransferInfor = (props) => {
     useEffect(() => {
         // setSuccess(success);
 
-        if (success && success.msg === "OTP is valid") {
-
-            if (transferInfor.partner_bank === "NKL Bank" || transferInfor.partner_bank === undefined) {
+        if (success === "Verify otp successfully") {
+            console.log("transferInfor", transferInfor)
+            if (transferInfor.partner_bank === "nklbank" || transferInfor.partner_bank === undefined) {
                 transferIntraBank({
                     depositor: transferInfor.depositor,
                     receiver: transferInfor.receiver,
@@ -214,6 +214,7 @@ const TransferInfor = (props) => {
                     charge_include: transferInfor.charge_include
                 })
             } else {
+                console.log("transferInterBank");
                 transferInterBank({
                     depositor: transferInfor.depositor,
                     receiver: transferInfor.receiver,
@@ -233,63 +234,37 @@ const TransferInfor = (props) => {
             }
             setCurrentStep(0)
         }
+
+        if (success === "Transfer money succeed") {
+            message.success(success)
+        }
     }, [success])
 
 
-    const VerifyOTP = () => {
+    useEffect(() => {
+        if (error === "Account balance not enough" || error === "Transfer money fail" || error === "Transfer money less than minimun 20000" || error === "From mpbank: Account not found" || error === "Receiver account not found") {
+            message.error(error)
+        }
+    }, [error]);
 
-        const onFinish = values => {
-            // console.log('successState:', successState);
 
-            verifyOTP(values)
-
-
-            // setCurrentStep(0)
-        };
-
-        const onFinishFailed = errorInfo => {
-        };
-
-        return (
-            <Form
-                {...layout}
-                name="basic"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-            >
-                <Form.Item
-                    label="Verify OTP"
-                    name="otp"
-                    rules={[{ required: true, message: 'Please input OTP!' }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item>
-                    <Button onClick={() => getOTP()}>load OTP</Button>
-                </Form.Item>
-
-                <Form.Item >
-                    <Button {...tailLayout} type="primary" htmlType="submit">
-                        Submit
-              </Button>
-                </Form.Item>
-            </Form>
-        )
-    }
 
     const steps = [
         {
-            title: `Payee's detail`,
+            title: `Người nhận`,
             content: <PayeeDetail />,
         },
         {
-            title: 'Payment',
+            title: 'Chuyển khoản',
             content: <Payment />,
         },
         {
-            title: 'Verify',
+            title: 'Xác thực',
             content: <VerifyOTP />,
+        },
+        {
+            title: 'Phản hồi',
+            content: "<VerifyOTP />",
         },
     ];
 

@@ -2,7 +2,10 @@
 import React, { useEffect, useContext } from 'react'
 import UserContext from '../../context/user/userContext'
 import AlertContext from '../../context/alert/alertContext';
-
+import Formatter from '../layout/CurrencyFormat'
+import {
+    IdcardOutlined, MoneyCollectOutlined, OneToOneOutlined
+} from "@ant-design/icons";
 // const accountsOwner = []
 const UserAccount = (props) => {
     const userContext = useContext(UserContext)
@@ -11,20 +14,14 @@ const UserAccount = (props) => {
     const { accountsOwner } = userContext;
     const { setAlert, alerts } = alertContext;
 
-    // useEffect(() => {
-    //     getAccounts();
-    // }, [])
-    // useEffect(() => {
-    //     console.log(alerts)
-    // }, [alerts, ])
-
     const accountsInfor = (accountsOwner = []) => (
         accountsOwner.map((acc, i) =>
             <div key={i} className="container ml-5">
-                <div><b>So tai khoan:</b>  {acc.account_number}</div>
-                <div><b>So du hien tai:</b> {acc.account_balance} VND</div>
-                <div><b>Loai tai khoan:</b> {acc.type === 1 ? <span>Thanh toan</span> : <span>Tiet kiem</span>}</div>
+                <div><b><IdcardOutlined className="mr-3" />Số tài khoản   :</b>  {acc.account_number}</div>
+                <div><b><MoneyCollectOutlined className="mr-3" />Số dư hiện tại :</b> {Formatter.format(acc.account_balance)} VND</div>
+                <div><b><OneToOneOutlined className="mr-3" />Loại tài khoản :</b> {acc.type === 1 ? <span>Thanh toan</span> : <span>Tiet kiem</span>}</div>
                 <br />
+                <hr />
             </div>
         )
     )

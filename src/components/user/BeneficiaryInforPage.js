@@ -1,7 +1,7 @@
 
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Button, Popconfirm, Form, Modal } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons'
+import { Table, Input, Button, Popconfirm, Form, Modal, message } from 'antd';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import UserContext from '../../context/user/userContext'
 
@@ -91,12 +91,27 @@ const BeneficiaryInforPage = () => {
 
     const userContext = useContext(UserContext)
 
-    const { beneficiaries, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo } = userContext
+    const { success, beneficiaries, beneficiary, addBeneficiaryRes, addBeneficiary, updateListBeneficiaryInfo, getBeneficiries, error, loading } = userContext
 
-    const [dataSource, setDataSource] = useState(
-        beneficiaries
-    )
+    const [dataSource, setDataSource] = useState(beneficiaries)
     const [visible, setVisible] = useState(false)
+
+
+    useEffect(() => {
+        setDataSource(beneficiaries)
+    }, [beneficiaries]);
+
+    useEffect(() => {
+        // console.log(error);
+        if (error === "From nklbank: Account not found")
+            message.error(error)
+    }, [error]);
+
+    useEffect(() => {
+        // console.log(error);
+        if (success === "add beneficiary successfully")
+            message.success(success)
+    }, [success]);
 
     const handleDelete = row => {
 
@@ -133,21 +148,21 @@ const BeneficiaryInforPage = () => {
 
     const columnsDefault = [
         {
-            title: 'name',
+            title: 'Tên tài khoản',
             dataIndex: 'beneficiary_name',
             width: '30%',
             editable: true,
         },
         {
-            title: 'account number',
+            title: 'Số tài khoản',
             dataIndex: 'beneficiary_account',
         },
         {
-            title: 'operation',
+            title: 'Xóa',
             dataIndex: 'operation',
             render: (text, record) =>
                 beneficiaries.length >= 1 ? (
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+                    <Popconfirm title="Bạn chắc là xóa không?" onConfirm={() => handleDelete(record)}>
                         <a className="text-danger"><DeleteOutlined /> Delete  </a>
                     </Popconfirm>
                 ) : null,
@@ -194,13 +209,17 @@ const BeneficiaryInforPage = () => {
     };
 
     const onSaveChanges = () => {
-        // useEffect
-        // useEffect(() => {
         updateListBeneficiaryInfo(dataSource)
-        // }, [])
+        getBeneficiries();
     }
 
-    // console.log(dataSource);
+
+    const onSearchAccount = (e) => {
+        const value = e.target.value
+        // getBeneficiry({ account_number: value });
+    }
+
+
     return (
         <div>
             <Button
@@ -209,12 +228,13 @@ const BeneficiaryInforPage = () => {
                 style={{
                     marginBottom: 16,
                 }}
+                icon={<PlusOutlined />}
             >
-                Add a beneficiry
+                Tạo người nhận
         </Button>
             <div>
                 <Modal
-                    title="Basic Modal"
+                    title="Thông tin người nhận"
                     visible={visible}
                     onOk={() => setVisible(false)}
                     onCancel={() => setVisible(false)}
@@ -224,19 +244,26 @@ const BeneficiaryInforPage = () => {
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
+                    // initialValues={{ accountnumber: beneficiary.beneficiary_account, remindname: beneficiary.beneficiary_name }}
                     >
-                        <Form.Item
-                            name="remindname"
-                        // rules={[{ required: true, message: 'Please input beneficiary name!' }]}
-                        >
-                            <Input placeholder="Remind Name" />
-                        </Form.Item>
 
                         <Form.Item
                             name="accountnumber"
                             rules={[{ required: true, message: 'Please input beneficiary account number!' }]}
+                            onBlur={onSearchAccount}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
                         >
                             <Input placeholder="beneficiary account number" />
+                        </Form.Item>
+                        <Form.Item
+                            name="remindname"
+
+                        >
+                            <Input placeholder="Remind Name" value={beneficiary.beneficiary_name} />
                         </Form.Item>
 
                         <Form.Item >
@@ -254,7 +281,7 @@ const BeneficiaryInforPage = () => {
                 dataSource={dataSource.filter(item => item.type !== "del")}
                 columns={columns}
             />
-            <Button onClick={onSaveChanges}>Save changes</Button>
+            <Button loading={loading} onClick={onSaveChanges}>Lưu thay đổi</Button>
         </div>
     );
 }

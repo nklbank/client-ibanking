@@ -9,6 +9,7 @@ import {
   GET_BENEFICIARIES,
   BENEFICIARIES_ERROR,
   ADD_BENEFICIARY,
+  ADD_BENEFICIARY_ERROR,
   BENEFICIARY_ERROR,
   UPDATE_BENEFICIARIES,
   UPDATE_BENEFICIARIES_ERROR,
@@ -21,11 +22,21 @@ import {
   ADD_DEBT,
   POST_TRANSFERINTRABANK,
   POST_TRANSFERINTERBANK,
+  POST_TRANSFERBANK_ERROR,
   VERIFY_OTP,
+  VERIFY_OTP_ERROR,
   GET_OTP,
+  GET_OTP_ERROR,
   DEL_DEBT,
-  UPDATE_DEBT
-
+  UPDATE_DEBT,
+  SET_LOADING,
+  REFRESH,
+  GET_NOTIFS,
+  ADD_NOTIFS,
+  READ_NOTIF,
+  GET_TOKEN,
+  GET_TOKEN_ERROR,
+  // GET_USER_INFO,
   // BENEFICIARY_ERROR,
 } from "../types";
 import { Col } from "antd";
@@ -41,7 +52,9 @@ const UserState = (props) => {
     addBeneficiaryRes: null,
     getTransactions: null,
     token: localStorage.getItem("token"),
-    debts: {}
+    debts: {},
+    notifs: [],
+    // userInfo: {},
   };
 
   const [state, dispatch] = useReducer(userReducer, initialState);
@@ -49,6 +62,7 @@ const UserState = (props) => {
   //get account user
 
   const getAccounts = async () => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -68,6 +82,7 @@ const UserState = (props) => {
   //get list beneficiary
 
   const getBeneficiries = async () => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -88,6 +103,7 @@ const UserState = (props) => {
   //add beneficiary
 
   const addBeneficiary = async (contact) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -100,7 +116,7 @@ const UserState = (props) => {
     } catch (err) {
       console.log(err.response);
       dispatch({
-        type: USER_ERROR,
+        type: ADD_BENEFICIARY_ERROR,
         payload: err.response,
       });
     }
@@ -109,6 +125,7 @@ const UserState = (props) => {
   //update list beneficiary
 
   const updateListBeneficiaryInfo = async (listInfo) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -132,6 +149,7 @@ const UserState = (props) => {
   //change password
 
   const changePassword = async (passwords) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -155,6 +173,7 @@ const UserState = (props) => {
   // get beneficiary account
 
   const getBeneficiry = async (accnumber) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
 
     try {
@@ -183,6 +202,7 @@ const UserState = (props) => {
   // }
 
   const getTransactions = async (accountNumber) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.get(
@@ -194,18 +214,17 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: GET_TRANSACTIONS,
+        type: USER_ERROR,
         payload: err.response,
       });
     }
   };
+
   const getDebts = async () => {
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.get(
-        "/api/customer/debts"
-      );
-      console.log('res.data', res.data)
+      const res = await axios.get("/api/customer/debts");
       dispatch({
         type: GET_DEBTLIST,
         payload: res.data,
@@ -215,9 +234,11 @@ const UserState = (props) => {
         type: USER_ERROR,
         payload: err.response,
       });
-    };
+    }
   };
+
   const transferIntraBank = async (transferInfor) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -230,12 +251,15 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: USER_ERROR,
+        type: POST_TRANSFERBANK_ERROR,
         payload: err.response,
       });
     }
   };
+
   const transferInterBank = async (transferInfor) => {
+    setLoading();
+    console.log("-------", transferInfor);
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
       const res = await axios.post(
@@ -248,20 +272,35 @@ const UserState = (props) => {
       });
     } catch (err) {
       dispatch({
-        type: GET_DEBTLIST,
+        type: POST_TRANSFERBANK_ERROR,
         payload: err.response,
       });
     }
   };
+
   const addDebt = async (debt) => {
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post(
-        "/api/customer/debts", debt
-      );
-      console.log('res.data', res.data)
-      const newDebt = { ...debt, id: res.data.insertId, paid: 0, visibleToPayer: 1 }
-      console.log('newDebt', newDebt)
+      const res = await axios.post("/api/customer/debts", debt);
+      console.log("res.data :>> ", res.data);
+      const { timestamp } = res.data;
+      const _timestamp = new Date(timestamp);
+      const mins =
+        _timestamp.getMinutes() < 10
+          ? `0${_timestamp.getMinutes()}`
+          : _timestamp.getMinutes();
+      const timestring = `${_timestamp.getDate()}/${_timestamp.getMonth() + 1
+        }/${_timestamp.getFullYear()} ${_timestamp.getHours()}:${mins}`;
+      console.log("timestring :>> ", timestring);
+      const newDebt = {
+        ...debt,
+        id: res.data.insertId,
+        paid: 0,
+        visibleToPayer: 1,
+        timestamp,
+      };
+      console.log("newDebt", newDebt);
       dispatch({
         type: ADD_DEBT,
         payload: newDebt,
@@ -273,17 +312,33 @@ const UserState = (props) => {
       });
     }
   };
+
   const verifyOTP = async (otp) => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post(
-        "/api/auth/otp",
-        otp
-      );
+      const res = await axios.post("/api/auth/otp", otp);
+      console.log("res.data :>> ", res.data);
       dispatch({
         type: VERIFY_OTP,
         payload: res.data,
       });
+    } catch (err) {
+      console.log("err.response :>> ", err.response);
+      dispatch({
+        type: VERIFY_OTP_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
+  const getAccountInfo = async (account) => {
+    // setLoading();
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post("/api/account", account);
+      console.log("res.data", res.data);
+      return res.data;
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -291,51 +346,33 @@ const UserState = (props) => {
       });
     }
   };
-
-
-  const getAccountInfo = async (account) => {
-    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
-    try {
-      const res = await axios.post(
-        "/api/account", account
-      );
-      console.log('res.data', res.data)
-      return res.data
-    } catch (err) {
-      dispatch({
-        type: USER_ERROR,
-        payload: err.response,
-      });
-    };
-  };
   const getOTP = async () => {
+    setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.get(
-        "/api/auth/otp"
-      );
+      const res = await axios.get("/api/auth/otp");
       dispatch({
         type: GET_OTP,
         payload: res.data,
       });
     } catch (err) {
       dispatch({
-        type: USER_ERROR,
+        type: GET_OTP_ERROR,
         payload: err.response,
       });
     }
-  }
+  };
 
   const delDebt = async (id) => {
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.delete(
-        "/api/customer/debts", { data: { id } }
-      );
+      const res = await axios.delete("/api/customer/debts", { data: { id } });
       dispatch({
         type: DEL_DEBT,
         payload: id,
       });
+      return res.data;
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -345,16 +382,16 @@ const UserState = (props) => {
   };
 
   const updateDebt = async (debt) => {
+    // setLoading();
     setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
     try {
-      const res = await axios.post(
-        "/api/customer/update-debts", debt
-      );
-      console.log('updatedDebt', debt)
+      const res = await axios.post("/api/customer/update-debts", debt);
+      console.log("updatedDebt", debt);
       dispatch({
         type: UPDATE_DEBT,
         payload: debt,
       });
+      return res.data;
     } catch (err) {
       dispatch({
         type: USER_ERROR,
@@ -362,6 +399,110 @@ const UserState = (props) => {
       });
     }
   };
+
+  // const getCustomerInfo = async () => {
+  //   setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+  //   try {
+  //     const res = await axios.get("/api/customer");
+  //     console.log("res.datas dasdas", res.data);
+  //     dispatch({ type: GET_USER_INFO, payload: res.data });
+  //     return res.data;
+  //   } catch (err) {
+  //     dispatch({
+  //       type: USER_ERROR,
+  //       payload: err.response,
+  //     });
+  //     const res = [0];
+  //     return res;
+  //   }
+  // };
+
+  const getCustomerInfo = async () => {
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.get(
+        "/api/customer");
+      console.log('res.data', res.data)
+      return res.data;
+    } catch (err) {
+      dispatch({
+        type: USER_ERROR,
+        payload: err.response,
+      });
+    }
+  }
+  const setLoading = () => dispatch({ type: SET_LOADING });
+
+  const refresh = () => dispatch({ type: REFRESH });
+
+  const getNotifs = async (username) => {
+    try {
+      const res = await axios.get(`/api/notifs/${username}`);
+      console.log("res", res);
+      dispatch({
+        type: GET_NOTIFS,
+        payload: res.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: USER_ERROR,
+        payload: error.response,
+      });
+    }
+  };
+
+  // update state.notifs
+  const addNotif = (notif) =>
+    dispatch({
+      type: ADD_NOTIFS,
+      payload: notif,
+    });
+
+  // update database.notifs
+  const postNotif = async (notif) => {
+    try {
+      const ret = await axios.post(`/api/notifs`, notif);
+      return ret.data;
+    } catch (error) {
+      dispatch({
+        type: USER_ERROR,
+        payload: error.response,
+      });
+    }
+  };
+
+  const readNotif = async (id) => {
+    try {
+      await axios.post(`/api/notifs/update`, { id: id });
+      dispatch({ type: READ_NOTIF });
+    } catch (error) { }
+  };
+
+  const getNewToken = async () => {
+    // console.log(tokens);
+    setAuthToken(JSON.parse(localStorage.getItem("token"))["accessToken"]);
+    try {
+      const res = await axios.post("/api/auth/refresh", {
+        accessToken: JSON.parse(localStorage.getItem("token"))["accessToken"],
+        refreshToken: JSON.parse(localStorage.getItem("token"))["refreshToken"],
+      });
+      dispatch({
+        type: GET_TOKEN,
+        payload: {
+          ...res.data,
+          refreshToken: JSON.parse(localStorage.getItem("token"))[
+            "refreshToken"
+          ],
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: GET_TOKEN_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -371,8 +512,12 @@ const UserState = (props) => {
         beneficiary: state.beneficiary,
         transactions: state.transactions,
         debts: state.debts,
+        notifs: state.notifs,
         success: state.success,
         error: state.error,
+        loading: state.loading,
+        username: state.username,
+        userInfo: state.userInfo,
         getAccounts,
         getBeneficiries,
         updateListBeneficiaryInfo,
@@ -388,7 +533,14 @@ const UserState = (props) => {
         transferInterBank,
         getOTP,
         verifyOTP,
-        getAccountInfo
+        getAccountInfo,
+        getCustomerInfo,
+        refresh,
+        getNotifs,
+        addNotif,
+        postNotif,
+        readNotif,
+        getNewToken,
       }}
     >
       {props.children}
