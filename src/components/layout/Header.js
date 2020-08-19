@@ -8,7 +8,7 @@ import Notification from '../user/notification'
 const { Paragraph } = Typography;
 
 
-const Header = ({ socket, username  }) => {
+const Header = ({ socket, username }) => {
     const authContext = useContext(AuthContext);
 
     const { logout, user } = authContext;
@@ -27,7 +27,7 @@ const Header = ({ socket, username  }) => {
     return (
         <ul className="nav justify-content-end p-1 mb-2 bg-white">
             <li className="nav-item">
-                <a className="nav-link active" href="#">Active</a>
+                <a className="nav-link active" href="#">USER</a>
             </li>
             <li className="nav-item">
                 <Notification socket={socket} />
