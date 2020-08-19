@@ -55,9 +55,9 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
   return (
     <Modal
       visible={visible}
-      title="Debt payment"
-      okText="Pay debt"
-      cancelText="Cancel"
+      title="Thanh toán nợ"
+      okText="Thanh toán"
+      cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
         form
@@ -120,7 +120,7 @@ const PayDebtForm = ({ visible, onCreate, onCancel, id, creditor, payer, amount,
           modifier: 'public',
         }}
       >
-        <Form.Item name="otp" label="Enter OTP"
+        <Form.Item name="otp" label="Nhập OTP"
           validateStatus={OTP.status}
           help={OTP.message}
         >
@@ -154,8 +154,7 @@ const PayDebtModal = ({ id, creditor, payer, amount, socket, owner }) => {
           setVisible(true);
           getOTP()
         }}
-      >
-        Pay
+      >Thanh toán
       </Button>
       <PayDebtForm
         visible={visible}
