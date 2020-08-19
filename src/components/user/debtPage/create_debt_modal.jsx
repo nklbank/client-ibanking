@@ -97,7 +97,7 @@ const CreateDebtForm = ({ visible, onCreate, onCancel, owner, socket }) => {
 
                         (async () => {
                             const ret = await postNotif({
-                                sender: creditor, receiver: payer.beneficiary_account[0], type: "createdebt", amount, description
+                                sender: creditor, receiver: payer.beneficiary_account, type: "createdebt", amount, description
                             })
                             console.log('creditorAccounts[0] :>> ', creditorAccounts[0]);
                             const accountInfo = await getAccountInfo({ account_number: creditorAccounts[0] })
