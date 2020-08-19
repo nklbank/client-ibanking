@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import adminContext from "../../../context/admin/adminContext";
-import PersonInfo from "../personInfo/personInfo";
+import PersonInfo from "../personInfo/PersonInfo";
 const { Option } = Select;
 
 const defaultPersonInfo = {
@@ -46,25 +46,25 @@ const ListEmployees = (props) => {
   const columnsDefault = [
     { title: "ID", dataIndex: "id", key: "key" },
     {
-      title: "Full name",
+      title: "Họ tên",
       dataIndex: "fullname",
       key: "fullname",
       width: 1500,
     },
 
     {
-      title: "Position",
+      title: "Chức vụ",
       dataIndex: "admin",
       key: "admin",
       render: (text, record) => (parseInt(text) > 0 ? "Admin" : "Employee"),
     },
     {
-      title: "Phone",
+      title: "Điện thoại",
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
       render: (text, record) => (
         <Space size="small" align="baseline">
@@ -74,7 +74,7 @@ const ListEmployees = (props) => {
           >
             <Button type="text" className="text-danger">
               <DeleteOutlined />
-              Delete
+              Xóa
             </Button>
           </Popconfirm>
           <Button
@@ -83,7 +83,7 @@ const ListEmployees = (props) => {
             onClick={() => handlerEdit(record)}
           >
             <EditOutlined />
-            Edit
+            Sửa
           </Button>
         </Space>
       ),
@@ -182,7 +182,7 @@ const ListEmployees = (props) => {
   const renderAddWindow = () => {
     return (
       <Modal
-        title="Add personnel"
+        title="Thêm nhân viên"
         visible={isAddModalVisible}
         footer={null}
         onCancel={() => setAddModalVisible(false)}
@@ -226,7 +226,7 @@ const ListEmployees = (props) => {
       <Row justify="end" gutter={[16, 24]}>
         <Col offset={12}>
           <Button type="primary" onClick={() => setAddModalVisible(true)}>
-            <UserAddOutlined /> Add personnel
+            <UserAddOutlined /> Thêm nhân viên
           </Button>
         </Col>
       </Row>

@@ -36,14 +36,40 @@ const Home = () => {
   const errorAdmin = adminContext.error;
 
   const [username, setusername] = useState(null);
+  (async () => {
+    try {
+      if (username === null) {
+        const res = await getCustomerInfo();
+        const { username } = res[0];
+        setusername(username);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  })();
 
+  useEffect(() => {
+    if (!user.admin) getNewAccessToken();
+  }, []);
   useEffect(() => {
     loadPersonnel();
     getAccounts();
     getBeneficiries();
-    getCustomerInfo();
-    getNewAccessToken();
+    (async () => {
+      try {
+        const res = await getCustomerInfo();
+        const { username } = res[0];
+        setusername(username);
+
+        // console.log('username', username)
+        // console.log('socket', socket)
+        // socket = io(proxy)
+      } catch (err) {
+        console.log(err);
+      }
+    })();
   }, []);
+
   useEffect(() => {
     if (errorAdmin) {
       console.log("errorAdmin", errorAdmin);
@@ -52,14 +78,11 @@ const Home = () => {
   }, [errorAdmin]);
 
   useEffect(() => {
-    console.log("userInfo", userInfo);
-    if (userInfo) {
-      if (userInfo.username) {
-        console.log("username", userInfo.username);
-        socket = io(proxy);
-      }
+    if (username) {
+      console.log("username", username);
+      socket = io(proxy);
     }
-  }, [userInfo]);
+  }, [username]);
 
   const switchNavBar = () => {
     console.log("user", user);

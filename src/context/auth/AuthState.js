@@ -19,7 +19,7 @@ const AuthState = (props) => {
     token: localStorage.getItem("token"),
     isAuthenticated: null,
     loading: null,
-    user: null,
+    user: {},
     error: null,
   };
 
@@ -118,7 +118,7 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post("/api/auth/personnel", formData, config);
-      getNewAccessToken();
+      getNewAccessToken(res.data);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
@@ -139,6 +139,7 @@ const AuthState = (props) => {
         refreshToken: JSON.parse(localStorage.getItem("token"))["refreshToken"],
       };
     } else body = info;
+
     setTimeout(async () => {
       try {
         const res = await axios.post("/api/auth/refresh", body);

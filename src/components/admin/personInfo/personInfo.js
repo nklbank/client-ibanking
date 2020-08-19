@@ -71,7 +71,7 @@ const PersonInfo = (props) => {
     <div>
       <Form form={form} {...layout} onFinish={() => props.onConfirm(person)}>
         <Form.Item
-          label="Full name"
+          label="Họ tên"
           name="fullname"
           rules={[
             {
@@ -102,7 +102,7 @@ const PersonInfo = (props) => {
             onChange={(e) => setPerson({ ...person, username: e.target.value })}
           />
         </Form.Item>
-        <Form.Item label="Position">
+        <Form.Item label="Chức vụ">
           <Select
             value={person.admin}
             onSelect={(value) => {
@@ -138,7 +138,7 @@ const PersonInfo = (props) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="Phone">
+        <Form.Item label="Điện thoại">
           <Input
             value={person.phone}
             onChange={(value) => {
