@@ -3,6 +3,7 @@ import { Form, Input, Select, Steps, Button, Checkbox, message } from 'antd';
 import UserContext from "../../../context/user/userContext";
 // import { layout, tailLayout } from '../../layout/layoutConfig'
 import VerifyOTP from './VerifyOTP'
+import Formatter from '../../layout/CurrencyFormat'
 
 const layout = {
     labelCol: {
@@ -198,6 +199,14 @@ const TransferInfor = (props) => {
     }
 
 
+    const Respond = () => (
+        <div className="text-center">
+            <h6>Tài khoản gửi: {transferInfor.depositor}</h6>
+            <h6>Người nhận   : {transferInfor.receiver}</h6>
+            <h6>Số tiền      : {Formatter.format(transferInfor.amount)}</h6>
+            <h6>Ghi chú      : {transferInfor.note}</h6>
+        </div>
+    )
 
     // const [successState,setSuccess] = useState({})
     useEffect(() => {
@@ -232,11 +241,11 @@ const TransferInfor = (props) => {
                     name: transferInfor.beneficiary
                 })
             }
-            setCurrentStep(0)
         }
 
         if (success === "Transfer money succeed") {
             message.success(success)
+            setCurrentStep(3)
         }
     }, [success])
 
@@ -244,6 +253,7 @@ const TransferInfor = (props) => {
     useEffect(() => {
         if (error === "Account balance not enough" || error === "Transfer money fail" || error === "Transfer money less than minimun 20000" || error === "From mpbank: Account not found" || error === "Receiver account not found") {
             message.error(error)
+            setCurrentStep(0)
         }
     }, [error]);
 
@@ -264,7 +274,7 @@ const TransferInfor = (props) => {
         },
         {
             title: 'Phản hồi',
-            content: "<VerifyOTP />",
+            content: <Respond />,
         },
     ];
 
