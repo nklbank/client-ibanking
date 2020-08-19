@@ -1,6 +1,15 @@
 import React, { useContext, useEffect } from "react";
 import adminContext from "../../../context/admin/adminContext";
-import { Select, DatePicker, Table, Form, Row, Spin, Col } from "antd";
+import {
+  Select,
+  DatePicker,
+  Table,
+  Form,
+  Row,
+  Spin,
+  Col,
+  Typography,
+} from "antd";
 import { useState } from "react";
 import moment from "moment";
 const layout = {
@@ -13,33 +22,7 @@ const informationDefault = {
   dateFrom: moment(),
   dateTo: moment(),
 };
-const columns = [
-  {
-    title: "Tài khoản gửi",
-    dataIndex: "depositor",
-    key: "depositor",
-  },
-  {
-    title: "Người nhận",
-    dataIndex: "receiver",
-    key: "receiver",
-  },
-  {
-    title: "Số tiền",
-    dataIndex: "amount",
-    key: "amount",
-  },
-  {
-    title: "Thời gian",
-    dataIndex: "timestamp",
-    key: "timestamp",
-  },
-  {
-    title: "Ghi chú",
-    dataIndex: "note",
-    key: "note",
-  },
-];
+
 const banks = [
   { title: "MP Bank", key: "mpbank" },
   {
@@ -48,6 +31,8 @@ const banks = [
   },
 ];
 const Transactions = (props) => {
+  const { Text, Link } = Typography;
+
   const { loading, getTransactionsBank, listTransactionsBank } = useContext(
     adminContext
   );
@@ -64,6 +49,58 @@ const Transactions = (props) => {
     }
     return newData;
   };
+
+  const columns = [
+    {
+      title: "Người gửi",
+      dataIndex: "depositor",
+      key: "depositor",
+      render: (depositor, record) => {
+        console.log("depositpr", record);
+        if (record.keyID) {
+          return <Text>{record.depositor}</Text>;
+        } else {
+          return (
+            <Text style={{ fontWeight: "bold" }}>{record.depositor} </Text>
+          );
+        }
+      },
+    },
+    {
+      title: "Người nhận",
+      dataIndex: "receiver",
+      key: "receiver",
+      render: (receiver, record) => {
+        if (record.keyID) {
+          return <Text style={{ fontWeight: "bold" }}>{record.receiver} </Text>;
+        } else {
+          return <Text>{record.receiver}</Text>;
+        }
+      },
+    },
+    {
+      title: "Số tiền (vnđ)",
+      dataIndex: "amount",
+      key: "amount",
+      render: (receiver, record) => {
+        if (record.keyID) {
+          return <Text style={{ color: " green" }}>+{record.receiver} </Text>;
+        } else {
+          return <Text style={{ color: " red" }}>-{record.receiver}</Text>;
+        }
+      },
+    },
+    {
+      title: "Thời gian",
+      dataIndex: "timestamp",
+      key: "timestamp",
+    },
+    {
+      title: "Ghi chú",
+      dataIndex: "note",
+      key: "note",
+    },
+  ];
 
   useEffect(() => {
     if (listTransactionsBank) {

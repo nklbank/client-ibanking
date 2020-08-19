@@ -12,7 +12,7 @@ import ListEmployees from "../admin/listStaff/ListEmployees";
 import Transactions from "../admin/transactions/Transactions";
 const comp = [
   {
-    title: "Manage list personnel",
+    title: "Danh sách nhân viên",
     content: <ListEmployees />,
   },
   {
@@ -24,7 +24,7 @@ const comp = [
     content: <Transactions />,
   },
   {
-    title: "change password",
+    title: "Đổi mật khẩu",
     content: <ChangePasswordPage />,
   },
 ];
@@ -56,16 +56,16 @@ const NavBarAdmin = () => {
           <Menu.Item key="0" icon={<PieChartOutlined />}>
             Danh sách nhân viên
           </Menu.Item>
-          <Menu.Item key="1" icon={<DesktopOutlined />}>
+          {/* <Menu.Item key="1" icon={<DesktopOutlined />}>
             Thông tin
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="2" icon={<ContainerOutlined />}>
             Lịch sử giao dịch
           </Menu.Item>
           <Menu.Item key="3">Đổi mật khẩu</Menu.Item>
           <Menu.Item onClick={onLogout}>
             <LogoutOutlined />
-            Logout
+            Đăng xuất
           </Menu.Item>
         </Menu>
       </div>
