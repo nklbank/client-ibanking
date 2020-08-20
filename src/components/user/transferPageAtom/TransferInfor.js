@@ -200,7 +200,8 @@ const TransferInfor = (props) => {
 
 
     const Respond = () => (
-        <div className="text-center">
+        <div className="text-center p-5">
+            <h6>Tên ngân hàng: {transferInfor.partner_bank}</h6>
             <h6>Tài khoản gửi: {transferInfor.depositor}</h6>
             <h6>Người nhận   : {transferInfor.receiver}</h6>
             <h6>Số tiền      : {Formatter.format(transferInfor.amount)}</h6>
