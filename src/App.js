@@ -25,7 +25,7 @@ const App = () => {
         <AlertState>
           <EmployeeState>
             <AdminState>
-              <HashRouter>
+              <Router>
                 <Switch>
                   <Fragment>
                     <div>
@@ -45,7 +45,7 @@ const App = () => {
                     </div>
                   </Fragment>
                 </Switch>
-              </HashRouter>
+              </Router>
             </AdminState>
           </EmployeeState>
         </AlertState>
