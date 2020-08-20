@@ -208,6 +208,9 @@ const TransferInfor = (props) => {
         </div>
     )
 
+    useEffect(() => {
+        setCurrentStep(0)
+    }, [beneficiary])
     // const [successState,setSuccess] = useState({})
     useEffect(() => {
         // setSuccess(success);
@@ -247,6 +250,7 @@ const TransferInfor = (props) => {
             message.success(success)
             setCurrentStep(3)
         }
+
     }, [success])
 
 
@@ -277,6 +281,7 @@ const TransferInfor = (props) => {
             content: <Respond />,
         },
     ];
+    // console.log(props);
 
     return (
         <div>
